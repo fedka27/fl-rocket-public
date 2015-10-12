@@ -1,0 +1,117 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/text_gray"
+    tools:context=".MainActivityFragment">
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
+
+        <!-- Content -->
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="true">
+
+            <wash.rocket.xor.rocketwash.widgets.SwipeListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:listSelector="#00000000"
+                swipe:leftDistance="168dp"
+                swipe:onlyOneOpenedWhenSwipe="true"
+                swipe:rightDistance="84dp"
+                swipe:swipeBackView="@+id/back"
+                swipe:swipeCloseAllItemsWhenMoveList="true"
+                swipe:swipeFrontView="@+id/front"
+                swipe:swipeMode="both">
+
+            </wash.rocket.xor.rocketwash.widgets.SwipeListView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <!-- Side Drawer -->
+        <include
+            layout="@layout/navigation_drawer"
+            android:layout_width="@dimen/navigator_width"
+            android:layout_height="match_parent"
+            android:layout_gravity="left" />
+    </android.support.v4.widget.DrawerLayout>
+
+
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:elevation="2dp"
+        app:title="@string/fragment_nearest_wash_services"
+        app:theme="@style/AppTheme">
+        <include layout="@layout/include_toolbar_message" />
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/layoutError"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView10"
+            android:src="@drawable/ic_action_info_outline_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/network_error"
+            android:id="@+id/txtError"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_16sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layoutWarnEmpty"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView11"
+            android:src="@drawable/ic_action_info_outline_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/empty_data"
+            android:id="@+id/txtError1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_16sp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</RelativeLayout>

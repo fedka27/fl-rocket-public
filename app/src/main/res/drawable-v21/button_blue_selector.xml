@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:btn="http://schemas.android.com/apk/res-auto"
+    android:color="?android:attr/colorControlHighlight">
+
+    <item>
+        <selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+            <item
+                android:drawable="@drawable/button_blue"
+                btn:selected="false"
+                android:state_pressed="true" />
+            <item
+                android:drawable="@drawable/button_blue"
+                btn:selected="false"
+                android:state_pressed="false" />
+
+            <item
+                android:drawable="@drawable/button_green"
+                android:state_pressed="false"
+                btn:selected="true" />
+
+            <item
+                android:drawable="@drawable/button_green"
+                android:state_pressed="true"
+                btn:selected="true" />
+
+        </selector>
+    </item>
+
+    <item android:id="@android:id/mask">
+        <color android:color="@color/white" />
+    </item>
+
+</ripple>

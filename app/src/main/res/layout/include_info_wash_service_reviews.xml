@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/divider_profile_20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="@dimen/divider_profile_20dp">
+
+    <wash.rocket.xor.rocketwash.widgets.ExpandableView xmlns:ext="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ext:captionId="@id/caption"
+        ext:contentId="@id/content"
+        ext:imageId="@id/imgExpand">
+
+        <TableLayout
+            android:id="@+id/caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/ic_action_communication_comment" />
+
+                <TextView
+                    android:id="@+id/textView344"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:foregroundGravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="@string/include_wash_service_reviews"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_20sp"
+                    android:layout_gravity="center_vertical" />
+
+                <ImageView
+                    android:id="@+id/imgExpand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:clickable="true"
+                    android:src="@drawable/ic_action_arrow_down_black" />
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Отзыв\nотзыв\nотзыв"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black"
+                android:layout_marginLeft="49dp" />
+        </LinearLayout>
+
+    </wash.rocket.xor.rocketwash.widgets.ExpandableView>
+
+
+</LinearLayout>
+
+

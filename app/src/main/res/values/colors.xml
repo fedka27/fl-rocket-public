@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#00aaff</color>
+    <color name="colorPrimaryDark">#007bb9</color>
+    <color name="rocket_color">#00aaff</color>
+
+    <color name="disabled">#007bb9</color>
+    <color name="button_blue">#00aaff</color>
+    <color name="button_blue_pressed">#007bb9</color>
+    <color name="button_blue_stroke">#c7ecff</color>
+
+    <color name="button_gray">#999999</color>
+    <color name="button_gray_stroke">#e1e1e1</color>
+    <color name="button_gray_pressed">#636363</color>
+    <color name="button_green">#00dc4e</color>
+    <color name="button_green_pressed">#00a94e</color>
+
+    <color name="white">#ffffff</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="red_notify">#ff5252</color>
+    <color name="notify_text_color">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="menu_item_back">#f5f5f5</color>
+
+    <color name="primary_text_color">#666666</color>
+    <color name="primary_text_hint_color">#999999</color>
+
+    <color name="text_edit_standart">#dbdbdb</color>
+    <color name="text_edit_disabled">#f4f2f2</color>
+    <color name="text_gray">#999999</color>
+    <color name="delimeter">#dbdbdb</color>
+    <color name="wash_service_text_gray">#939393</color>
+
+    <!-- Commons -->
+    <color name="background_app">#dedede</color>
+
+    <color name="background_list_back">#e3e3e3</color>
+    <color name="background_list_front">#ffffff</color>
+    <color name="text_title">#444444</color>
+    <color name="text_description">#7e7e7e</color>
+
+    <color name="line">#ffbcbcbc</color>
+
+    <color name="background_new_tag">#ff0000</color>
+    <color name="text_new_tag">#ffffff</color>
+    <color name="green_rocket">#00dc4e</color>
+    <color name="green_rocket_pressed">#00a94e</color>
+    <color name="red_notify_pressed">#c9ff5252</color>
+
+    <color name="color_list_item_pressed">#c1c1c1</color>
+    <color name="color_list_item_default">#ffffff</color>
+    <color name="group_background">#f0eff5</color>
+
+
+</resources>

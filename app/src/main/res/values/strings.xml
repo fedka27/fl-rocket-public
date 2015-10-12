@@ -1,0 +1,140 @@
+<resources>
+    <string name="app_name">Rocketwash</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="fragment_login_title">Вход</string>
+    <string name="fragment_login_caption">Для записи на автомойку, получения индивидуальных скидок, балов и бонусов необходимо войти под личным поролем</string>
+    <string name="fragment_login_phone_hint">Номер телефона</string>
+    <string name="fragment_login_pin_hint">PIN-код</string>
+    <string name="fragment_login_btn_enter">ВОЙТИ</string>
+    <string name="fragment_login_btn_register">ЗАРЕГИСТРИРОВАТЬСЯ</string>
+    <string name="fragment_login_btn_skip">ПРОДОЛЖИТЬ БЕЗ РЕГИСТРАЦИИ</string>
+    <string name="fragment_login_btn_retry_pin">ВЫСЛАТЬ ПОВТОРНО</string>
+    <string name="fragment_login_btn_retry_pin_after">ПОВТОРИТЬ ЧЕРЕЗ</string>
+
+    <string name="fragment_registration_title">Регистрация</string>
+    <string name="fragment_registration_caption">Достоверная информация позволит нам сделать обслуживание более комфортным</string>
+
+    <string name="fragment_registration_hint_fio">Имя и фамилия</string>
+    <string name="fragment_registration_hint_car_brand">Марка автомобиля</string>
+    <string name="fragment_registration_hint_car_model">Модель автомобиля</string>
+    <string name="fragment_registration_hint_car_number">Гос номер</string>
+    <string name="fragment_registration_hint_phone">Тлефон</string>
+
+    <string name="fragment_send_sms_title">Авторизация</string>
+    <string name="fragment_send_sms_caption">После завершения регистрации вы сможете записаться на мойку, получить скидки и бесплатные мойки.\nДля завершения регистрации получите код доступа на свой телефон</string>
+    <string name="fragment_send_sms_info">Код подтверждения будет выслан по СМС</string>
+
+    <string name="fragment_without_registration_title">Вход без регистрации</string>
+    <string name="fragment_without_registration_caption">Для определения стоимости мойки вашего автомобиля введите, пожалуйста, следующую информацию</string>
+
+    <string name="fragment_network_error_title">Отсутствует соединение</string>
+    <string name="fragment_network_error_caption">Проверьте подключение к сети и нажмите продолжить</string>
+
+    <string name="fragment_gps_warning_title">Геолокация</string>
+    <string name="fragment_gps_warning_caption">Для отображения ближайших автомоек проверьте включен ли GPS и нажмите продолжить</string>
+
+    <string name="button_next">ПРОДОЛЖИТЬ</string>
+
+    <string name="drawer">we</string>
+
+    <string-array name="menu_list">
+        <item>shift</item>
+        <item>Мои настройки</item>
+        <item>Избранные мойки</item>
+        <item>История заказов</item>
+        <item>Мои сообщения</item>
+        <item>Акции</item>
+        <item>Пригласить друзей</item>
+        <item>Мои баллы</item>
+        <item>Информация</item>
+        <item>Сменить пользователя</item>
+    </string-array>
+
+    <string-array name="menu_icons">
+        <item>shift</item>
+        <item>@drawable/ic_action_action_settings_grey</item>
+        <item>@drawable/ic_action_toggle_star_grey</item>
+        <item>@drawable/ic_action_action_history_grey</item>
+        <item>@drawable/ic_action_social_notifications_none_grey</item>
+        <item>@drawable/ic_action_action_wallet_giftcard_grey</item>
+        <item>@drawable/ic_action_social_group_add_grey</item>
+        <item>@drawable/ic_action_bl_grey</item>
+        <item>@drawable/ic_action_help_grey</item>
+        <item>@drawable/ic_action_social_person</item>
+    </string-array>
+
+    <string name="need_first_select_carbrand">Сперва выберите марку автомобиля</string>
+    <string name="error_loading_data">Не удалось загрузить данные, попробуйте еще раз позже</string>
+    <string name="select_car_brand">Выбор марки автомобиля</string>
+
+    <string name="login_wrong_pin">Не верный пинкод</string>
+    <string name="login_not_found">Пользователь не найден</string>
+    <string name="request_pin_success">Запрос на отправку нового ПИН-кода прогел успешно</string>
+    <string name="request_pin_error">Ошибка, не удалось отправить запрос на сброс PIN-кода</string>
+    <string name="fragment_login_phone_empty_error">Не указан телефонный номер</string>
+    <string name="request_pin_phone_error">Не удалось отправить новый PIN-code , проверьте номер телефона</string>
+    <string name="profile">Мои настройки</string>
+    <string name="add_carr">Добавить еще один автомобиль</string>
+    <string name="cars">Автомобиль %1$s</string>
+    <string name="edit">Изменить</string>
+    <string name="car">Автомобиль</string>
+    <string name="promo">Ваш промокод</string>
+    <string name="fragment_profile_achievments">Достижения</string>
+    <string name="share_friends">РАССКАЗАТЬ ДРУЗЬЯМ</string>
+    <string name="fragment_nearest_wash_services">Ближайшие мойки</string>
+    <string name="call">ПОЗВОНИТЬ</string>
+    <string name="hide">СКРЫТЬ</string>
+    <string name="rec">ЗАПИСАТЬСЯ</string>
+    <string name="more">ЕЩЁ</string>
+    <string name="celected_services">Выбранные услуги</string>
+    <string name="order_price">Стоимость заказа</string>
+    <string name="personal_price">Личная скидка</string>
+    <string name="time_service">Свободное время для записи</string>
+    <string name="info_window_create_path">ПРОЛОЖИТЬ МАРШРУТ</string>
+    <string name="include_info_wash_sum_price">ИТОГО К ОПЛАТЕ</string>
+    <string name="include_info_wash_share_friends">Рассказывайте о приложении друзьям, получайте баллы и мойтесь бесплатно</string>
+    <string name="service_choise">Выбор услуг</string>
+    <string name="fragment_service_choise_caption">Для выбора отметьте услуги</string>
+    <string name="fragment_edit_profile_name">Личные данные</string>
+    <string name="rubleSymbolJava">\u20BD</string>
+    <string name="fragment_info_wash_service_my_counter">Мои баллы %1$s</string>
+    <string name="fragment_info_wash_service_my_discount" formatted="false">Личная скидка %d%%</string>
+    <string name="include_info_wash_service_disabled">Эта мойка еще не доступна для онлайн записи</string>
+    <string name="include_info_wash_service_disablet_info">Сообщите нам, если вы хотите использовать онлайн запись для этой автомойки</string>
+    <string name="wash_distance">До мойки %1$.1f км</string>
+    <string name="report">СООБЩИТЬ</string>
+    <string name="fragment_send_sms_emty_phone">Не заполнен телефонный номер</string>
+    <string name="button_confirm">ПОДТВЕРДИТЬ</string>
+    <string name="fragment_confirmation_caption">Введите 6-ти значный код, отправленный на номер %1$s</string>
+    <string name="fragment_confirmation_title">Подтверждение</string>
+    <string name="fragment_confirmation_info">Не получили код?\nЧерез 5 минут вы сможете запросить его повторно</string>
+    <string name="include_wash_service_info">Информация о мойке</string>
+    <string name="include_wash_service_reviews">Отзывы</string>
+    <string name="include_wash_service_galery">Галерея</string>
+    <string name="fragment_wash_service_quick_apply_title">Быстрая запись на мойку</string>
+    <string name="fragment_gps_warning_do_not_show_next_time">Не показывать больше</string>
+    <string name="network_error">Ошибка получения данных, пожалуйста проверьте подключение к интернету</string>
+    <string name="fragment_loading_title">Загрузка</string>
+    <string name="fragment_loading_caption">Пожалуйста подождите, идет загрузка данных.</string>
+    <string name="no_time">Нет свободного времени</string>
+    <string name="reserved">Заказано</string>
+    <string name="fragment_info_wash_service_reserved_fail">Ошибка, не удалось записаться на мойку</string>
+    <string name="fragment_info_wash_service_reserved_succes">Запись прошла успешно</string>
+    <string name="include_wash_service_reserved_info">Информация о записи</string>
+    <string name="cancel_record">ОТМЕНИТЬ ЗАПИСЬ</string>
+    <string name="fragment_favorites_wash_services_title">Избранные мойки</string>
+    <string name="empty">Нет данных.</string>
+    <string name="share_with">Поделиться</string>
+    <string name="fragment_information_title">Информация</string>
+    <string name="url_info">http://rocketwash.me/information/index.php</string>
+    <string name="group_name_reserved">ВЫ ЗАПИСАНЫ, ЖДЕМ ВАС</string>
+    <string name="group_name_near">БЛИЖАЙЩИЕ</string>
+    <string name="empty_data">Нет данных.</string>
+    <string name="fragment_info_wash_service_no_tme_select">Не выбрали время</string>
+    <string name="fragment_info_wash_service_no_services_select">Не выраны услуги</string>
+    <string name="fragment_without_registration_model_warn">Не выбрана модель автомобиля</string>
+    <string name="fragment_without_registration_brand_warn">Невыбрана марка автомобиля</string>
+
+</resources>

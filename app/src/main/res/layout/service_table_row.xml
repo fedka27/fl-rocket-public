@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        style="@style/CheckBoxRocket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New CheckBox"
+        android:textColor="@color/black"
+        android:paddingLeft="16dp"
+        android:textSize="@dimen/text_14sp"
+        android:layout_gravity="left|center_vertical" />
+
+    <TextView
+        android:id="@+id/sum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_14sp"
+        android:gravity="center_vertical|right" />
+
+</TableRow>

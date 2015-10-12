@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigator_caption_height"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/imageView2"
+            android:src="@drawable/ic_user"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Михайил Васильев"
+            android:id="@+id/txtFIO"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/imageView2"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Mercedes Bens E-klase"
+            android:id="@+id/txtCar"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/txtFIO"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Гос. номер E555AA"
+            android:id="@+id/txtCarNumber"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/txtCar" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/CustomProgressBar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_alignParentLeft="false"
+            android:layout_marginLeft="374dp"
+            android:layout_alignParentTop="false"
+            android:layout_marginTop="238dp" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewNav"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadeScrollbars="true"
+        android:background="@color/menu_item_back"
+        android:scrollbars="vertical" />
+
+</LinearLayout>
+

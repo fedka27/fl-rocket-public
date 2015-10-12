@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <layer-list>
+            <!-- SHADOW LAYER -->
+            <item
+                android:left="0dp"
+                android:top="2dp">
+                <shape>
+                    <solid android:color="#16000000" />
+                    <corners android:radius="@dimen/button_corner_shadow" />
+                </shape>
+            </item>
+            <!-- CONTENT LAYER -->
+            <item
+                android:bottom="2dp"
+                android:left="2dp"
+                android:right="2dp">
+                <shape>
+                    <solid android:color="@color/red_notify_pressed" />
+                    <corners android:radius="@dimen/button_corner" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+</layer-list>

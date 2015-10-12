@@ -1,0 +1,1381 @@
+package wash.rocket.xor.rocketwash.ui;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Typeface;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.software.shell.fab.ActionButton;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+
+import wash.rocket.xor.rocketwash.R;
+import wash.rocket.xor.rocketwash.model.AvailableTimesResult;
+import wash.rocket.xor.rocketwash.model.CarMake;
+import wash.rocket.xor.rocketwash.model.CarsAttributes;
+import wash.rocket.xor.rocketwash.model.CarsMakes;
+import wash.rocket.xor.rocketwash.model.CarsMakesResult;
+import wash.rocket.xor.rocketwash.model.CarsProfileResult;
+import wash.rocket.xor.rocketwash.model.ChoiseService;
+import wash.rocket.xor.rocketwash.model.ChoiseServiceResult;
+import wash.rocket.xor.rocketwash.model.MapRouteResult;
+import wash.rocket.xor.rocketwash.model.Point;
+import wash.rocket.xor.rocketwash.model.Profile;
+import wash.rocket.xor.rocketwash.model.ReservationResult;
+import wash.rocket.xor.rocketwash.model.ReverseGeocoding;
+import wash.rocket.xor.rocketwash.model.TimePeriods;
+import wash.rocket.xor.rocketwash.model.WashService;
+import wash.rocket.xor.rocketwash.requests.AvailableTimesRequest;
+import wash.rocket.xor.rocketwash.requests.CarsMakesRequest;
+import wash.rocket.xor.rocketwash.requests.CarsProfileRequest;
+import wash.rocket.xor.rocketwash.requests.ChoiseServiceRequest;
+import wash.rocket.xor.rocketwash.requests.MapDirectionRequest;
+import wash.rocket.xor.rocketwash.requests.MapReverceGeocodingRequest;
+import wash.rocket.xor.rocketwash.requests.ReservationRequest;
+import wash.rocket.xor.rocketwash.util.Constants;
+import wash.rocket.xor.rocketwash.util.util;
+import wash.rocket.xor.rocketwash.widgets.ButtonWithState;
+import wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget;
+import wash.rocket.xor.rocketwash.widgets.NestedScrollView;
+import wash.rocket.xor.rocketwash.widgets.SlidingTabLayout;
+
+@SuppressLint("LongLogTag")
+public class WashServiceInfoFragment extends BaseFragment {
+
+    public static final String TAG = "WashServiceInfoFragment";
+
+    private static final String POINTS = "points";
+    private static final String ID_SERVICE = "id_service";
+    private static final String LATITUDE = "lat";
+    private static final String LONGITUDE = "lon";
+    private static final String TITLE = "title";
+    private static final String SERVICE = "service";
+
+    private static final int FRAGMENT_SERVCES = 1;
+    private static final int FRAGMENT_PROFILE_EDIT = 2;
+
+    private final int MAX_MARKERS = 50;
+
+    private GoogleMap mMap;
+    private Button mDisconnect;
+    private Intent mServiceIntent;
+    private boolean isBoundService;
+    private NestedScrollView mScrollView1;
+    private ScrollView mScrollView;
+    private FrameLayout time_content;
+
+    // private LockedScrollView mContent;
+    private LinearLayout mContent;
+    private RelativeLayout actionWash;
+    private LinearLayout mNoTime;
+
+    private ArrayList<Point> mPoints;
+    private ArrayList<Marker> mMarkers;
+
+    private ActionButton fab;
+    private Toolbar toolbar;
+
+    private int mIdService;
+    private double mLatitude;
+    private double mLongitude;
+    private String mTitle;
+
+    private TableLayout tableServicesContent;
+
+    private ImageView imgChoiseServices;
+    private ImageView imgAddCars;
+    private RadioGroup radioGroupCars;
+
+    private LayoutInflater mInflater;
+    private List<CarsMakes> list_cars;
+    private SlidingTabLayout mSlidingTabLayout = null;
+    private ArrayList<ChoiseService> list;
+    private CalendarScrollWidget mCalendar;
+    private WashService mService;
+    private Typeface mFont;
+    private TextView txtPrice;
+    private TextView txtBal;
+    private TextView txtDiscount;
+    private TextView txtDiscountSrv;
+    private TextView txtFullPrice;
+    private TextView txtStub;
+    private TextView txtInfoTitile;
+    private TextView txtInfoDistance;
+    private ProgressBar infoProgressBar;
+    private ProgressBar mProgressBar1;
+    private ProgressBar mProgressBar2;
+    private ProgressBar progressBar;
+    private ProgressBar mProgressBar3; // times
+
+
+    private Button infoBtnPath;
+    private GoogleMap.InfoWindowAdapter infoBaloon;
+    private Marker mMarker;
+
+    private int heightMap = 0;
+    private int mDiscount = 0;
+
+    private com.software.shell.fab.ActionButton fab1;
+    private Polyline mPolyLines;
+
+    private String selected_time;
+
+    private Button share;
+    private Marker mPositionMarker;
+
+    public static WashServiceInfoFragment newInstance(int id_service, double lat, double lon, String title, WashService service) {
+        WashServiceInfoFragment fragment = new WashServiceInfoFragment();
+        Bundle args = new Bundle();
+        args.putInt(ID_SERVICE, id_service);
+        args.putDouble(LATITUDE, lat);
+        args.putDouble(LONGITUDE, lon);
+        args.putString(TITLE, title);
+        args.putParcelable(SERVICE, service);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+
+        Log.w(TAG, "onAttach");
+
+        super.onAttach(activity);
+        try {
+            mCallback = (IFragmentCallbacksInterface) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement IFragmentCallbacksInterface");
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        Log.w(TAG, "onCreate");
+        super.onCreate(savedInstanceState);
+
+//doStartLocationService();
+
+        setRetainInstance(true);
+        setHasOptionsMenu(true);
+
+        if (savedInstanceState != null) {
+            Log.d(TAG, "savedInstanceState != null");
+            mPoints = savedInstanceState.getParcelableArrayList(POINTS);
+        } else {
+            Log.d(TAG, "savedInstanceState == null");
+            mPoints = new ArrayList<Point>();
+        }
+
+        mMarkers = new ArrayList<Marker>();
+        mIdService = getArguments().getInt(ID_SERVICE);
+        //mLatitude = getArguments().getDouble(LATITUDE);
+        //mLongitude = getArguments().getDouble(LONGITUDE);
+        mTitle = getArguments().getString(TITLE);
+        mService = getArguments().getParcelable(SERVICE);
+
+        Location l = getLastLocation();
+        if (l != null) {
+            mLatitude = l.getLatitude();
+            mLongitude = l.getLongitude();
+        }
+
+        if (mService != null)
+            mService.var_dump();
+
+        Log.d(TAG, "mLatitude = " + mLatitude);
+        Log.d(TAG, "mLongitude = " + mLongitude);
+
+        //ghj
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        Log.w(TAG, "onCreateView");
+
+        View rootView = inflater.inflate(R.layout.fragment_wash_service_info, container, false);
+
+        mInflater = inflater;
+
+        mMap = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
+
+
+        if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+            int mp = (int) getActivity().getResources().getDimension(R.dimen.map_padding);
+            mMap.setPadding(mp, mp, mp, mp);
+
+            infoBaloon = new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+
+                    if (marker.equals(mPositionMarker))
+                        return null;
+
+                    String s = "";
+                    String d = "";
+                    if (mMarker != null) {
+                        s = txtInfoTitile.getText().toString();
+                        d = txtInfoDistance.getText().toString();
+                    } else
+                        getSpiceManager().execute(new MapReverceGeocodingRequest(mService.getLatitude(), mService.getLongitude()), "direction", DurationInMillis.ALWAYS_EXPIRED, new MapReverceGeocodingListener());
+
+                    mMarker = marker;
+
+                    // Getting view from the layout file
+                    View v = getActivity().getLayoutInflater().inflate(R.layout.info_windows, null);
+                    txtInfoTitile = (TextView) v.findViewById(R.id.address);
+                    txtInfoDistance = (TextView) v.findViewById(R.id.distance);
+                    infoProgressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+                    infoBtnPath = (Button) v.findViewById(R.id.btnPath);
+                    infoBtnPath.setVisibility(View.GONE);
+
+                    if (!TextUtils.isEmpty(s)) {
+                        txtInfoTitile.setVisibility(View.VISIBLE);
+                        txtInfoDistance.setVisibility(View.VISIBLE);
+                        infoBtnPath.setVisibility(View.VISIBLE);
+                        infoProgressBar.setVisibility(View.GONE);
+
+                        txtInfoTitile.setText(s);
+                        txtInfoDistance.setText(d);
+                    } else {
+
+                        txtInfoTitile.setVisibility(View.GONE);
+                        txtInfoDistance.setVisibility(View.GONE);
+                        infoBtnPath.setVisibility(View.GONE);
+                        infoProgressBar.setVisibility(View.VISIBLE);
+                    }
+
+                    infoBtnPath.setVisibility(View.GONE);
+                    infoBtnPath.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getSpiceManager().execute(new MapDirectionRequest(new LatLng(mService.getLatitude(), mService.getLongitude()), new LatLng(mService.getLatitude(), mService.getLongitude())), "direction", DurationInMillis.ONE_SECOND * 5, new MapDirectionRouteListener());
+                        }
+                    });
+
+
+                    return v;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+
+                    //View v = getActivity().getLayoutInflater().inflate(R.layout.info_windows, null);
+                    //return v;
+                    return null;
+                }
+            };
+
+            mMap.setInfoWindowAdapter(infoBaloon);
+        }
+
+        //addMarkers(mPoints);
+
+        fab = (ActionButton) rootView.findViewById(R.id.fab);
+        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
+
+        //mScrollView1.seton
+        // NestedScrollView.OnScrollChangeListener
+
+        /*
+        mScrollView1.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                Log.d("scroll", "scrollY = " + scrollY);
+            }
+        });*/
+
+        mScrollView1.setNestedScrollingEnabled(true);
+        mScrollView1.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+
+            @Override
+            public void onScrollChanged() {
+
+                int scrollX = mScrollView1.getScrollX(); //for horizontalScrollView
+                int scrollY = mScrollView1.getScrollY(); //for verticalScrollView
+                //DO SOMETHING WITH THE SCROLL COORDINATES
+                //Log.d("scroll", "scrollY = " + scrollY + "; heightMap = " + heightMap);
+
+                if (scrollY > heightMap)
+                    actionWash.setVisibility(View.VISIBLE);
+                else
+                    actionWash.setVisibility(View.GONE);
+            }
+        });
+
+        mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
+        ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).setListener(new MapFragmentWrapper.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                mScrollView1.requestDisallowInterceptTouchEvent(true);
+            }
+        });
+
+        setUpMapIfNeeded();
+
+        mContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressLint("NewApi")
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onGlobalLayout() {
+                int d = (int) getActivity().getResources().getDimension(R.dimen.fab_right);
+                RelativeLayout.LayoutParams rl = (RelativeLayout.LayoutParams) fab.getLayoutParams();
+                rl.setMargins(0, 0, d, -(fab.getMeasuredHeight() / 2));
+                fab.setLayoutParams(rl);
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    mContent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    mContent.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+
+                heightMap = fab.getTop() + toolbar.getMeasuredHeight() * 2;
+            }
+        });
+
+        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setTitle(mTitle);
+        }
+
+        actionWash = (RelativeLayout) rootView.findViewById(R.id.actionWash);
+        actionWash.setVisibility(View.GONE);
+
+        actionWash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reservation();
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reservation();
+            }
+        });
+
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                LatLng loc = new LatLng(mService.getLatitude(), mService.getLongitude());
+                if (mMap != null) {
+                    mMap.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 15f), 1000, null);
+                }
+            }
+        }, 200);
+
+        initControls(rootView);
+
+        return rootView;
+    }
+
+    private void initControls(View rootView) {
+
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMain);
+        progressBar.setVisibility(View.GONE);
+
+        imgChoiseServices = (ImageView) rootView.findViewById(R.id.imgChoiseServices);
+        imgChoiseServices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ChoiseServicesFragment f = ChoiseServicesFragment.newInstance(mIdService, pref.getCarModelId(), list);
+                f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_SERVCES);
+
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                        .add(R.id.container, f, "choise_services")
+                        .addToBackStack("info_wash").commit();
+            }
+        });
+
+        imgAddCars = (ImageView) rootView.findViewById(R.id.imgAddCars);
+        imgAddCars.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ProfileEditFragment f = ProfileEditFragment.newInstance(pref.getProfile());
+                f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_PROFILE_EDIT);
+
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                        .add(R.id.container, f, "profileedit")
+                        .addToBackStack("info_carwash").commit();
+            }
+        });
+
+        radioGroupCars = (RadioGroup) rootView.findViewById(R.id.radioGroupCars);
+        radioGroupCars.removeAllViews();
+
+        radioGroupCars.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                RadioButton radioButton = (RadioButton) radioGroupCars.findViewById(checkedId);
+                int index = radioGroupCars.indexOfChild(radioButton);
+
+                pref.setCarName(radioButton.getText().toString());
+                pref.setUseCar(index);
+                pref.setCarModelId((Integer) radioButton.getTag());
+
+                mProgressBar2.setVisibility(View.VISIBLE);
+                getSpiceManager().execute(new ChoiseServiceRequest(mIdService, pref.getCarModelId(), pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+
+                radioGroupCars.setEnabled(false);
+
+            }
+        });
+
+        CalendarScrollWidget.LayoutParams lp = new CalendarScrollWidget.LayoutParams();
+
+        mCalendar = new CalendarScrollWidget(getActivity(), null);
+        mCalendar.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+
+        time_content = (FrameLayout) rootView.findViewById(R.id.time_content);
+        time_content.addView(mCalendar);
+
+        mSlidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.sliding_tabs);
+        mSlidingTabLayout.setCustomTabView(R.layout.tab_time, R.id.title);
+
+        Resources res = getResources();
+        mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.green_rocket));
+        mSlidingTabLayout.setDistributeEvenly(true);
+
+        mSlidingTabLayout.setOnTabSelected(new SlidingTabLayout.OnTabSelected() {
+            @Override
+            public void onTabSlected(int item) {
+                mCalendar.selected(item);
+            }
+        });
+
+        mCalendar.setOnPagetChange(new CalendarScrollWidget.IOnPageChanged() {
+            @Override
+            public void onPagetChange(int page) {
+                mSlidingTabLayout.selected(page);
+            }
+        });
+
+        View v = rootView.findViewById(R.id.root_time_info);
+        mNoTime = (LinearLayout) v.findViewById(R.id.notime);
+        mNoTime.setVisibility(View.GONE);
+        mProgressBar3 = (ProgressBar) v.findViewById(R.id.progressBar3);
+
+        v = rootView.findViewById(R.id.content_car);
+        mProgressBar1 = (ProgressBar) v.findViewById(R.id.progressBar);
+        v = rootView.findViewById(R.id.content_choise_services);
+        mProgressBar2 = (ProgressBar) v.findViewById(R.id.progressBar1);
+
+
+        mProgressBar1.setVisibility(View.VISIBLE);
+        mProgressBar2.setVisibility(View.VISIBLE);
+        mProgressBar3.setVisibility(View.VISIBLE);
+
+        /*
+        if (mService != null) {
+            fillCalendar(mService.getTime_periods());
+        }*/
+
+        tableServicesContent = (TableLayout) rootView.findViewById(R.id.tableServicesContent);
+        tableServicesContent.removeAllViews();
+        mFont = Typeface.createFromAsset(getActivity().getAssets(), "roboto.ttf");
+
+        txtPrice = (TextView) rootView.findViewById(R.id.txtPrice);
+        txtDiscount = (TextView) rootView.findViewById(R.id.txtDiscount);
+        txtDiscountSrv = (TextView) rootView.findViewById(R.id.txtDiscountSrv);
+        txtBal = (TextView) rootView.findViewById(R.id.txtBal);
+        txtFullPrice = (TextView) rootView.findViewById(R.id.txtFullPrice);
+
+        txtPrice.setTypeface(mFont);
+        txtDiscountSrv.setTypeface(mFont);
+        txtFullPrice.setTypeface(mFont);
+
+        txtPrice.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
+        txtDiscountSrv.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
+        txtFullPrice.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
+
+        fab1 = (ActionButton) rootView.findViewById(R.id.fab1);
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSpiceManager().execute(new MapDirectionRequest(new LatLng(mLatitude, mLongitude), new LatLng(mService.getLatitude(), mService.getLongitude())), "direction", DurationInMillis.ONE_SECOND, new MapDirectionRouteListener());
+            }
+        });
+
+        actionWash = (RelativeLayout) rootView.findViewById(R.id.actionWash);
+
+        txtStub = (TextView) rootView.findViewById(R.id.txtStub);
+        txtStub.setText(mService.getMobile_stub_text());
+
+        ViewGroup content_share = (ViewGroup) rootView.findViewById(R.id.content_share);
+        share = (Button) content_share.findViewById(R.id.btnShare);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share();
+            }
+        });
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Profile prof = pref.getProfile();
+
+        if (prof != null)
+            mDiscount = prof.getDiscount();
+        else
+            mDiscount = 0;
+
+        txtDiscount.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_discount), mDiscount));
+        txtBal.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_counter), 0));
+        getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ALWAYS_EXPIRED, new CarsRequestListener());
+
+
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MINUTE, -15);
+        String a = util.dateToZZ(c.getTime());
+        c.add(Calendar.HOUR_OF_DAY, 24);
+        c.set(Calendar.HOUR_OF_DAY, 23);
+        String b = util.dateToZZ(c.getTime());
+
+        Log.d(TAG, a);
+        Log.d(TAG, b);
+
+        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "cars", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
+
+    }
+
+    private void setUpMapIfNeeded() {
+        // Do a null check to confirm that we have not already instantiated the map.
+        // if (mMap == null) {
+        // Try to obtain the map from the SupportMapFragment.
+        // mMap = mMapFragment.getMap();
+        // Check if we were successful in obtaining the map.
+        if (mMap != null) {
+            mMap.setMyLocationEnabled(false);
+            mMap.getUiSettings().setCompassEnabled(false);
+            mMap.getUiSettings().setZoomControlsEnabled(false);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            LatLng update = null; //getLastKnownLocation();
+            if (update != null) {
+                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(update, 11.0f)));
+            }
+            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    // mIsNeedLocationUpdate = false;
+                    // moveToLocation(latLng, false);
+                }
+            });
+        }
+    }
+
+
+    private void addMarkers(ArrayList<Point> points) {
+
+        if (points.size() + mPoints.size() > MAX_MARKERS) {
+            int i = points.size();
+            while (i >= 0) {
+                mPoints.remove(0);
+                Marker marker = mMarkers.get(0);
+                mMarkers.remove(0);
+                marker.remove();
+                i--;
+            }
+        }
+
+        for (int i = 0; i < points.size(); i++) {
+            Point p = points.get(i);
+            mPoints.add(p);
+            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(p.lat, p.lon)).icon(BitmapDescriptorFactory.defaultMarker()));
+            mMarkers.add(marker);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        doBindLocationService();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        //stopTracking();
+        doUnbindLocationService();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(POINTS, mPoints);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void collapseMap() {
+
+        if (mMap != null && mContent != null) {
+            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, 11f), 1000, null);
+        }
+    }
+
+    private void expandMap() {
+        if (mMap != null) {
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(14f), 1000, null);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().getSupportFragmentManager().popBackStack();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        MapFragmentWrapper f = (MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map);
+        if (f != null)
+            // getFragmentManager().beginTransaction().remove(f).commit();
+            getChildFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
+    }
+
+
+    public final class CarsProfileRequestListener implements RequestListener<CarsProfileResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            mProgressBar1.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onRequestSuccess(final CarsProfileResult result) {
+
+            Log.d("CarsProfileRequestListener", "onRequestSuccess = " + result.getStatus() == null ? "null" : result.getStatus());
+
+            if (Constants.SUCCESS.equals(result.getStatus())) {
+
+                radioGroupCars.removeAllViews();
+
+                if (result.getData() != null) {
+
+                    int kk = pref.getUseCar();
+
+                    for (int i = 0; i < result.getData().size(); i++) {
+                        CarsAttributes r = result.getData().get(i);
+                        RadioButton rb = (RadioButton) mInflater.inflate(R.layout.radio_button, null);
+                        String a = "", b = "";
+
+                        for (int j = 0; j < list_cars.size(); j++) {
+                            if (list_cars.get(j).getId() == r.getCar_make_id()) {
+                                a = list_cars.get(j).getName();
+                                CarMake m;
+                                for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
+                                    m = list_cars.get(j).getCar_models().get(k);
+                                    if (m.getId() == r.getCar_model_id())
+                                        b = m.getName();
+                                }
+                                break;
+                            }
+                        }
+
+                        rb.setText(a + " " + b);
+                        rb.setTag(r.getCar_model_id());
+                        rb.setId(i + 1000);
+                        radioGroupCars.addView(rb);
+                        rb.setChecked(kk == i);
+                        if (kk == i)
+                            pref.setCarModelId(r.getCar_model_id());
+                    }
+
+                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, pref.getCarModelId(), pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+                }
+            } else {
+                // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
+                // String error = res == 0 ? result.getData().getResult() : getString(res);
+                // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                //XXX сбросить таймер ?
+                Toast.makeText(getActivity(), "данные не отдались", Toast.LENGTH_SHORT).show();
+            }
+            mProgressBar1.setVisibility(View.GONE);
+        }
+    }
+
+    public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+            mProgressBar1.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onRequestSuccess(final CarsMakesResult result) {
+            //progressBar.setVisibility(View.GONE);
+
+            Log.d("CarsRequestListener", "onRequestSuccess = " + result.getStatus() == null ? "null" : result.getStatus());
+
+            if (result != null) {
+                list_cars = result.getData();
+                getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "cars_profile", DurationInMillis.ALWAYS_EXPIRED, new CarsProfileRequestListener());
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult");
+        super.onActivityResult(requestCode, resultCode, data);
+
+        ((AppCompatActivity) getActivity()).invalidateOptionsMenu();
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        if (resultCode == Activity.RESULT_OK) {
+
+            switch (requestCode) {
+                case FRAGMENT_SERVCES:
+                    ArrayList<ChoiseService> l = data.getParcelableArrayListExtra("list");
+                    fillChoiseServises(l);
+                    break;
+                case FRAGMENT_PROFILE_EDIT:
+
+                    mProgressBar1.setVisibility(View.VISIBLE);
+                    getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ALWAYS_EXPIRED, new CarsRequestListener());
+
+                    break;
+            }
+        }
+    }
+
+    private void fillCalendar(List<TimePeriods> time_periods) {
+
+        Log.d("fillCalendar", "start");
+        if (time_periods != null) {
+            Log.d("fillCalendar", "time_periods.size() = " + time_periods.size());
+            if (time_periods.size() > 0) {
+
+                mNoTime.setVisibility(View.GONE);
+                mSlidingTabLayout.setVisibility(View.VISIBLE);
+
+                ArrayList<View> pages = new ArrayList<>();
+
+                int k = 0;
+                ViewGroup cnt = null;
+                Button b1 = null;
+                Button b2 = null;
+
+                for (int i = 0; i < time_periods.size(); i++) {
+                    TimePeriods d = time_periods.get(i);
+
+                    if (d.isToday()) {
+                        if (k % 2 != 0) {
+
+                            if (cnt == null)
+                                cnt = (ViewGroup) (mInflater.inflate(R.layout.calendar_content, null));
+
+                            ViewGroup gcnt = (ViewGroup) cnt.findViewById(R.id.content_calendar);
+                            View b = mInflater.inflate(R.layout.calendar_row_buttons, null);
+
+                            b1 = (ButtonWithState) b.findViewById(R.id.left);
+                            b2 = (ButtonWithState) b.findViewById(R.id.right);
+
+                            b1.setOnClickListener(mOnTime);
+                            b2.setOnClickListener(mOnTime);
+
+                            b2.setVisibility(View.INVISIBLE);
+                            b1.setText(util.dateToHM(d.getDate()));
+                            b1.setTag(d.getTime_from());
+                            gcnt.addView(b);
+                        } else {
+                            if (b2 != null) {
+                                b2.setVisibility(View.VISIBLE);
+                                b2.setText(util.dateToHM(d.getDate()));
+                                b2.setTag(d.getTime_from());
+                            }
+                        }
+                        Log.d("fillCalendar", "date = " + util.dateToHM(d.getDate()));
+                        k++;
+                    }
+
+                    Log.d("fillCalendar", "i%2 = " + i % 2);
+                    Log.d("fillCalendar", "date = " + util.dateToHM(d.getDate()));
+                    Log.d("fillCalendar", "date = " + d.getDate().toString());
+                }
+
+                if (cnt != null) {
+                    mSlidingTabLayout.addTab("Сегодня", "", true);
+                    //mSlidingTabLayout.addTab("Завтра", "", false);
+                    pages.add(cnt);
+                }
+
+                k = 0;
+                cnt = null;
+                b1 = null;
+                b2 = null;
+                for (int i = 0; i < time_periods.size(); i++) {
+                    TimePeriods d = time_periods.get(i);
+
+                    if (d.isTomorrow()) {
+                        if (k % 2 != 0) {
+                            if (cnt == null)
+                                cnt = (ViewGroup) mInflater.inflate(R.layout.calendar_content, null);
+
+                            ViewGroup gcnt = (ViewGroup) cnt.findViewById(R.id.content_calendar);
+                            View b = mInflater.inflate(R.layout.calendar_row_buttons, null);
+
+                            b1 = (ButtonWithState) b.findViewById(R.id.left);
+                            b2 = (ButtonWithState) b.findViewById(R.id.right);
+
+                            b1.setOnClickListener(mOnTime);
+                            b2.setOnClickListener(mOnTime);
+
+                            b2.setVisibility(View.INVISIBLE);
+                            b1.setText(util.dateToHM(d.getDate()));
+                            b1.setTag(d.getTime_from());
+                            gcnt.addView(b);
+                        } else {
+                            if (b2 != null) {
+                                b2.setVisibility(View.VISIBLE);
+                                b2.setText(util.dateToHM(d.getDate()));
+                                b2.setTag(d.getTime_from());
+                            }
+                        }
+                        k++;
+                    }
+                }
+
+                if (cnt != null) {
+                    //mSlidingTabLayout.addTab("Сегодня", "", true);
+                    mSlidingTabLayout.addTab("Завтра", "", false);
+                    pages.add(cnt);
+                }
+
+                mCalendar.setPages(pages);
+            } else {
+                mSlidingTabLayout.setVisibility(View.GONE);
+                mNoTime.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    public final class MapReverceGeocodingListener implements RequestListener<ReverseGeocoding> {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            // progressBar.setVisibility(View.GONE);
+
+            txtInfoTitile.setVisibility(View.VISIBLE);
+            txtInfoTitile.setText("Не удалось уточнить адрес");
+            txtInfoDistance.setVisibility(View.GONE);
+            infoBtnPath.setVisibility(View.GONE);
+            infoProgressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onRequestSuccess(final ReverseGeocoding result) {
+
+            if (result != null) {
+
+                if (mMarker != null) {
+                    txtInfoTitile.setVisibility(View.VISIBLE);
+                    txtInfoDistance.setVisibility(View.VISIBLE);
+                    infoProgressBar.setVisibility(View.GONE);
+                    infoBtnPath.setVisibility(View.VISIBLE);
+                    txtInfoTitile.setText(result.getStreet() + ", " + result.getHouse());
+                    txtInfoDistance.setText(String.format(getActivity().getString(R.string.wash_distance), mService.getDistance()));
+
+                    if (mMarker != null && mMarker.isInfoWindowShown()) {
+                        mMarker.hideInfoWindow();
+                        mMarker.showInfoWindow();
+                    }
+                }
+            }
+        }
+    }
+
+
+    public final class MapDirectionRouteListener implements RequestListener<MapRouteResult> {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Toast.makeText(getActivity(), "Не удалось проложить маршрут", Toast.LENGTH_SHORT).show();
+            // progressBar.setVisibility(View.GONE);
+
+            txtInfoTitile.setVisibility(View.VISIBLE);
+            txtInfoTitile.setText("Не удалось уточнить адрес");
+            txtInfoDistance.setVisibility(View.GONE);
+            infoBtnPath.setVisibility(View.GONE);
+            infoProgressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onRequestSuccess(final MapRouteResult result) {
+
+            if (result != null) {
+
+                Toast.makeText(getActivity(), "Маршрут проложен", Toast.LENGTH_SHORT).show();
+
+                ArrayList<LatLng> points = null;
+                PolylineOptions lineOptions = null;
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+                // Traversing through all the routes
+                for (int i = 0; i < result.getData().size(); i++) {
+                    points = new ArrayList<LatLng>();
+                    lineOptions = new PolylineOptions();
+
+                    // Fetching i-th route
+                    List<HashMap<String, String>> path = result.getData().get(i);
+
+                    // Fetching all the points in i-th route
+                    for (int j = 0; j < path.size(); j++) {
+                        HashMap<String, String> point = path.get(j);
+
+                        double lat = Double.parseDouble(point.get("lat"));
+                        double lng = Double.parseDouble(point.get("lng"));
+                        LatLng position = new LatLng(lat, lng);
+
+                        points.add(position);
+                        builder.include(position);
+                    }
+
+                    // Adding all the points in the route to LineOptions
+                    lineOptions.addAll(points);
+                    lineOptions.width(4);
+                    lineOptions.color(getActivity().getResources().getColor(R.color.red_notify));
+                }
+
+                // Drawing polyline in the Google Map for the i-th route
+                // mMap.addPolyline(null);
+
+                if (mPolyLines != null) {
+                    mPolyLines.remove();
+                }
+
+                if (mMap != null) {
+                    mPolyLines = mMap.addPolyline(lineOptions);
+                    LatLngBounds bounds = builder.build();
+                    int padding = 0; // offset from edges of the map in pixels
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                    mMap.animateCamera(cu);
+                }
+            }
+        }
+    }
+
+/*
+    private void addDefaultService() {
+        TableRow t = (TableRow) mInflater.inflate(R.layout.service_table_row, null);
+        TextView sum = (TextView) t.findViewById(R.id.sum);
+        CheckBox c = (CheckBox) t.findViewById(R.id.checkBox);
+        c.setChecked(true);
+        c.setText(mService.getService_name());
+        sum.setTypeface(mFont);
+        sum.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
+        t.setTag(1);
+        tableServicesContent.addView(t);
+        int price = 0;
+
+        txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+        // txtDiscount.setText(String.format("%d %s", discount, getActivity().getString(R.string.rubleSymbolJava)));
+        txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+    }*/
+
+
+    public final class ChoiseServiceRequestListener implements RequestListener<ChoiseServiceResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            mProgressBar2.setVisibility(View.GONE);
+            radioGroupCars.setEnabled(true);
+        }
+
+        @Override
+        public void onRequestSuccess(final ChoiseServiceResult result) {
+            Log.d("ChoiseServiceRequestListener", "onRequestSuccess = " + result.getStatus() == null ? "null" : result.getStatus());
+
+
+            if (Constants.SUCCESS.equals(result.getStatus())) {
+
+                Log.d("ChoiseServiceRequestListener", "onRequestSuccess fill data");
+
+                if (list == null)
+                    list = new ArrayList<>();
+                list.clear();
+
+                if (result.getData() != null) {
+                    for (int i = 0; i < result.getData().size(); i++) {
+                        ChoiseService b = result.getData().get(i).getClone();
+                        if (mService != null && !TextUtils.isEmpty(mService.getService_name()) && mService.getService_name().toLowerCase().trim().equals(b.getName() == null ? "xcv" : b.getName().toLowerCase().trim())) {
+                            b.setCheck(1);
+                            Log.e("fghfgh", b.getName() == null ? "" : b.getName() + " " + b.getPrice());
+                        }
+                        list.add(b);
+                    }
+                }
+
+                fillChoiseServises(list);
+            } else {
+                // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
+                // String error = res == 0 ? result.getData().getResult() : getString(res);
+                // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                //XXX сбросить таймер ?
+                //Toast.makeText(getActivity(), "данные не отдались", Toast.LENGTH_SHORT).show();
+            }
+
+            radioGroupCars.setEnabled(true);
+            mProgressBar2.setVisibility(View.GONE);
+        }
+    }
+
+    //XXX
+    private void fillChoiseServises(ArrayList<ChoiseService> in) {
+        /*
+        for (int i = 0; i < tableServicesContent.getChildCount(); i++) {
+            View v = tableServicesContent.getChildAt(i);
+            if (v.getTag() == null)
+                tableServicesContent.removeViewAt(i);
+        }*/
+
+        tableServicesContent.removeAllViews();
+        list = in;
+
+
+        Log.d(TAG, "list = " + (list == null ? "null" : "data"));
+        if (list != null) {
+            int price = 0;
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getCheck() == 1) {
+                    TableRow t = (TableRow) mInflater.inflate(R.layout.service_table_row, null);
+                    TextView sum = (TextView) t.findViewById(R.id.sum);
+                    CheckBox c = (CheckBox) t.findViewById(R.id.checkBox);
+
+                    c.setChecked(true);
+                    c.setText(list.get(i).getName());
+                    c.setOnClickListener(mOnServicesChange);
+                    c.setTag(i);
+
+                    sum.setTypeface(mFont);
+                    sum.setText(String.format("%d %s", list.get(i).getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
+                    tableServicesContent.addView(t);
+                    price = price + list.get(i).getPrice();
+                }
+            }
+
+            int discount = 0;
+
+            txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+            txtDiscountSrv.setText(String.format("%d %s", mDiscount, getActivity().getString(R.string.rubleSymbolJava)));
+            txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+        }
+    }
+
+    private View.OnClickListener mOnServicesChange = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v.getTag() != null) {
+                ChoiseService b = list.get((Integer) v.getTag());
+                b.setCheck(((CheckBox) v).isChecked() ? 1 : 0);
+            }
+
+            int price = 0;
+
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).isCheck()) {
+                    price = price + list.get(i).getPrice();
+                }
+            }
+
+            txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+            txtDiscountSrv.setText(String.format("%d %s", mDiscount, getActivity().getString(R.string.rubleSymbolJava)));
+            txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+        }
+    };
+
+    ButtonWithState old_b = null;
+
+    private View.OnClickListener mOnTime = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            Log.d("mOnTime", "click");
+
+
+            selected_time = (String) v.getTag();
+
+            if (old_b != null && v != old_b)
+                old_b.setSelected(false);
+
+            ((ButtonWithState) v).setSelected(!((ButtonWithState) v).isSelected());
+            old_b = (ButtonWithState) v;
+        }
+    };
+
+    private void setReservedTip() {
+
+        List<View> p = mCalendar.getPages();
+        for (int i = 0; i < p.size(); i++) {
+            ViewGroup page = (ViewGroup) p.get(i).findViewById(R.id.content_calendar);
+            FrameLayout root = (FrameLayout) p.get(i).findViewById(R.id.content_calendar_root);
+
+
+            for (int j = 0; j < page.getChildCount(); j++) {
+
+                View l = page.getChildAt(j);
+                if (l instanceof LinearLayout) {
+
+                    for (int k = 0; k < ((LinearLayout) l).getChildCount(); k++) {
+                        ButtonWithState b = (ButtonWithState) ((LinearLayout) l).getChildAt(k);
+                        if (((ButtonWithState) b).isSelected()) {
+
+                            View v = mInflater.inflate(R.layout.calendar_reserved_tip, null);
+
+                            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            lp.setMargins(b.getLeft() + (b.getLeft() / 2), b.getTop() - 20, 0, 0);
+                            v.setLayoutParams(lp);
+
+                            root.addView(v);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void reservation() {
+
+        Profile prof = pref.getProfile();
+        if (prof != null && prof.isPhone_verified()) {
+
+            if (TextUtils.isEmpty(selected_time)) {
+                Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_info_wash_service_no_tme_select), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (list == null || list.size() <= 0) {
+                Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_info_wash_service_no_services_select), Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                int s = 0;
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).isCheck())
+                        s++;
+                }
+                if (s == 0) {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_info_wash_service_no_services_select), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+
+            progressBar.setVisibility(View.VISIBLE);
+
+            int id = radioGroupCars.getCheckedRadioButtonId();
+            View v = radioGroupCars.findViewById(id);
+            getSpiceManager().execute(new ReservationRequest(pref.getSessionID(), mService.getId(), (Integer) v.getTag(), list, selected_time), "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
+
+        } else if (prof != null) {
+            getActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                    .add(R.id.container, new SendSmsFragment(), "SendSmsFragment")
+                    .addToBackStack("registration").commit();
+        }
+    }
+
+
+    public final class ReservationRequestListener implements RequestListener<ReservationResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Toast.makeText(getActivity(), R.string.fragment_info_wash_service_reserved_fail, Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
+        }
+
+
+        @Override
+        public void onRequestSuccess(final ReservationResult result) {
+            progressBar.setVisibility(View.GONE);
+
+            if (Constants.SUCCESS.equals(result.getStatus())) {
+                Toast.makeText(getActivity(), R.string.fragment_info_wash_service_reserved_succes, Toast.LENGTH_SHORT).show();
+                //setReservedTip();
+
+                getActivity().getSupportFragmentManager().popBackStack();
+
+                WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService, mLatitude, mLongitude, mTitle, mService, result.getData());
+                //getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null);
+                f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
+
+                getActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                        .add(R.id.container, f, "reservedFragment")
+                        .addToBackStack(null)
+                        .commit();
+
+            } else {
+                Toast.makeText(getActivity(), result.getData().getResult(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        Log.d(TAG, "onLocationChanged");
+
+        if (location != null) {
+            mLatitude = location.getLatitude();
+            mLongitude = location.getLongitude();
+
+
+            if (mPositionMarker == null) {
+                mPositionMarker = mMap.addMarker(new MarkerOptions()
+                        .flat(true)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_position))
+                                //.anchor(0.5f, 0.5f)
+                        .position(new LatLng(mLatitude, mLongitude)));
+
+            }
+
+            animateMarker(mPositionMarker, location); // Helper method for smooth
+            // animation
+        }
+    }
+
+    @Override
+    public void onRegisteredClient() {
+        Log.d(TAG, "onRegisteredClient");
+        startTracking();
+    }
+
+    public void animateMarker(final Marker marker, final Location location) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final LatLng startLatLng = marker.getPosition();
+        final double startRotation = marker.getRotation();
+        final long duration = 500;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+
+                double lng = t * location.getLongitude() + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * location.getLatitude() + (1 - t)
+                        * startLatLng.latitude;
+
+                float rotation = (float) (t * location.getBearing() + (1 - t)
+                        * startRotation);
+
+                marker.setPosition(new LatLng(lat, lng));
+                marker.setRotation(rotation);
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                }
+            }
+        });
+    }
+
+    private class AvailableTimesRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.AvailableTimesResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+            mSlidingTabLayout.setVisibility(View.GONE);
+            mNoTime.setVisibility(View.VISIBLE);
+            mProgressBar3.setVisibility(View.GONE);
+
+        }
+
+        @Override
+        public void onRequestSuccess(AvailableTimesResult availableTimesResult) {
+
+            if (availableTimesResult != null) {
+                List<TimePeriods> times = new ArrayList<>();
+
+                for (int i = 0; i < availableTimesResult.getData().size(); i++) {
+                    String a = availableTimesResult.getData().get(i);
+                    TimePeriods t = new TimePeriods();
+                    t.setTime_from(a);
+                    times.add(t);
+                }
+
+                fillCalendar(times);
+            }
+
+            mProgressBar3.setVisibility(View.GONE);
+        }
+    }
+}

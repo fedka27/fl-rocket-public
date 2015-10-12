@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout
+        android:id="@+id/back"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:background="@color/white"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:minHeight="74dp"
+        android:orientation="horizontal"
+        android:tag="back">
+
+        <include
+            android:id="@+id/rec"
+            layout="@layout/list_item_wash_service_button_rec"
+            android:layout_width="@dimen/list_iem_button_width"
+            android:layout_height="wrap_content">
+        </include>
+
+        <include
+            android:id="@+id/more"
+            layout="@layout/list_item_wash_service_button_more"
+            android:layout_width="@dimen/list_iem_button_width"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/hide">
+        </include>
+
+        <include
+            android:id="@+id/hide"
+            layout="@layout/list_item_wash_service_button_hide"
+            android:layout_height="wrap_content"
+            android:layout_width="@dimen/list_iem_button_width"
+            android:layout_alignParentRight="true">
+        </include>
+
+    </RelativeLayout>
+
+    <include
+        layout="@layout/list_item_wash_service_include"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical" />
+
+</FrameLayout>

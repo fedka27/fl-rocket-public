@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.0"
+
+    defaultConfig {
+        applicationId "wash.rocket.xor.rocketwash"
+        minSdkVersion 9
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:recyclerview-v7:+'
+    compile 'com.android.support:cardview-v7:+'
+    compile 'com.android.support:design:23.0.1'
+
+    compile('com.octo.android.robospice:robospice:1.4.14') {
+        exclude module: 'commons-io'
+        exclude group: 'commons-io'
+    }
+    compile('com.octo.android.robospice:robospice-google-http-client:1.4.14') {
+        exclude module: 'commons-io'
+        exclude group: 'commons-io'
+    }
+    compile('com.google.http-client:google-http-client-jackson2:1.20.0') {
+        exclude module: 'commons-io'
+        exclude group: 'commons-io'
+        exclude module: 'xpp3'
+        exclude group: 'stax'
+    }
+
+    compile('com.google.http-client:google-http-client-gson:1.20.0') {
+        exclude module: 'commons-io'
+        exclude group: 'commons-io'
+        exclude module: 'xpp3'
+        exclude group: 'stax'
+    }
+
+    compile('com.google.http-client:google-http-client-jackson:1.20.0') {
+        exclude module: 'commons-io'
+        exclude group: 'commons-io'
+        exclude module: 'xpp3'
+        exclude group: 'stax'
+    }
+
+    //com.fasterxml.jackson
+   // compile 'org.codehaus.jackson:jackson-xc:1.9.13'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.6.2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.2'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.2'
+    //'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
+  ///  compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.0'
+    //compile 'com.fasterxml.jackson:jackson-mapper-asl:1+'
+    //compile('org.codehaus.jackson:jackson-mapper-asl:1.9.13')
+    /*
+    compile('com.fasterxml:jackson-mapper-asl:1+')
+            {
+        exclude module: 'commons-io'
+        exclude group: 'commons-io'
+        exclude module: 'xpp3'
+        exclude group: 'stax'
+    }*/
+    compile 'de.hdodenhof:circleimageview:1.3.0'
+    compile('com.google.android.gms:play-services-location:+') {
+        force = true
+    }
+    compile 'com.google.android.gms:play-services-maps:8+'
+    compile 'com.github.shell-software:fab:1.1.2'
+    compile files('libs/libphonenumber-7.0.1.jar')
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/actionWash"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top|right"
+    android:background="?attr/actionBarItemBackground"
+    android:clickable="true"
+    android:minHeight="48dp"
+    android:minWidth="48dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/imgMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/ic_action_car_wash_white"
+        android:contentDescription="@string/app_name" />
+
+</RelativeLayout>

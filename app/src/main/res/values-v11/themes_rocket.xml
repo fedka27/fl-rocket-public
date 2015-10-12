@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="RocketTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="android:textColorPrimary">@color/white</item>
+    <item name="android:textColorSecondary">@color/white</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="windowActionBar">false</item>
+    <item name="android:editTextStyle">@style/EditTextRocket</item>
+    <item name="android:listChoiceIndicatorSingle">@drawable/rocket_btn_radio_holo_light</item>
+    <item name="android:listChoiceIndicatorMultiple">@drawable/rocket_btn_check_holo_light</item>
+    <item name="android:dropDownSpinnerStyle">@style/SpinnerRocket</item>
+  </style>
+
+
+</resources>

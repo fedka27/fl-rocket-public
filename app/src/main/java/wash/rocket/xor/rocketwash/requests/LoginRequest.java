@@ -1,0 +1,61 @@
+package wash.rocket.xor.rocketwash.requests;
+
+import android.net.Uri;
+import android.util.Log;
+
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
+
+import java.io.IOException;
+
+import roboguice.util.temp.Ln;
+import wash.rocket.xor.rocketwash.model.LoginResult;
+
+public class LoginRequest extends GoogleHttpClientSpiceRequest<LoginResult> {
+
+    private String baseUrl;
+    private String phone;
+    private String pin;
+
+    public LoginRequest(String phone, String pin) {
+        super(LoginResult.class);
+        this.baseUrl = "http://test.rocketwash.me/v2/session/sign_in";
+        this.phone = phone;
+        this.pin = pin;
+    }
+
+    @Override
+    public LoginResult loadDataFromNetwork() throws IOException {
+        Ln.d("Call web service " + baseUrl);
+
+        //JSONObject obj = new JSONObject();
+        //obj.put("");
+        //HttpRequest request = getHttpRequestFactory().buildGetRequest(new GenericUrl(baseUrl), ByteArrayContent.fromString("application/json", obj.toString()));
+
+        //baseUrl = baseUrl + "phone=" + URLEncoder.encode(phone, "utf-8") + "&pin=" + pin;
+
+        String uri = Uri.parse(baseUrl)
+                .buildUpon()
+                //.appendQueryParameter("phone", URLEncoder.encode(phone, "utf-8"))
+                //.appendQueryParameter("pin", URLEncoder.encode(pin, "utf-8"))
+                .appendQueryParameter("phone", phone)
+                .appendQueryParameter("pin", pin)
+                .build().toString();
+
+        Log.d("loadDataFromNetwork", "uri = " + uri);
+
+        HttpRequest request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null);
+        //buildGetRequest(new GenericUrl(baseUrl));
+        request.setParser(new JacksonFactory().createJsonObjectParser());
+
+        HttpResponse f = request.execute();
+
+        //Log.d("responce", "" + f.toString());
+
+        return f.parseAs(getResultType());
+    }
+
+}

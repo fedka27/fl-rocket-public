@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/divider_profile_20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="@dimen/divider_profile_20dp"
+    android:gravity="center_horizontal">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/include_info_wash_share_friends"
+        android:id="@+id/textView16"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_16sp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal" />
+
+    <Button
+        android:id="@+id/btnShare"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_below="@+id/txtPromo"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/button_green_selector"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/share_friends"
+        android:textColor="@color/white" />
+</LinearLayout>
+
+

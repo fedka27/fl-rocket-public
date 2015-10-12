@@ -1,0 +1,118 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="ru.xor.taxicall.Activity_main$PlaceholderFragment">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:elevation="2dp"
+        app:theme="@style/AppTheme">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foregroundGravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:paddingRight="@dimen/register_padding_title_cor"
+            android:text="@string/fragment_without_registration_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
+            android:textSize="@dimen/toolbar_title_font_size" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layoutButtons"
+        android:layout_below="@+id/toolbar"
+        android:fillViewport="true"
+        android:minHeight="80dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:gravity="center_horizontal"
+                android:text="@string/fragment_without_registration_caption"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/primary_text_color"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/edBrandCar"
+                style="@style/EditTextRocket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/fragment_registration_hint_car_brand"
+                android:lines="1"
+                android:maxLines="1"
+                android:textColor="@color/primary_text_color" />
+
+            <EditText
+                android:id="@+id/edModelCar"
+                style="@style/EditTextRocket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/fragment_registration_hint_car_model"
+                android:lines="1"
+                android:maxLines="1"
+                android:textColor="@color/primary_text_color" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/layoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:background="@drawable/button_blue_selector"
+            android:text="@string/button_next"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

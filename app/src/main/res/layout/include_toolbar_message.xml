@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/actionChat"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top|right"
+    android:background="?attr/actionBarItemBackground"
+    android:clickable="true"
+    android:minHeight="48dp"
+    android:minWidth="48dp"
+    android:orientation="horizontal"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/imgMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/ic_action_notifications"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:id="@+id/TextView1"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/count_red"
+        android:gravity="center"
+        android:lines="1"
+        android:text="99"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

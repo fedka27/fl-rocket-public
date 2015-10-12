@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_country_name"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:textColor="@color/primary_text_color"
+        android:textSize="@dimen/text_16sp"
+        android:maxHeight="@dimen/text_edit_height"
+        android:text="yuo"
+        android:gravity="left|center_vertical"
+        android:paddingBottom="3dp" />
+
+</LinearLayout>

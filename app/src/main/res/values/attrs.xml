@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CalendarLayout">
+        <attr name="Layout_column_dates" format="boolean" />
+        <attr name="layout_column_timeline" format="boolean" />
+        <attr name="layout_content_area" format="boolean" />
+        <attr name="layout_top" format="integer" />
+        <attr name="layout_left" format="integer" />
+        <attr name="layout_width" format="integer" />
+        <attr name="layout_height" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="ExpandableView">
+        <attr name="collapseDrawable" format="reference" />
+        <attr name="expandDrawable" format="reference" />
+        <attr name="maxCollapsedLines" format="integer" />
+        <attr name="animDuration" format="integer" />
+        <attr name="animAlphaStart" format="integer" />
+
+        <attr name="captionId" format="reference" />
+        <attr name="contentId" format="reference" />
+        <attr name="imageId" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ButtonState">
+        <attr name="selected" format="boolean" />
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="d0dda274b703dd9c5bb056867649d22b4171ae7d">
+        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-2d7016841be1309febd40f54a841309c7f38d0d9.jar" />
+    </item>
+    <item
+        jar="X:\Projects\game_prj\Rocketwash\app\libs\libphonenumber-7.0.1.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="5882a8e1326a4eca13417c40122a9fdb220ed26b">
+        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\libphonenumber-7.0.1-8360a133d1018cef67bb2c94a2af1df10da4fa32.jar" />
+    </item>
+    <item
+        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="2a7e47da654546f9457deb6132364f1bf33a1857">
+        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-9c67c11099068815e627921a5cca8c65ccc24ceb.jar" />
+    </item>
+    <item
+        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="82825756edeeb3b56b15e73b2edd56e93da5a444">
+        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-27cd16e5de786ae0e52324870252cb95f6d3973a.jar" />
+    </item>
+    <item
+        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.github.shell-software\uitools\1.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="418307d960be5f7c5fe13794b7283f5fd09d0c17">
+        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-3701d00238af12ba4e2e0d7847cb9e86f3e61be7.jar" />
+    </item>
+    <item
+        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.github.shell-software\fab\1.1.2\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="48bbecbdd3ed42e9df1b94a945480838e3bb208b">
+        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-6db9270d456bd97a40a4324dd865c89137571b23.jar" />
+    </item>
+    <item
+        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\8.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="3aed37c38c56679602255dd72ef356da5d327cda">
+        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-bbd6bcf277671a38ad92123871a52ce6fd2d8a8e.jar" />
+    </item>
+    <item
+        jar="C:\Users\aratj\.gradle\caches\modules-2\files-2.1\org.slf4j\slf4j-api\1.7.9\872ec63b41181e29ad5a3723f1417356e2d2c0f2\slf4j-api-1.7.9.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="872ec63b41181e29ad5a3723f1417356e2d2c0f2">
+        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\slf4j-api-1.7.9-51869d0f952d9c9a4bf64ffc4739ac78ed2db43d.jar" />
+    </item>
+    <item
+        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.github.shell-software\viewmover\1.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="3d6dc28c575755c91be7f6a69803e4ebe98c7c7d">
+        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-7c0991e59ec3d0a09bbece6a0c65370f450273c2.jar" />
+    </item>
+
+</items>

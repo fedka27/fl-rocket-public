@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/divider_profile_20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="@dimen/divider_profile_20dp"
+    android:gravity="center_horizontal">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView8"
+        android:src="@drawable/ic_busy_big" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/include_info_wash_service_disabled"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_16sp"
+        android:layout_marginTop="8dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/include_info_wash_service_disablet_info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_14sp"
+        android:textIsSelectable="false"
+        android:layout_marginTop="8dp"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/btnReport"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/button_blue_selector"
+        android:text="@string/report"
+        android:textColor="@color/white"
+        android:layout_marginTop="12dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" />
+
+
+</LinearLayout>
+
+

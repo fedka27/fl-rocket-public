@@ -1,0 +1,159 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="ru.xor.taxicall.Activity_main$PlaceholderFragment">
+
+    <requestFocus />
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:elevation="2dp"
+        app:theme="@style/AppTheme">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foregroundGravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:paddingRight="@dimen/register_padding_title_cor"
+            android:text="@string/fragment_login_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
+            android:textSize="@dimen/toolbar_title_font_size" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layoutButtons"
+        android:layout_below="@+id/toolbar"
+        android:fillViewport="true"
+        android:minHeight="80dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:id="@+id/txtCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen20dp"
+                android:layout_marginTop="@dimen/dimen20dp"
+                android:gravity="center_horizontal"
+                android:text="@string/fragment_login_caption"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/primary_text_color"
+                android:textSize="@dimen/text_16sp" />
+
+            <EditText
+                android:id="@+id/edPhone"
+                style="@style/EditTextRocket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:hint="@string/fragment_login_phone_hint"
+                android:inputType="phone"
+                android:lines="1"
+                android:maxLines="1"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:singleLine="true" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/edPinCode"
+                    style="@style/EditTextRocket"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/fragment_login_pin_hint"
+                    android:inputType="number"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:singleLine="true" />
+
+                <Button
+                    android:id="@+id/btnReplyPin"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/button_small_height"
+                    android:layout_alignBottom="@+id/edPinCode"
+                    android:layout_alignRight="@+id/edPinCode"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_gray_small_selector"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/button_small_height"
+                    android:text="@string/fragment_login_btn_retry_pin"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/button_small_text_size" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/layoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <Button
+            android:id="@+id/btnShare"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/button_green_selector"
+            android:text="@string/fragment_login_btn_enter"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/button_blue_selector"
+            android:text="@string/fragment_login_btn_register"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btnSkipRegistration"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/button_stroke_selector"
+            android:text="@string/fragment_login_btn_skip"
+            android:textColor="@color/button_blue" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

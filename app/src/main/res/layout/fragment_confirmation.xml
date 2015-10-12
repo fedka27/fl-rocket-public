@@ -1,0 +1,136 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="ru.xor.taxicall.Activity_main$PlaceholderFragment">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:elevation="2dp"
+        app:theme="@style/AppTheme">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foregroundGravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:paddingRight="@dimen/register_padding_title_cor"
+            android:text="@string/fragment_confirmation_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
+            android:textSize="@dimen/toolbar_title_font_size" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layoutButtons"
+        android:layout_below="@+id/toolbar"
+        android:fillViewport="true"
+        android:minHeight="80dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="251dp"
+                android:layout_height="67dp"
+                android:layout_marginTop="@dimen/dimen20dp"
+                android:src="@drawable/logo" />
+
+            <TextView
+                android:id="@+id/txtCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen20dp"
+                android:layout_marginTop="@dimen/dimen20dp"
+                android:gravity="center_horizontal"
+                android:text="@string/fragment_confirmation_caption"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="@dimen/text_16sp"
+                android:textColor="@color/primary_text_color" />
+
+            <EditText
+                android:id="@+id/edPinCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen20dp"
+                android:hint="@string/fragment_login_pin_hint"
+                android:lines="1"
+                android:maxLines="1"
+                android:textColor="@color/primary_text_color"
+                android:inputType="phone"
+                android:maxLength="30"
+                android:textCursorDrawable="@drawable/color_cursor"
+                style="@style/EditTextRocket" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_confirmation_info"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/primary_text_color"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/text_14sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/layoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/btnRequest"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginBottom="@dimen/dimen20dp"
+            android:background="@drawable/button_stroke_selector"
+            android:text="@string/fragment_login_btn_retry_pin"
+            android:textColor="@color/button_blue" />
+
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:background="@drawable/button_blue_selector"
+            android:text="@string/button_confirm"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

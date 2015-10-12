@@ -1,0 +1,14 @@
+<wash.rocket.xor.rocketwash.widgets.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_calendar_root"
+    android:layout_width="match_parent"
+
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/content_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+</wash.rocket.xor.rocketwash.widgets.NestedScrollView>

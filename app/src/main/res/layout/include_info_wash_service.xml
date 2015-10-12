@@ -1,0 +1,85 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:focusableInTouchMode="false"
+    tools:context="ru.xor.taxicall.Activity_main$PlaceholderFragment">
+
+    <include
+        android:id="@+id/content_car"
+        layout="@layout/include_info_wash_service_cars"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/delimeter" />
+
+    <include
+        android:id="@+id/content_choise_services"
+        layout="@layout/include_info_wash_service_srvs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/delimeter" />
+
+    <include
+        android:id="@+id/root_time_info"
+        layout="@layout/include_info_wash_service_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/delimeter" />
+
+
+    <include
+        android:id="@+id/content4"
+        layout="@layout/include_info_wash_service_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/delimeter" />
+
+    <include
+        android:id="@+id/content5"
+        layout="@layout/include_info_wash_service_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/delimeter" />
+
+    <include
+        android:id="@+id/content6"
+        layout="@layout/include_info_wash_service_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/delimeter" />
+
+
+    <include
+        android:id="@+id/content_share"
+        layout="@layout/include_info_wash_service_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

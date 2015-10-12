@@ -1,0 +1,225 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="ru.xor.taxicall.Activity_main$PlaceholderFragment">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:elevation="2dp"
+        app:theme="@style/AppTheme"
+        app:title="@string/profile">
+
+        <include layout="@layout/include_toolbar_change" />
+    </android.support.v7.widget.Toolbar>
+
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:fillViewport="false">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/divider_profile_20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="@dimen/divider_profile_20dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_user"
+                app:border_color="#999999"
+                app:border_width="1dp" />
+
+            <TextView
+                android:id="@+id/txtFullName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profile_image"
+                android:layout_marginTop="@dimen/dimen20dp"
+                android:text=""
+                android:hint="@string/fragment_registration_hint_fio"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_20sp" />
+
+            <TextView
+                android:id="@+id/txtPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtFullName"
+                android:layout_marginTop="@dimen/dimen12dp"
+                android:text=""
+                android:hint="@string/fragment_registration_hint_phone"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="@dimen/text_14sp" />
+
+            <FrameLayout
+                android:id="@+id/delimeter1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/txtPhone"
+                android:layout_marginBottom="@dimen/divider_profile_20dp"
+                android:layout_marginTop="@dimen/divider_profile_20dp"
+                android:background="@color/delimeter" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_below="@+id/delimeter1"
+                android:src="@drawable/ic_car_black" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView4"
+                android:layout_alignTop="@+id/imageView4"
+                android:layout_marginLeft="@dimen/dimen20dp"
+                android:layout_toRightOf="@+id/imageView4"
+                android:foregroundGravity="center_vertical"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/car"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_20sp" />
+
+
+            <RadioGroup
+                android:id="@+id/radioGroupCars"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/imageView4"
+                android:layout_marginTop="@dimen/divider_profile_20dp">
+
+                <RadioButton
+                    android:id="@+id/radioButton"
+                    android:paddingLeft="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New RadioButton"
+                    android:textSize="@dimen/text_14sp" />
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="New RadioButton"
+                    android:textSize="@dimen/text_14sp" />
+            </RadioGroup>
+
+            <FrameLayout
+                android:id="@+id/delimeter2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/radioGroupCars"
+                android:layout_marginBottom="@dimen/divider_profile_20dp"
+                android:layout_marginTop="@dimen/divider_profile_20dp"
+                android:background="@color/delimeter" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_below="@+id/delimeter2"
+                android:src="@drawable/ic_promo_black" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView"
+                android:layout_alignTop="@+id/imageView"
+                android:layout_marginLeft="@dimen/dimen20dp"
+                android:layout_toRightOf="@+id/imageView"
+                android:gravity="center_vertical"
+                android:text="@string/promo"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_20sp" />
+
+            <TextView
+                android:id="@+id/txtPromo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView"
+                android:layout_below="@+id/imageView"
+                android:layout_marginTop="@dimen/dimen12dp"
+                android:text="A5769AH"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_30sp" />
+
+            <Button
+                android:id="@+id/btnShare"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/button_height"
+                android:layout_alignLeft="@+id/textView"
+                android:layout_below="@+id/txtPromo"
+                android:layout_marginTop="@dimen/dimen12dp"
+                android:background="@drawable/button_green_selector"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="@string/share_friends"
+                android:textColor="@color/white" />
+
+            <FrameLayout
+                android:id="@+id/delimeter3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/btnShare"
+                android:layout_marginBottom="@dimen/divider_profile_20dp"
+                android:layout_marginTop="@dimen/divider_profile_20dp"
+                android:background="@color/delimeter" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_below="@+id/delimeter3"
+                android:src="@drawable/ic_acievments_black" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView3"
+                android:layout_alignTop="@+id/imageView3"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/imageView3"
+                android:gravity="center_vertical"
+                android:text="@string/fragment_profile_achievments"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_20sp" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

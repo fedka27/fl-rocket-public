@@ -1,0 +1,55 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="RocketTheme"></style>
+
+    <style name="RocketTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:editTextStyle">@style/EditTextRocket</item>
+        <item name="android:radioButtonStyle">@style/RadioButtonRocket</item>
+        <item name="android:checkboxStyle">@style/CheckBoxRocket</item>
+        <item name="android:spinnerStyle">@style/SpinnerRocket</item>
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemRocket</item>
+    </style>
+
+    <style name="CustomProgressBar" parent="android:Widget.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/progress_bar_custom_color_style</item>
+        <item name="android:minHeight">20dip</item>
+    </style>
+
+    <style name="EditTextRocket" parent="android:Widget.EditText">
+        <item name="android:background">@drawable/rocket_edit_text</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+        <item name="android:height">@dimen/text_edit_height</item>
+        <item name="android:minHeight">@dimen/text_edit_height</item>
+    </style>
+
+    <style name="RadioButtonRocket" parent="android:Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/rocket_btn_radio_holo_light</item>
+    </style>
+
+    <style name="CheckBoxRocket" parent="android:Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/rocket_btn_check_holo_light</item>
+    </style>
+
+    <style name="SpinnerRocket" parent="android:Widget.Spinner">
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:maxHeight">45dp</item>
+        <item name="android:background">@drawable/rocket_spinner_background_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/rocket_list_selector_holo_light</item>
+    </style>
+
+    <style name="SpinnerDropDownItemRocket" parent="android:Widget.DropDownItem.Spinner">
+        <item name="android:checkMark">@drawable/rocket_btn_radio_holo_light</item>
+    </style>
+
+</resources>

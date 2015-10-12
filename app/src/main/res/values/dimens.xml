@@ -1,0 +1,60 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="button_corner">3dp</dimen>
+    <dimen name="button_corner_shadow">4dp</dimen>
+    <dimen name="button_small_corner">2dp</dimen>
+    <dimen name="button_small_text_size">10sp</dimen>
+    <dimen name="button_small_height">26dp</dimen>
+
+    <dimen name="button_height">35dp</dimen>
+
+    <dimen name="register_padding_title_cor">16dp</dimen>
+    <dimen name="toolbar_title_font_size">20sp</dimen>
+    <dimen name="navigator_width">275dp</dimen>
+    <dimen name="navigator_caption_height">138dp</dimen>
+    <dimen name="menu_item_hight">44dp</dimen>
+
+    <dimen name="text_edit_height">40dp</dimen>
+    <dimen name="text_20sp">20sp</dimen>
+    <dimen name="text_16sp">16sp</dimen>
+    <dimen name="divider_20dp">20dp</dimen>
+    <dimen name="divider_profile_20dp">16dp</dimen>
+    <dimen name="text_14sp">14sp</dimen>
+    <dimen name="text_30sp">30sp</dimen>
+    <dimen name="map_height">120dp</dimen>
+
+
+
+    <!-- Default -->
+    <dimen name="radius_default">3dp</dimen>
+    <dimen name="padding_default">8dp</dimen>
+    <dimen name="margin_default">5dp</dimen>
+    <dimen name="line_default">1dp</dimen>
+
+    <!-- Products -->
+    <dimen name="height_list">90dp</dimen>
+    <dimen name="size_list_image">64dp</dimen>
+    <dimen name="font_size_title">17sp</dimen>
+    <dimen name="font_size_description">15sp</dimen>
+
+    <dimen name="margin_setting">20dp</dimen>
+
+    <dimen name="font_size_new_tag">11sp</dimen>
+    <dimen name="padding_new_tag">3dp</dimen>
+    <dimen name="text_12sp">12sp</dimen>
+    <dimen name="text_10sp">10sp</dimen>
+    <dimen name="list_iem_button_width">84dp</dimen>
+    <dimen name="fab_right">20dp</dimen>
+    <dimen name="button_width">200dp</dimen>
+
+    <dimen name="map_padding">20dp</dimen>
+    <dimen name="text_15sp">15sp</dimen>
+    <dimen name="dimen20dp">20dp</dimen>
+    <dimen name="dimen12dp">12dp</dimen>
+    <dimen name="dimen26dp">26dp</dimen>
+    <dimen name="test_18sp">18sp</dimen>
+
+
+</resources>

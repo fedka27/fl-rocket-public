@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:elevation="0dp"
+        app:theme="@style/AppTheme">
+
+        <include layout="@layout/include_toolbar_message" />
+    </android.support.v7.widget.Toolbar>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <FrameLayout
+                android:id="@+id/mapp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <fragment
+                    android:id="@+id/map"
+                    android:name="wash.rocket.xor.rocketwash.ui.MapFragmentWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:background="@color/white" />
+
+                <com.software.shell.fab.ActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/fab1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    fab:button_color="@color/colorPrimary"
+                    fab:button_colorPressed="@color/colorPrimaryDark"
+                    fab:button_colorRipple="@color/colorPrimaryDark"
+                    fab:hide_animation="@anim/fab_roll_to_down"
+                    fab:image="@drawable/ic_action_maps_navigation_white"
+                    fab:image_size="28dp"
+                    fab:rippleEffect_enabled="true"
+                    fab:shadowResponsiveEffect_enabled="true"
+                    fab:shadow_color="#757575"
+                    fab:shadow_radius="2.0dp"
+                    fab:shadow_xOffset="0.5dp"
+                    fab:shadow_yOffset="2.0dp"
+                    fab:show_animation="@anim/fab_roll_from_down"
+                    fab:type="MINI" />
+            </FrameLayout>
+
+            <include
+                android:id="@+id/content_info"
+                layout="@layout/include_info_wash_service_reserved"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mapp" />
+
+            <com.software.shell.fab.ActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/mapp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/fab_right"
+                fab:button_color="@color/button_green"
+                fab:button_colorPressed="@color/button_green_pressed"
+                fab:button_colorRipple="@color/button_green_pressed"
+                fab:hide_animation="@anim/fab_roll_to_down"
+                fab:image="@drawable/ic_action_call_phone_white"
+                fab:image_size="28dp"
+                fab:rippleEffect_enabled="true"
+                fab:shadowResponsiveEffect_enabled="true"
+                fab:shadow_color="#757575"
+                fab:shadow_radius="2.0dp"
+                fab:shadow_xOffset="0.5dp"
+                fab:shadow_yOffset="2.0dp"
+                fab:show_animation="@anim/fab_roll_from_down"
+                fab:type="DEFAULT" />
+
+        </RelativeLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

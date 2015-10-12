@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:btn="http://schemas.android.com/apk/res-auto">
+
+    <item android:drawable="@drawable/button_blue_disable" android:state_enabled="false" btn:selected="false" />
+    <item android:drawable="@drawable/button_blue_selected" android:state_enabled="true" android:state_selected="true" btn:selected="false" />
+    <item android:drawable="@drawable/button_blue_pressed" android:state_enabled="true" android:state_pressed="true" btn:selected="false" />
+
+    <item android:drawable="@drawable/button_green" android:state_pressed="false" btn:selected="true" />
+    <item android:drawable="@drawable/button_green_pressed" android:state_pressed="true" btn:selected="true" />
+
+    <item android:drawable="@drawable/button_blue" />
+
+</selector>
