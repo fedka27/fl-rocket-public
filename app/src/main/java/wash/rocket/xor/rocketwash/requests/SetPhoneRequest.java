@@ -55,6 +55,8 @@ public class SetPhoneRequest extends GoogleHttpClientSpiceRequest<ProfileResult>
             result = out.toString("UTF-8");
         }
 
+        Log.d("SetPhoneRequest", "result = " + result);
+
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);

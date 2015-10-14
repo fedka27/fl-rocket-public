@@ -25,6 +25,8 @@ import wash.rocket.xor.rocketwash.R;
  */
 public class RegistrationFragment extends BaseFragment {
 
+    public static final String TAG = "RegistrationFragment";
+
     private static final int DIALOG_CAR_BRAND = 1;
     private static final int DIALOG_CAR_MODEL = 2;
 
@@ -105,12 +107,15 @@ public class RegistrationFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 hideKeyboard();
-                getActivity()
-                        .getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .add(R.id.container, new SendSmsFragment(), "SendSmsFragment")
-                        .addToBackStack("registration").commit();
+                if (check()) {
+                    SendSmsFragment f = SendSmsFragment.newInstance(mCarBrandId, mCarMoldelId, edNumberCar.getText().toString(), edFIO.getText().toString());
+                    getActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                            .add(R.id.container, f, "SendSmsFragment")
+                            .addToBackStack("registration").commit();
+                }
             }
         });
 
@@ -133,7 +138,7 @@ public class RegistrationFragment extends BaseFragment {
         }
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(edFIO.getWindowToken(), 0);
-       // imm.hideSoftInputFromWindow(edPinCode.getWindowToken(), 0);
+        // imm.hideSoftInputFromWindow(edPinCode.getWindowToken(), 0);
         RelativeLayout rl = (RelativeLayout) getView().findViewById(R.id.main);
         rl.requestFocus();
     }
@@ -160,10 +165,24 @@ public class RegistrationFragment extends BaseFragment {
     }
 
     private boolean check() {
-        boolean b = false;
-        return b;
-    }
 
+        if (TextUtils.isEmpty(edBrandCar.getText().toString())) {
+            Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_without_registration_brand_warn), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(edModelCar.getText().toString())) {
+            Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_without_registration_model_warn), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(edFIO.getText().toString())) {
+            Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_registration_fio_warn), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
 
 
 }

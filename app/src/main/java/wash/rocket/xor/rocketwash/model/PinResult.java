@@ -3,6 +3,8 @@ package wash.rocket.xor.rocketwash.model;
 
 import com.google.api.client.util.Key;
 
+
+
 public class PinResult {
     @Key
     private String status;

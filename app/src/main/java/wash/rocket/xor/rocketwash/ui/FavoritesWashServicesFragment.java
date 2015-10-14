@@ -43,7 +43,8 @@ import wash.rocket.xor.rocketwash.widgets.SwipeListView;
 @SuppressLint("LongLogTag")
 public class FavoritesWashServicesFragment extends BaseFragment {
 
-    private static final String TAG = "FavoritesWashServicesFragment";
+    public static final String TAG = "FavoritesWashServicesFragment";
+
     private static final String LIST = "LIST";
 
     private List<WashService> list;
@@ -141,15 +142,15 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .add(R.id.container, WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), "view_service")
-                            .addToBackStack("main").commit();
+                            .add(R.id.container, WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragment.TAG)
+                            .addToBackStack(TAG).commit();
 
                 } else {
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .add(R.id.container, WashServiceInfoFragmentCall.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), "view_service_call")
-                            .addToBackStack("main").commit();
+                            .add(R.id.container, WashServiceInfoFragmentCall.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragmentCall.TAG)
+                            .addToBackStack(TAG).commit();
                 }
             }
 
@@ -182,8 +183,8 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                     case 2:
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                                .add(R.id.container, WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), "view_service_quick")
-                                .addToBackStack("main")
+                                .add(R.id.container, WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragmentQuick.TAG)
+                                .addToBackStack(TAG)
                                 .commit();
                         break;
 

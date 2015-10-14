@@ -161,7 +161,8 @@ public class BaseFragment extends Fragment {
     }
 
     public void share() {
-        String url = "https://play.google.com/store/apps/details?id=" + getActivity().getPackageName();
+        //String url = "https://play.google.com/store/apps/details?id=" + getActivity().getPackageName();
+        String url = getActivity().getString(R.string.share_data);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, url);
@@ -370,7 +371,7 @@ public class BaseFragment extends Fragment {
             Log.d("getLastLocation", "Location = " + (loc == null ? "null" : loc.toString()));
 
             if (loc != null) {
-                  location = loc;
+                location = loc;
             }
 
         }

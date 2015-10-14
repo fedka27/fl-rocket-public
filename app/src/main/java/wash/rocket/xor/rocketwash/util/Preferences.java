@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -211,10 +212,13 @@ public class Preferences {
         SharedPreferences prefs = getSharedPreferences(mcontext);
         String p = prefs.getString("profile", "");
 
+        if (TextUtils.isEmpty(p))
+            return null;
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+
 
         ProfileResult res = null;
         try {
@@ -370,7 +374,6 @@ public class Preferences {
         return bundle;
     }
 
-
     public void setShowDialogGps(boolean checked) {
 
         SharedPreferences prefs = getSharedPreferences(mcontext);
@@ -383,4 +386,19 @@ public class Preferences {
         SharedPreferences prefs = getSharedPreferences(mcontext);
         return prefs.getBoolean("ShowDialogGps", true);
     }
+
+
+    public void setRegistered(boolean checked) {
+
+        SharedPreferences prefs = getSharedPreferences(mcontext);
+        Editor editor = prefs.edit();
+        editor.putBoolean("registered", checked);
+        editor.commit();
+    }
+
+    public boolean getRegistered() {
+        SharedPreferences prefs = getSharedPreferences(mcontext);
+        return prefs.getBoolean("registered", true);
+    }
+
 }

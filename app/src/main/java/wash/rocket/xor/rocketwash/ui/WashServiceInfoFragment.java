@@ -53,8 +53,10 @@ import com.software.shell.fab.ActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.AvailableTimesResult;
@@ -101,6 +103,12 @@ public class WashServiceInfoFragment extends BaseFragment {
     private static final int FRAGMENT_SERVCES = 1;
     private static final int FRAGMENT_PROFILE_EDIT = 2;
 
+
+    private static final int DIALOG_WASH1 = 3;
+    private static final int DIALOG_WASH2 = 4;
+    private static final String DIALOG_WASH1_TAG = "DIALOG_WASH1";
+    private static final String DIALOG_WASH2_TAG = "DIALOG_WASH2";
+
     private final int MAX_MARKERS = 50;
 
     private GoogleMap mMap;
@@ -123,8 +131,8 @@ public class WashServiceInfoFragment extends BaseFragment {
     private Toolbar toolbar;
 
     private int mIdService;
-    private double mLatitude;
-    private double mLongitude;
+    private double mLatitude = 0;
+    private double mLongitude = 0;
     private String mTitle;
 
     private TableLayout tableServicesContent;
@@ -166,6 +174,7 @@ public class WashServiceInfoFragment extends BaseFragment {
     private Polyline mPolyLines;
 
     private String selected_time;
+    private String first_time;
 
     private Button share;
     private Marker mPositionMarker;
@@ -396,14 +405,32 @@ public class WashServiceInfoFragment extends BaseFragment {
         actionWash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reservation();
+                //reservation();
+
+                //XXX move to func
+                Date d1 = util.getDate(first_time);
+                if (d1 == null)
+                    d1 = new Date();
+                String s = "Время мойки: " + util.dateToHM(d1) + "\n";
+                s = s + "\n";
+                s = s + "Выбранные услуги:" + "\n";
+                s = s + getTextServices();
+                showDialog(R.string.rec_on_carwash, s, DIALOG_WASH2, DIALOG_WASH2_TAG);
             }
         });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reservation();
+                Date d1 = util.getDate(first_time);
+                if (d1 == null)
+                    d1 = new Date();
+                String s = "Время мойки: " + util.dateToHM(d1) + "\n";
+                s = s + "\n";
+                s = s + "Выбранные услуги:" + "\n";
+                s = s + getTextServices();
+
+                showDialog(R.string.rec_on_carwash, s, DIALOG_WASH2, DIALOG_WASH2_TAG);
             }
         });
 
@@ -434,14 +461,14 @@ public class WashServiceInfoFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                ChoiseServicesFragment f = ChoiseServicesFragment.newInstance(mIdService, pref.getCarModelId(), list);
+                ChoiceServicesFragment f = ChoiceServicesFragment.newInstance(mIdService, pref.getCarModelId(), list);
                 f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_SERVCES);
 
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .add(R.id.container, f, "choise_services")
-                        .addToBackStack("info_wash").commit();
+                        .add(R.id.container, f, ChoiceServicesFragment.TAG)
+                        .addToBackStack(TAG).commit();
             }
         });
 
@@ -450,14 +477,14 @@ public class WashServiceInfoFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                ProfileEditFragment f = ProfileEditFragment.newInstance(pref.getProfile());
+                ProfileEditFragment f = ProfileEditFragment.newInstance(pref.getProfile(), false);
                 f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_PROFILE_EDIT);
 
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .add(R.id.container, f, "profileedit")
-                        .addToBackStack("info_carwash").commit();
+                        .add(R.id.container, f, ProfileEditFragment.TAG)
+                        .addToBackStack(TAG).commit();
             }
         });
 
@@ -587,19 +614,15 @@ public class WashServiceInfoFragment extends BaseFragment {
         txtBal.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_counter), 0));
         getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ALWAYS_EXPIRED, new CarsRequestListener());
 
-
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.MINUTE, -15);
+        TimeZone utc = TimeZone.getTimeZone("UTC");
+        Calendar c = Calendar.getInstance(utc);
         String a = util.dateToZZ(c.getTime());
+
         c.add(Calendar.HOUR_OF_DAY, 24);
         c.set(Calendar.HOUR_OF_DAY, 23);
+        c.set(Calendar.MINUTE, 59);
         String b = util.dateToZZ(c.getTime());
-
-        Log.d(TAG, a);
-        Log.d(TAG, b);
-
         getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "cars", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
-
     }
 
     private void setUpMapIfNeeded() {
@@ -798,10 +821,27 @@ public class WashServiceInfoFragment extends BaseFragment {
                     fillChoiseServises(l);
                     break;
                 case FRAGMENT_PROFILE_EDIT:
-
                     mProgressBar1.setVisibility(View.VISIBLE);
                     getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ALWAYS_EXPIRED, new CarsRequestListener());
+                    break;
 
+                case DIALOG_WASH1:
+                    reservation(selected_time);
+                    break;
+
+                case DIALOG_WASH2:
+                    reservation(first_time);
+                    break;
+
+            }
+        } else {
+            switch (requestCode) {
+                case DIALOG_WASH1:
+                    if (old_b != null)
+                        old_b.setSelected(false);
+                    break;
+                case DIALOG_WASH2:
+                    //old_b.setSelected(false);
                     break;
             }
         }
@@ -809,6 +849,7 @@ public class WashServiceInfoFragment extends BaseFragment {
 
     private void fillCalendar(List<TimePeriods> time_periods) {
 
+        //XXX move to func
         Log.d("fillCalendar", "start");
         if (time_periods != null) {
             Log.d("fillCalendar", "time_periods.size() = " + time_periods.size());
@@ -825,10 +866,11 @@ public class WashServiceInfoFragment extends BaseFragment {
                 Button b2 = null;
 
                 for (int i = 0; i < time_periods.size(); i++) {
+
                     TimePeriods d = time_periods.get(i);
 
                     if (d.isToday()) {
-                        if (k % 2 != 0) {
+                        if (k % 2 == 0) {
 
                             if (cnt == null)
                                 cnt = (ViewGroup) (mInflater.inflate(R.layout.calendar_content, null));
@@ -876,7 +918,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                     TimePeriods d = time_periods.get(i);
 
                     if (d.isTomorrow()) {
-                        if (k % 2 != 0) {
+                        if (k % 2 == 0) {
                             if (cnt == null)
                                 cnt = (ViewGroup) mInflater.inflate(R.layout.calendar_content, null);
 
@@ -1133,6 +1175,26 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
     }
 
+
+    private String getTextServices() {
+        String s = "";
+
+        if (list != null) {
+            int price = 0;
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getCheck() == 1) {
+                    s = s + list.get(i).getName() + ":  " + String.format("%d %s", list.get(i).getPrice(), getActivity().getString(R.string.rubleSymbolJava)) + "\n";
+                    price = price + list.get(i).getPrice();
+                }
+            }
+            s = s + "\n";
+            s = s + getActivity().getString(R.string.include_info_wash_sum_price) + ": " + String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava));
+            return s;
+        }
+
+        return "";
+    }
+
     private View.OnClickListener mOnServicesChange = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -1171,6 +1233,12 @@ public class WashServiceInfoFragment extends BaseFragment {
 
             ((ButtonWithState) v).setSelected(!((ButtonWithState) v).isSelected());
             old_b = (ButtonWithState) v;
+
+            String s = "Время мойки: " + old_b.getText().toString() + "\n";
+            s = s + "\n";
+            s = s + "Выбранные услуги:" + "\n";
+            s = s + getTextServices();
+            showDialog(R.string.rec_on_carwash, s, DIALOG_WASH1, DIALOG_WASH1_TAG);
         }
     };
 
@@ -1205,15 +1273,16 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
     }
 
-    private void reservation() {
+    private void reservation(String time) {
 
         Profile prof = pref.getProfile();
         if (prof != null && prof.isPhone_verified()) {
 
+            /*
             if (TextUtils.isEmpty(selected_time)) {
                 Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_info_wash_service_no_tme_select), Toast.LENGTH_SHORT).show();
                 return;
-            }
+            }*/
 
             if (list == null || list.size() <= 0) {
                 Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_info_wash_service_no_services_select), Toast.LENGTH_SHORT).show();
@@ -1230,20 +1299,18 @@ public class WashServiceInfoFragment extends BaseFragment {
                 }
             }
 
-
             progressBar.setVisibility(View.VISIBLE);
-
             int id = radioGroupCars.getCheckedRadioButtonId();
             View v = radioGroupCars.findViewById(id);
-            getSpiceManager().execute(new ReservationRequest(pref.getSessionID(), mService.getId(), (Integer) v.getTag(), list, selected_time), "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
+            getSpiceManager().execute(new ReservationRequest(pref.getSessionID(), mService.getId(), (Integer) v.getTag(), list, time), "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
 
         } else if (prof != null) {
             getActivity()
                     .getSupportFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                    .add(R.id.container, new SendSmsFragment(), "SendSmsFragment")
-                    .addToBackStack("registration").commit();
+                    .add(R.id.container, new SendSmsFragment(), SendSmsFragment.TAG)
+                    .addToBackStack(TAG).commit();
         }
     }
 
@@ -1274,7 +1341,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                         .getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .add(R.id.container, f, "reservedFragment")
+                        .add(R.id.container, f, WashServiceInfoFragmentReserved.TAG)
                         .addToBackStack(null)
                         .commit();
 
@@ -1292,7 +1359,6 @@ public class WashServiceInfoFragment extends BaseFragment {
         if (location != null) {
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
-
 
             if (mPositionMarker == null) {
                 mPositionMarker = mMap.addMarker(new MarkerOptions()
@@ -1352,11 +1418,9 @@ public class WashServiceInfoFragment extends BaseFragment {
     private class AvailableTimesRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.AvailableTimesResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-
             mSlidingTabLayout.setVisibility(View.GONE);
             mNoTime.setVisibility(View.VISIBLE);
             mProgressBar3.setVisibility(View.GONE);
-
         }
 
         @Override
@@ -1372,10 +1436,18 @@ public class WashServiceInfoFragment extends BaseFragment {
                     times.add(t);
                 }
 
+                if (times.size() > 0)
+                    first_time = times.get(0).getTime_from();
+
                 fillCalendar(times);
             }
 
             mProgressBar3.setVisibility(View.GONE);
         }
+    }
+
+    private void showDialog(int title, String message, int id, String tag) {
+        AlertDialogFragment f = AlertDialogFragment.newInstance(title, message, id, this);
+        f.show(getFragmentManager(), tag);
     }
 }

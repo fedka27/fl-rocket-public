@@ -40,6 +40,8 @@ import wash.rocket.xor.rocketwash.util.util;
  */
 public class ConfirmationFragment extends BaseFragment {
 
+    public static final String TAG = "ConfirmationFragment";
+
     private static final int MINUTES_WAIT = 1;
 
     private static final String ID_CAR_BRAND = "ID_CAR_BRAND";
@@ -112,7 +114,7 @@ public class ConfirmationFragment extends BaseFragment {
         progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
 
-        txtCaption.setText(String.format(getActivity().getString(R.string.fragment_confirmation_caption), pref.getLastUsedPhone()));
+        txtCaption.setText(String.format(getActivity().getString(R.string.fragment_confirmation_caption), pref.getLastUsedPhoneCode() + pref.getLastUsedPhone()));
 
         btnRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +217,7 @@ public class ConfirmationFragment extends BaseFragment {
             waiting = false;
             stopCalculateTimer();
             pref.setLastTimeClick(-1);
-            btnRequest.setText(R.string.button_next);
+            btnRequest.setText(R.string.fragment_login_btn_retry_pin);
         } else
             btnRequest.setText(getActivity().getString(R.string.fragment_login_btn_retry_pin_after) + " " + util.SecondsToMS(t));
     }
@@ -250,7 +252,7 @@ public class ConfirmationFragment extends BaseFragment {
     public final class VerifyPhoneRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.request_verify_error, Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
         }
 

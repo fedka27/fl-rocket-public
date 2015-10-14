@@ -15,6 +15,8 @@ import wash.rocket.xor.rocketwash.R;
  */
 public class MessagesFragment extends BaseFragment {
 
+    public static final String TAG = "MessagesFragment";
+
     private Button btnNext;
     private CheckBox checkBox;
 

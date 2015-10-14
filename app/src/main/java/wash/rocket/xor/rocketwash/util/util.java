@@ -95,6 +95,7 @@ public class util {
 
     public static String dateToZZ(Date date) {
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        ft.setTimeZone(TimeZone.getTimeZone("UTC"));
         return ft.format(date);
     }
 

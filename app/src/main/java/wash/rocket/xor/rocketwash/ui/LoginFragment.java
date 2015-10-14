@@ -48,7 +48,7 @@ import wash.rocket.xor.rocketwash.util.util;
  */
 public class LoginFragment extends BaseFragment {
 
-    //private static final String TAG = "LoginFragment";
+    public static final String TAG = "LoginFragment";
     private static final int MINUTES_WAIT = 1;
 
     private TextView txtCaption;
@@ -153,8 +153,8 @@ public class LoginFragment extends BaseFragment {
                         .getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .replace(R.id.container, new RegistrationFragment(), "registration")
-                        .addToBackStack("login").commit();
+                        .replace(R.id.container, new RegistrationFragment(), RegistrationFragment.TAG)
+                        .addToBackStack(TAG).commit();
             }
         });
 
@@ -172,8 +172,8 @@ public class LoginFragment extends BaseFragment {
                         .getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .replace(R.id.container, new WithoutRegistrationFragment(), "skipregistration")
-                        .addToBackStack("login").commit();
+                        .replace(R.id.container, new WithoutRegistrationFragment(), WithoutRegistrationFragment.TAG)
+                        .addToBackStack(TAG).commit();
             }
         });
 
@@ -236,6 +236,12 @@ public class LoginFragment extends BaseFragment {
         if (savedInstanceState != null)
             last_country_id = savedInstanceState.getInt("last_country_id", 0);
 
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
     }
 
     @Override
@@ -370,7 +376,8 @@ public class LoginFragment extends BaseFragment {
                 if (Constants.SUCCESS.equals(result.getStatus())) {
                     pref.setSessionID(result.getData().getSession_id());
                     pref.setProfile(result.getData().getProfile());
-                    mCallback.onLogged();
+                    if (mCallback != null)
+                        mCallback.onLogged();
                 } else {
                     final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
                     String error = res == 0 ? result.getData().getResult() : getString(res);

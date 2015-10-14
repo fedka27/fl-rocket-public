@@ -15,6 +15,8 @@ import wash.rocket.xor.rocketwash.R;
  */
 public class NetworkErrorFragment extends BaseFragment {
 
+    public static final String TAG = "NetworkErrorFragment";
+
     private Button btnNext;
     private CheckBox checkBox;
 

@@ -35,6 +35,8 @@ import wash.rocket.xor.rocketwash.util.Constants;
  */
 public class WithoutRegistrationFragment extends BaseFragment {
 
+    public static final String TAG = "WithoutRegistrationFragment";
+
     private static final int DIALOG_CAR_BRAND = 1;
     private static final int DIALOG_CAR_MODEL = 2;
 
@@ -56,6 +58,17 @@ public class WithoutRegistrationFragment extends BaseFragment {
     private ProgressBar progressBar;
 
     public WithoutRegistrationFragment() {
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mCallback = (IFragmentCallbacksInterface) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement IFragmentCallbacksInterface");
+        }
     }
 
 
@@ -120,7 +133,6 @@ public class WithoutRegistrationFragment extends BaseFragment {
                     Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_without_registration_model_warn), Toast.LENGTH_SHORT).show();
                     return;
                 }
-
 
                 progressBar.setVisibility(View.VISIBLE);
                 getSpiceManager().execute(new CreateEmptyUserRequest(), "empty_user", DurationInMillis.ALWAYS_EXPIRED, new CreateEmptyUserListener());
@@ -217,12 +229,16 @@ public class WithoutRegistrationFragment extends BaseFragment {
             if (result != null)
                 if (Constants.SUCCESS.equals(result.getStatus())) {
                     // mCallback.onLogged();
+                    /*
+                    pref.setRegistered(true);
                     getActivity()
                             .getSupportFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                             .replace(R.id.container, new LoaderFragment(), "loader_fragment")
-                            .commit();
+                            .commit();*/
+                    if (mCallback != null)
+                        mCallback.onLogged();
 
                 } else {
                     //final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
@@ -232,4 +248,10 @@ public class WithoutRegistrationFragment extends BaseFragment {
         }
     }
 
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
+    }
 }

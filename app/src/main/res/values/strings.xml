@@ -20,7 +20,7 @@
     <string name="fragment_registration_hint_car_brand">Марка автомобиля</string>
     <string name="fragment_registration_hint_car_model">Модель автомобиля</string>
     <string name="fragment_registration_hint_car_number">Гос номер</string>
-    <string name="fragment_registration_hint_phone">Тлефон</string>
+    <string name="fragment_registration_hint_phone">Телефон</string>
 
     <string name="fragment_send_sms_title">Авторизация</string>
     <string name="fragment_send_sms_caption">После завершения регистрации вы сможете записаться на мойку, получить скидки и бесплатные мойки.\nДля завершения регистрации получите код доступа на свой телефон</string>
@@ -46,7 +46,7 @@
         <item>История заказов</item>
         <item>Мои сообщения</item>
         <item>Акции</item>
-        <item>Пригласить друзей</item>
+        <item>Рекомендовать друзьям</item>
         <item>Мои баллы</item>
         <item>Информация</item>
         <item>Сменить пользователя</item>
@@ -82,7 +82,7 @@
     <string name="car">Автомобиль</string>
     <string name="promo">Ваш промокод</string>
     <string name="fragment_profile_achievments">Достижения</string>
-    <string name="share_friends">РАССКАЗАТЬ ДРУЗЬЯМ</string>
+    <string name="share_friends">РЕКОМЕНДОВАТЬ ДРУЗЬЯМ</string>
     <string name="fragment_nearest_wash_services">Ближайшие мойки</string>
     <string name="call">ПОЗВОНИТЬ</string>
     <string name="hide">СКРЫТЬ</string>
@@ -94,7 +94,7 @@
     <string name="time_service">Свободное время для записи</string>
     <string name="info_window_create_path">ПРОЛОЖИТЬ МАРШРУТ</string>
     <string name="include_info_wash_sum_price">ИТОГО К ОПЛАТЕ</string>
-    <string name="include_info_wash_share_friends">Рассказывайте о приложении друзьям, получайте баллы и мойтесь бесплатно</string>
+    <string name="include_info_wash_share_friends">Рекомендуйте приложение друзьям и знакомым, если оно вам нравится и экономит ваше время</string>
     <string name="service_choise">Выбор услуг</string>
     <string name="fragment_service_choise_caption">Для выбора отметьте услуги</string>
     <string name="fragment_edit_profile_name">Личные данные</string>
@@ -126,7 +126,10 @@
     <string name="cancel_record">ОТМЕНИТЬ ЗАПИСЬ</string>
     <string name="fragment_favorites_wash_services_title">Избранные мойки</string>
     <string name="empty">Нет данных.</string>
-    <string name="share_with">Поделиться</string>
+    <string name="share_with">Рекомендовать друзьям</string>
+    <string name="share_data">Рекомендую использовать приложение RocketWash для записи на автомойку. Оно экономит мое время. Скачивай по ссылке: http://goo.gl/5j7dVZ</string>
+
+
     <string name="fragment_information_title">Информация</string>
     <string name="url_info">http://rocketwash.me/information/index.php</string>
     <string name="group_name_reserved">ВЫ ЗАПИСАНЫ, ЖДЕМ ВАС</string>
@@ -135,6 +138,16 @@
     <string name="fragment_info_wash_service_no_tme_select">Не выбрали время</string>
     <string name="fragment_info_wash_service_no_services_select">Не выраны услуги</string>
     <string name="fragment_without_registration_model_warn">Не выбрана модель автомобиля</string>
-    <string name="fragment_without_registration_brand_warn">Невыбрана марка автомобиля</string>
+    <string name="fragment_without_registration_brand_warn">Не выбрана марка автомобиля</string>
+    <string name="gps_warn">Включите GPS, либо подождите пока поймаются спутники. Как только найдет текущуюю позицию, данные загрузтся автоматически</string>
+    <string name="fragment_registration_fio_warn">Не заполнены ФИО</string>
+    <string name="to_favorites">В ИЗБРАННОЕ</string>
+    <string name="fragment_nearest_wash_services_hide">Скрыть мойку ?</string>
+    <string name="yeas">ДА</string>
+    <string name="cancel">ОТМЕНА</string>
+    <string name="fragment_nearest_wash_services_add_to_vaf">Добавить в избранные ?</string>
+    <string name="rec_on_carwash">Записаться на мойку?</string>
+    <string name="request_verify_error">Не удалось отправить запрос на подтверждение телефона</string>
+
 
 </resources>

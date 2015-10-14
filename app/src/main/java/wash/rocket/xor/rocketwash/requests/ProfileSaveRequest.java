@@ -55,6 +55,7 @@ public class ProfileSaveRequest extends GoogleHttpClientSpiceRequest<ProfileResu
         InputStream content = request.execute().getContent();
 
 
+        if (profile.getCars_attributes() != null)
         for (int i = 0; i < profile.getCars_attributes().size(); i++) {
             CarsAttributes c = profile.getCars_attributes().get(i);
             if (c.getId() == 0 && c.getType() == 0) {

@@ -61,7 +61,7 @@ import wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget;
 
 public class WashServiceInfoFragmentCall extends BaseFragment {
 
-    public static final String TAG = "WashServiceInfoFragment";
+    public static final String TAG = "WashServiceInfoFragmentCall";
 
     private static final String POINTS = "points";
     private static final String ID_SERVICE = "id_service";

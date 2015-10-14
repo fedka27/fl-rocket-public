@@ -62,7 +62,7 @@ import wash.rocket.xor.rocketwash.requests.ReserveCancelRequest;
 @SuppressLint("LongLogTag")
 public class WashServiceInfoFragmentReserved extends BaseFragment {
 
-    public static final String TAG = "WashServiceInfoFragment";
+    public static final String TAG = "WashServiceInfoFragmentReserved";
 
     private static final String POINTS = "points";
     private static final String ID_SERVICE = "id_service";

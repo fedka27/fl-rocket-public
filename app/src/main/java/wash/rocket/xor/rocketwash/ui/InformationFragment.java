@@ -20,6 +20,7 @@ import wash.rocket.xor.rocketwash.R;
  */
 public class InformationFragment extends BaseFragment {
 
+    public static final String TAG = "InformationFragment";
 
     private WebView web;
     private ProgressDialog progressBar;

@@ -47,7 +47,7 @@
     <dimen name="text_10sp">10sp</dimen>
     <dimen name="list_iem_button_width">84dp</dimen>
     <dimen name="fab_right">20dp</dimen>
-    <dimen name="button_width">200dp</dimen>
+    <dimen name="button_width">230dp</dimen>
 
     <dimen name="map_padding">20dp</dimen>
     <dimen name="text_15sp">15sp</dimen>

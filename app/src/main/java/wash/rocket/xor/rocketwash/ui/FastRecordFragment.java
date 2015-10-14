@@ -41,7 +41,8 @@ import wash.rocket.xor.rocketwash.util.util;
  */
 public class FastRecordFragment extends BaseFragment {
 
-    //private static final String TAG = "LoginFragment";
+    public static final String TAG = "FastRecordFragment";
+
     private static final int MINUTES_WAIT = 1;
 
     private TextView txtCaption;
@@ -134,8 +135,8 @@ public class FastRecordFragment extends BaseFragment {
                 getActivity()
                         .getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.container, new RegistrationFragment(), "registration")
-                        .addToBackStack("login").commit();
+                        .replace(R.id.container, new RegistrationFragment(), RegistrationFragment.TAG)
+                        .addToBackStack(TAG).commit();
             }
         });
 
@@ -147,8 +148,8 @@ public class FastRecordFragment extends BaseFragment {
                 getActivity()
                         .getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.container, new WithoutRegistrationFragment(), "skipregistration")
-                        .addToBackStack("login").commit();
+                        .replace(R.id.container, new WithoutRegistrationFragment(), WithoutRegistrationFragment.TAG)
+                        .addToBackStack(TAG).commit();
             }
         });
 

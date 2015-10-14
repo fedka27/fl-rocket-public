@@ -29,6 +29,8 @@ import wash.rocket.xor.rocketwash.util.Constants;
  */
 public class LoaderFragment extends BaseFragment {
 
+    public static final String TAG = "LoaderFragment";
+
     public LoaderFragment() {
     }
 
@@ -79,13 +81,12 @@ public class LoaderFragment extends BaseFragment {
 
                 if (result.getData() != null) {
                     List<CarsAttributes> c = result.getData().getCars_attributes();
-
-                    int i = pref.getUseCar();
-
-                    if (i > c.size())
-                        i = 0;
-
                     if (c != null) {
+
+                        int i = pref.getUseCar();
+                        if (i > c.size())
+                            i = 0;
+
                         CarsAttributes r = c.get(i);
                         String a = "", b = "";
 
@@ -129,21 +130,10 @@ public class LoaderFragment extends BaseFragment {
             //progressBar.setVisibility(View.GONE);
             if (result != null) {
                 list_cars = result.getData();
-                getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "profile",  DurationInMillis.ONE_SECOND, new ProfileRequestListener());
+                getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new ProfileRequestListener());
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

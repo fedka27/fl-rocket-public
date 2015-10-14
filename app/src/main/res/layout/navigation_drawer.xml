@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigator_caption_height"
         android:paddingLeft="20dp"
-        android:paddingTop="20dp">
+        android:paddingTop="20dp"
+        android:clickable="true">
 
         <ImageView
             android:layout_width="30dp"

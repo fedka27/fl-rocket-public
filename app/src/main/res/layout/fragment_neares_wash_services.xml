@@ -23,13 +23,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:listSelector="#00000000"
-                swipe:leftDistance="168dp"
+                swipe:leftDistance="252dp"
                 swipe:onlyOneOpenedWhenSwipe="true"
                 swipe:rightDistance="84dp"
                 swipe:swipeBackView="@+id/back"
                 swipe:swipeCloseAllItemsWhenMoveList="true"
                 swipe:swipeFrontView="@+id/front"
-                swipe:swipeMode="both">
+                swipe:swipeMode="left">
 
             </wash.rocket.xor.rocketwash.widgets.SwipeListView>
 
@@ -108,6 +108,35 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/empty_data"
             android:id="@+id/txtError1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_16sp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutWarnGPS"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView12"
+            android:src="@drawable/ic_action_info_outline_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/gps_warn"
+            android:id="@+id/txtError3"
             android:textColor="@color/black"
             android:textSize="@dimen/text_16sp"
             android:layout_weight="1" />

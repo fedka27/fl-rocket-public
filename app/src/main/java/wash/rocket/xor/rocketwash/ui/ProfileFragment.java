@@ -43,6 +43,8 @@ import wash.rocket.xor.rocketwash.util.Constants;
  */
 public class ProfileFragment extends BaseFragment {
 
+    public static final String TAG = "ProfileFragment";
+
     private static final int DIALOG_CAR_BRAND = 1;
     private static final int DIALOG_CAR_MODEL = 2;
 
@@ -116,7 +118,7 @@ public class ProfileFragment extends BaseFragment {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .replace(R.id.container, ProfileEditFragment.newInstance(mProfile), "profileedit")
+                        .replace(R.id.container, ProfileEditFragment.newInstance(mProfile , false), "profileedit")
                         .addToBackStack("profile").commit();
             }
         });
@@ -244,7 +246,6 @@ public class ProfileFragment extends BaseFragment {
         public void onRequestFailure(SpiceException spiceException) {
             Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
-
         }
 
         @Override

@@ -15,6 +15,8 @@ import wash.rocket.xor.rocketwash.R;
  */
 public class GpsWarningFragment extends BaseFragment {
 
+    public static final String TAG = "GpsWarningFragment";
+
     private Button btnNext;
     private CheckBox checkBox;
 

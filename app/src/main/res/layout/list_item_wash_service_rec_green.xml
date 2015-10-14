@@ -15,10 +15,12 @@
         android:tag="back">
 
         <include
-            android:id="@+id/rec"
-            layout="@layout/list_item_wash_service_button_rec"
+            android:id="@+id/hide"
+            layout="@layout/list_item_wash_service_button_hide"
+            android:layout_height="wrap_content"
             android:layout_width="@dimen/list_iem_button_width"
-            android:layout_height="wrap_content">
+            android:layout_alignParentRight="false"
+            android:layout_toLeftOf="@+id/more">
         </include>
 
         <include
@@ -26,14 +28,14 @@
             layout="@layout/list_item_wash_service_button_more"
             android:layout_width="@dimen/list_iem_button_width"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/hide">
+            android:layout_toLeftOf="@+id/rec">
         </include>
 
         <include
-            android:id="@+id/hide"
-            layout="@layout/list_item_wash_service_button_hide"
-            android:layout_height="wrap_content"
+            android:id="@+id/rec"
+            layout="@layout/list_item_wash_service_button_rec"
             android:layout_width="@dimen/list_iem_button_width"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true">
         </include>
 

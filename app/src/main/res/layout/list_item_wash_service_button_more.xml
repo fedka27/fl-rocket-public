@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView6"
-        android:src="@drawable/ic_action_wash_more_white"
+        android:src="@drawable/ic_action_toggle_star"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="12dp" />
@@ -22,7 +22,7 @@
         android:id="@+id/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/more"
+        android:text="@string/to_favorites"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/white"
         android:textSize="@dimen/text_10sp"

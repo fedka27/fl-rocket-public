@@ -13,8 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +37,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.software.shell.fab.ActionButton;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import wash.rocket.xor.rocketwash.R;
@@ -71,6 +70,11 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     private static final String SERVICE = "service";
 
     private static final int FRAGNEBT_SERVCES = 1;
+
+    private static final int DIALOG_WASH1 = 3;
+    private static final int DIALOG_WASH2 = 4;
+    private static final String DIALOG_WASH1_TAG = "DIALOG_WASH1";
+    private static final String DIALOG_WASH2_TAG = "DIALOG_WASH2";
 
     private Button mDisconnect;
     private Intent mServiceIntent;
@@ -115,12 +119,15 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     private GoogleMap.InfoWindowAdapter infoBaloon;
     private Marker mMarker;
     private LinearLayout mNoTime;
-    private String selected_time;
+
     private ProgressBar progressBar;
     private ProgressBar mProgressBar2;
     private ProgressBar mProgressBar3; // times
 
-    ActionButton fab1;
+    private String selected_time;
+    private String first_time;
+
+    private ActionButton fab1;
     private Polyline mPolyLines;
 
     public static WashServiceInfoFragmentQuick newInstance(int id_service, double lat, double lon, String title, WashService service) {
@@ -135,12 +142,9 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         return fragment;
     }
 
-
     @Override
     public void onAttach(Activity activity) {
-
         Log.w(TAG, "onAttach");
-
         super.onAttach(activity);
         try {
             mCallback = (IFragmentCallbacksInterface) activity;
@@ -159,8 +163,8 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
 
         mIdService = getArguments().getInt(ID_SERVICE);
-       // mLatitude = getArguments().getDouble(LATITUDE);
-       // mLongitude = getArguments().getDouble(LONGITUDE);
+        // mLatitude = getArguments().getDouble(LATITUDE);
+        // mLongitude = getArguments().getDouble(LONGITUDE);
         mTitle = getArguments().getString(TITLE);
         mService = getArguments().getParcelable(SERVICE);
 
@@ -169,8 +173,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
 
         Location l = getLastLocation();
-        if (l != null)
-        {
+        if (l != null) {
             mLatitude = l.getLatitude();
             mLongitude = l.getLongitude();
         }
@@ -253,12 +256,12 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
 
         txtPrice = (TextView) rootView.findViewById(R.id.txtPrice);
-       // txtDiscount = (TextView) rootView.findViewById(R.id.txtDiscount);
+        // txtDiscount = (TextView) rootView.findViewById(R.id.txtDiscount);
         txtDiscountSrv = (TextView) rootView.findViewById(R.id.txtDiscountSrv);
         txtFullPrice = (TextView) rootView.findViewById(R.id.txtFullPrice);
 
         txtPrice.setTypeface(mFont);
-    //    txtDiscount.setTypeface(mFont);
+        //    txtDiscount.setTypeface(mFont);
         txtDiscountSrv.setTypeface(mFont);
 
         txtFullPrice.setTypeface(mFont);
@@ -320,14 +323,15 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         if (resultCode == Activity.RESULT_OK) {
+
+            /*
+
             tableServicesContent.removeAllViews();
             list = data.getParcelableArrayListExtra("list");
 
             Log.d(TAG, "list = " + (list == null ? "null" : "data"));
             if (list != null) {
                 int price = 0;
-
-
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getCheck() == 1) {
                         TableRow t = (TableRow) mInflater.inflate(R.layout.service_table_row, null);
@@ -343,11 +347,29 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 }
 
                 int discount = 0;
-
                 txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
                 txtDiscount.setText(String.format("%d %s", discount, getActivity().getString(R.string.rubleSymbolJava)));
                 txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
 
+            }*/
+
+            switch (requestCode) {
+                case DIALOG_WASH1:
+                    reservation(selected_time);
+                    break;
+                case DIALOG_WASH2:
+                    reservation(first_time);
+                    break;
+            }
+        } else {
+            switch (requestCode) {
+                case DIALOG_WASH1:
+                    if (old_b != null)
+                        old_b.setSelected(false);
+                    break;
+                case DIALOG_WASH2:
+                    //old_b.setSelected(false);
+                    break;
             }
         }
     }
@@ -368,6 +390,8 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 ViewGroup cnt = null;
                 Button b1 = null;
                 Button b2 = null;
+
+                first_time = time_periods.get(0).getTime_from();
 
                 for (int i = 0; i < time_periods.size(); i++) {
                     TimePeriods d = time_periods.get(i);
@@ -473,15 +497,21 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 old_b.setSelected(false);
             ((ButtonWithState) v).setSelected(!((ButtonWithState) v).isSelected());
             old_b = (ButtonWithState) v;
+
+            String s = "Время мойки: " + old_b.getText().toString() + "\n";
+            s = s + "\n";
+            s = s + "Выбранные услуги:" + "\n";
+            s = s + getTextServices();
+            showDialog(R.string.rec_on_carwash, s, DIALOG_WASH1, DIALOG_WASH1_TAG);
         }
     };
 
-
+    /*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.done_with_text, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -490,16 +520,25 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 getActivity().getSupportFragmentManager().popBackStack();
                 return true;
             case R.id.action_done:
-                //getActivity().getSupportFragmentManager().popBackStack();
 
-                reservation();
+                //getActivity().getSupportFragmentManager().popBackStack();
+                //reservation();
+                Date d1 = util.getDate(first_time);
+                if (d1 == null)
+                    d1 = new Date();
+                String s = "Время мойки: " + util.dateToHM(d1) + "\n";
+                s = s + "\n";
+                s = s + "Выбранные услуги:" + "\n";
+                s = s + getTextServices();
+                showDialog(R.string.rec_on_carwash, s, DIALOG_WASH2, DIALOG_WASH2_TAG);
 
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void reservation() {
+
+    private void reservation(String time) {
 
         Profile prof = pref.getProfile();
         if (prof != null && prof.isPhone_verified()) {
@@ -525,15 +564,15 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
             }
 
             progressBar.setVisibility(View.VISIBLE);
-            getSpiceManager().execute(new ReservationRequest(pref.getSessionID(), mService.getId(), pref.getCarModelId(), list, selected_time), "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
+            getSpiceManager().execute(new ReservationRequest(pref.getSessionID(), mService.getId(), pref.getCarModelId(), list, time), "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
 
         } else if (prof != null) {
             getActivity()
                     .getSupportFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                    .add(R.id.container, new SendSmsFragment(), "SendSmsFragment")
-                    .addToBackStack("registration").commit();
+                    .add(R.id.container, new SendSmsFragment(), SendSmsFragment.TAG)
+                    .addToBackStack(TAG).commit();
         }
     }
 
@@ -561,7 +600,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                         .getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .add(R.id.container, f, "reservedFragment")
+                        .add(R.id.container, f, WashServiceInfoFragmentReserved.TAG)
                         .addToBackStack(null)
                         .commit();
 
@@ -669,4 +708,27 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         startTracking();
     }
 
+    private void showDialog(int title, String message, int id, String tag) {
+        AlertDialogFragment f = AlertDialogFragment.newInstance(title, message, id, this);
+        f.show(getFragmentManager(), tag);
+    }
+
+    private String getTextServices() {
+        String s = "";
+
+        if (list != null) {
+            int price = 0;
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getCheck() == 1) {
+                    s = s + list.get(i).getName() + ":  " + String.format("%d %s", list.get(i).getPrice(), getActivity().getString(R.string.rubleSymbolJava)) + "\n";
+                    price = price + list.get(i).getPrice();
+                }
+            }
+            s = s + "\n";
+            s = s + getActivity().getString(R.string.include_info_wash_sum_price) + ": " + String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava));
+            return s;
+        }
+
+        return "";
+    }
 }

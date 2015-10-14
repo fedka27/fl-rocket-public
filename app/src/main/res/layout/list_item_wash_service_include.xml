@@ -3,13 +3,14 @@
     android:id="@+id/front"
     android:layout_width="match_parent"
     android:layout_height="74dp"
+    android:background="@drawable/selectable_list_item"
     android:clickable="true"
     android:gravity="center_vertical"
     android:minHeight="74dp"
     android:orientation="horizontal"
     android:paddingRight="20dp"
     android:tag="front"
-    android:background="@drawable/selectable_list_item">
+    android:visibility="visible">
 
     <LinearLayout
         android:id="@+id/top"
@@ -79,24 +80,24 @@
                 android:id="@+id/distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
                 android:text="6 km"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_14sp"
-                android:layout_marginLeft="4dp" />
+                android:textSize="@dimen/text_14sp" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
             android:text="address"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/wash_service_text_gray"
-            android:textSize="@dimen/text_14sp"
-            android:singleLine="true"
-            android:maxLines="1"
-            android:ellipsize="end" />
+            android:textSize="@dimen/text_14sp" />
 
     </LinearLayout>
 

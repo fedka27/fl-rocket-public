@@ -33,9 +33,15 @@ import java.util.TimerTask;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.adapters.CountryAdapter;
+import wash.rocket.xor.rocketwash.model.EmptyUserResult;
 import wash.rocket.xor.rocketwash.model.PinResult;
+import wash.rocket.xor.rocketwash.model.PostCarResult;
+import wash.rocket.xor.rocketwash.model.Profile;
 import wash.rocket.xor.rocketwash.model.ProfileResult;
+import wash.rocket.xor.rocketwash.requests.CreateEmptyUserRequest;
 import wash.rocket.xor.rocketwash.requests.PinRequest;
+import wash.rocket.xor.rocketwash.requests.PostCarRequest;
+import wash.rocket.xor.rocketwash.requests.ProfileSaveRequest;
 import wash.rocket.xor.rocketwash.requests.SetPhoneRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.Country;
@@ -47,6 +53,7 @@ import wash.rocket.xor.rocketwash.util.util;
  */
 public class SendSmsFragment extends BaseFragment {
 
+    public static final String TAG = "SendSmsFragment";
     private static final int MINUTES_WAIT = 1;
 
     private TextView txtCaption;
@@ -63,14 +70,45 @@ public class SendSmsFragment extends BaseFragment {
     private int last_country_id = 0;
     private int cur_country_id = 0;
 
+    private int mCarBrandId;
+    private int mCarMoldelId;
+    private String numCar;
+    private String name;
+    private Profile mProfile;
+
+    private int mCount = 0;
+
     public SendSmsFragment() {
+
     }
 
+    public static SendSmsFragment newInstance(int mCarBrandId, int mCarMoldelId, String numCar, String name) {
+        SendSmsFragment fragment = new SendSmsFragment();
+        Bundle args = new Bundle();
+
+        args.putInt("mCarBrandId", mCarBrandId);
+        args.putInt("mCarMoldelId", mCarMoldelId);
+        args.putString("numCar", numCar);
+        args.putString("name", name);
+
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        if (getArguments() != null) {
+            mCarBrandId = getArguments().getInt("mCarBrandId");
+            mCarMoldelId = getArguments().getInt("mCarMoldelId");
+            numCar = getArguments().getString("numCar");
+            name = getArguments().getString("name");
+            mProfile = new Profile();
+            mProfile.setName(name);
+        }
+
     }
 
     @Override
@@ -111,7 +149,12 @@ public class SendSmsFragment extends BaseFragment {
                 createTimer(pref.getLastTimeClickSMS());
 
                 progressBar.setVisibility(View.VISIBLE);
-                getSpiceManager().execute(new SetPhoneRequest( pref.getLastUsedPhoneCode()+ pref.getLastUsedPhone(), pref.getSessionID()), "phone_set", DurationInMillis.ALWAYS_EXPIRED, new PhoneSetListener());
+
+                if (mProfile == null)
+                    //getSpiceManager().execute(new PinRequest(pref.getLastUsedPhoneCode() + pref.getLastUsedPhone()), "pin", DurationInMillis.ONE_MINUTE, new PinRequestListener());
+                    getSpiceManager().execute(new SetPhoneRequest(pref.getLastUsedPhoneCode() + pref.getLastUsedPhone(), pref.getSessionID()), "phone_set", DurationInMillis.ALWAYS_EXPIRED, new PhoneSetListener());
+                else
+                    getSpiceManager().execute(new CreateEmptyUserRequest(), "empty_user", DurationInMillis.ALWAYS_EXPIRED, new CreateEmptyUserListener());
             }
         });
 
@@ -161,7 +204,7 @@ public class SendSmsFragment extends BaseFragment {
             }
         });
 
-        edPhone.setText(pref.getLastUsedPhone() );
+        edPhone.setText(pref.getLastUsedPhone());
 
         if (savedInstanceState != null)
             last_country_id = savedInstanceState.getInt("last_country_id", 0);
@@ -194,7 +237,7 @@ public class SendSmsFragment extends BaseFragment {
                 if (last_country_id > 0)
                     id = last_country_id;
 
-                System.out.println("id country = " + id);
+                // System.out.println("id country = " + id);
 
                 spinner.setSelection(id, false);
             }
@@ -287,8 +330,8 @@ public class SendSmsFragment extends BaseFragment {
                         .getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .add(R.id.container, new ConfirmationFragment(), "confirmation")
-                        .addToBackStack("sendsms").commit();
+                        .add(R.id.container, new ConfirmationFragment(), ConfirmationFragment.TAG)
+                        .addToBackStack(TAG).commit();
 
             } else {
                 Toast.makeText(getActivity(), R.string.request_pin_phone_error, Toast.LENGTH_SHORT).show();
@@ -305,18 +348,92 @@ public class SendSmsFragment extends BaseFragment {
 
         @Override
         public void onRequestSuccess(final ProfileResult result) {
-           // progressBar.setVisibility(View.GONE);
-            Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
+            // progressBar.setVisibility(View.GONE);
+            Log.d("PhoneSetListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
                 //  Toast.makeText(getActivity(), R.string.request_pin_success, Toast.LENGTH_SHORT).show();
-                pref.setProfile(result.getData());
-                getSpiceManager().execute(new PinRequest(pref.getLastUsedPhone()), "pin", DurationInMillis.ONE_MINUTE, new PinRequestListener());
+
+                if (TextUtils.isEmpty(result.getData().getPhone())) {
+                    waiting = false;
+                    stopCalculateTimer();
+                    pref.setLastTimeClick(-1);
+                    btnSendSMS.setText(R.string.button_next);
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "Данный телефоный номер уже зарегистрирован в системе", Toast.LENGTH_SHORT).show();
+                    //pref.setProfile(result.getData());
+
+                } else {
+                    pref.setProfile(result.getData());
+                    getSpiceManager().execute(new PinRequest(pref.getLastUsedPhoneCode() + pref.getLastUsedPhone()), "pin", DurationInMillis.ONE_MINUTE, new PinRequestListener());
+                }
 
             } else {
                 Toast.makeText(getActivity(), R.string.request_pin_phone_error, Toast.LENGTH_SHORT).show();
+
+                waiting = false;
+                stopCalculateTimer();
+                pref.setLastTimeClick(-1);
+                btnSendSMS.setText(R.string.button_next);
+                progressBar.setVisibility(View.GONE);
             }
         }
     }
 
+    public final class CreateEmptyUserListener implements RequestListener<EmptyUserResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+            // progressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onRequestSuccess(final EmptyUserResult result) {
+            // progressBar.setVisibility(View.GONE);
+            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
+            Log.d("CreateEmptyUserListener", " result = " + result.toString());
+
+            pref.setSessionID(result.getData().getSession_id());
+
+            if (result != null)
+                if (Constants.SUCCESS.equals(result.getStatus())) {
+                    Log.d("CreateEmptyUserListener", "getSession_id = " + result.getData().getSession_id());
+                    pref.setSessionID(result.getData().getSession_id());
+
+                    getSpiceManager().execute(new ProfileSaveRequest(pref.getSessionID(), mProfile), "save_profile", DurationInMillis.ALWAYS_EXPIRED, new SaveProfileRequestListener());
+                    getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
+
+                } else {
+                    //final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
+                    //String error = res == 0 ? result.getData().getResult() : getString(res);
+                    //Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
+
+    private class SaveProfileRequestListener implements RequestListener<ProfileResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+        }
+
+        @Override
+        public void onRequestSuccess(ProfileResult profileResult) {
+
+            getSpiceManager().execute(new SetPhoneRequest(pref.getLastUsedPhoneCode() + pref.getLastUsedPhone(), pref.getSessionID()), "phone_set", DurationInMillis.ALWAYS_EXPIRED, new PhoneSetListener());
+
+        }
+    }
+
+    private class CreateCarListener implements RequestListener<wash.rocket.xor.rocketwash.model.PostCarResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+        }
+
+        @Override
+        public void onRequestSuccess(PostCarResult postCarResult) {
+
+        }
+    }
 }

@@ -31,12 +31,17 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.adapters.ProfileRecyclerViewAdapter;
+import wash.rocket.xor.rocketwash.model.CarMake;
 import wash.rocket.xor.rocketwash.model.CarsAttributes;
+import wash.rocket.xor.rocketwash.model.CarsMakes;
+import wash.rocket.xor.rocketwash.model.CarsMakesResult;
 import wash.rocket.xor.rocketwash.model.Profile;
 import wash.rocket.xor.rocketwash.model.ProfileResult;
+import wash.rocket.xor.rocketwash.requests.CarsMakesRequest;
 import wash.rocket.xor.rocketwash.requests.ProfileSaveRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
 
@@ -44,6 +49,8 @@ import wash.rocket.xor.rocketwash.util.Constants;
  * A placeholder fragment containing a simple view.
  */
 public class ProfileEditFragment extends BaseFragment {
+
+    public static final String TAG = "ProfileEditFragment";
 
     private static final int DIALOG_CAR_BRAND = 1;
     private static final int DIALOG_CAR_MODEL = 2;
@@ -71,14 +78,16 @@ public class ProfileEditFragment extends BaseFragment {
     private Profile mProfile;
     private ArrayList<CarsAttributes> list;
     private int mPosition;
+    private boolean cars;
 
     public ProfileEditFragment() {
     }
 
-    public static ProfileEditFragment newInstance(Profile profile) {
+    public static ProfileEditFragment newInstance(Profile profile, boolean cars) {
         ProfileEditFragment fragment = new ProfileEditFragment();
         Bundle args = new Bundle();
         args.putParcelable(PROFILE, profile);
+        args.putInt("cars", cars ? 1 : 0);
         fragment.setArguments(args);
         return fragment;
     }
@@ -90,20 +99,24 @@ public class ProfileEditFragment extends BaseFragment {
         setHasOptionsMenu(true);
         //carsJsonRequest  = new CarsJsonRequest("");
         mProfile = getArguments().getParcelable(PROFILE);
+        cars = getArguments().getInt("cars") == 1;
 
         list = new ArrayList<>();
 
-        if (mProfile != null && mProfile.getCars_attributes() != null) {
-            for (int i = 0; i < mProfile.getCars_attributes().size(); i++) {
-                Log.w("onCreate", "????");
-                CarsAttributes p = mProfile.getCars_attributes().get(i).copy();
-                p.setType(0);
-                list.add(p);
+        if (cars) {
+            if (mProfile != null && mProfile.getCars_attributes() != null) {
+                for (int i = 0; i < mProfile.getCars_attributes().size(); i++) {
+                    Log.w("onCreate", "????");
+                    CarsAttributes p = mProfile.getCars_attributes().get(i).copy();
+                    p.setType(0);
+                    list.add(p);
+                }
+                CarsAttributes c = new CarsAttributes();
+                c.setType(1);
+                list.add(c);
             }
-            CarsAttributes c = new CarsAttributes();
-            c.setType(1);
-            list.add(c);
-        }
+        } else
+            getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ALWAYS_EXPIRED, new CarsRequestListener());
     }
 
     @Override
@@ -336,5 +349,59 @@ public class ProfileEditFragment extends BaseFragment {
         super.onDetach();
         if (!manual && getTargetFragment() != null)
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
+    }
+
+    //private List<CarsMakes> list_cars;
+    public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+            mCallback.onLoading();
+        }
+
+        @Override
+        public void onRequestSuccess(final CarsMakesResult result) {
+            //progressBar.setVisibility(View.GONE);
+            if (result != null) {
+                List<CarsMakes> list_cars = result.getData();
+
+                if (result.getData() != null) {
+                    List<CarsAttributes> c = mProfile.getCars_attributes();
+                    for (int i = 0; i < c.size(); i++) {
+                        CarsAttributes r = c.get(i);
+                        String a = "", b = "";
+                        for (int j = 0; j < list_cars.size(); j++) {
+                            if (list_cars.get(j).getId() == r.getCar_make_id()) {
+                                a = list_cars.get(j).getName();
+                                CarMake m;
+                                for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
+                                    m = list_cars.get(j).getCar_models().get(k);
+                                    if (m.getId() == r.getCar_model_id())
+                                        b = m.getName();
+                                }
+                                break;
+                            }
+                        }
+                        r.setBrandName(a);
+                        r.setModelName(b);
+                    }
+
+                }
+
+                if (mProfile != null && mProfile.getCars_attributes() != null) {
+                    for (int i = 0; i < mProfile.getCars_attributes().size(); i++) {
+                        Log.w("onCreate", "????");
+                        CarsAttributes p = mProfile.getCars_attributes().get(i).copy();
+                        p.setType(0);
+                        list.add(p);
+                    }
+                    CarsAttributes c = new CarsAttributes();
+                    c.setType(1);
+                    list.add(c);
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 }

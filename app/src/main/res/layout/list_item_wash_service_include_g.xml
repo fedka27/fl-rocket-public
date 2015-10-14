@@ -9,6 +9,7 @@
     android:orientation="horizontal"
     android:background="@drawable/selectable_list_item_g"
     android:paddingRight="20dp"
+    android:visibility="visible"
     android:tag="front">
 
     <LinearLayout
