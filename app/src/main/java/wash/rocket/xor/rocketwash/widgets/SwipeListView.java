@@ -404,6 +404,10 @@ public class SwipeListView extends RecyclerView {
         touchListener.closeAnimate(position);
     }
 
+    public void closeAnimateAll() {
+        touchListener.closeAll();
+    }
+
     /**
      * Notifies onDismiss
      *

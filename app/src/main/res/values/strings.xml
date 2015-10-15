@@ -148,6 +148,9 @@
     <string name="fragment_nearest_wash_services_add_to_vaf">Добавить в избранные ?</string>
     <string name="rec_on_carwash">Записаться на мойку?</string>
     <string name="request_verify_error">Не удалось отправить запрос на подтверждение телефона</string>
+    <string name="remove">УДАЛИТЬ</string>
+    <string name="fragment_nearest_wash_services_remove_to_vaf">Удалить из избранных ?</string>
+    <string name="avaiable_rec">МОЖНО ЗАПИСАТЬСЯ</string>
 
 
 </resources>

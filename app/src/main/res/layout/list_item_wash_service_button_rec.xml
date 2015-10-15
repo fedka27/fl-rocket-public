@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_button_rec"
-    android:layout_width="84dp"
-    android:layout_height="74dp"
-    android:background="@drawable/selectable_more"
-    android:clickable="true"
-    android:minHeight="74dp"
-    android:orientation="horizontal"
-    android:tag="front">
+<RelativeLayout android:id="@+id/layout_button_rec"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="@dimen/list_item_button_width"
+                android:layout_height="@dimen/list_item_carwash_height"
+                android:background="@drawable/selectable_more"
+                android:clickable="true"
+                android:minHeight="74dp"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/padding_12dp"
+                android:paddingTop="@dimen/padding_12dp"
+                android:tag="front">
 
     <ImageView
+        android:id="@+id/imageView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView6"
-        android:src="@drawable/ic_action_car_wash_white"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="12dp" />
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_action_car_wash_white"
+        />
 
     <TextView
         android:id="@+id/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:text="@string/rec"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/white"
         android:textSize="@dimen/text_10sp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/imageView6"
-        android:layout_marginTop="8dp" />
+        />
 
 
 </RelativeLayout>

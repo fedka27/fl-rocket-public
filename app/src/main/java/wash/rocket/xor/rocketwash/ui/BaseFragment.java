@@ -389,6 +389,22 @@ public class BaseFragment extends Fragment {
         return toolbar;
     }
 
+    protected Toolbar setToolbar(View view, String title) {
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        AppCompatActivity a = (AppCompatActivity) getActivity();
+        if (a != null) {
+            a.setSupportActionBar(toolbar);
+            if (a.getSupportActionBar() != null)
+                a.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        if (toolbar != null) {
+            toolbar.setTitle(title);
+        }
+
+        return toolbar;
+    }
+
     protected void call(String phone) {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "Your Phone_number"));
         startActivity(intent);

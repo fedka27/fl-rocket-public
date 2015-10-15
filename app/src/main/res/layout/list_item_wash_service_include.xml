@@ -2,104 +2,127 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/front"
     android:layout_width="match_parent"
-    android:layout_height="74dp"
+    android:layout_height="@dimen/list_item_carwash_height"
     android:background="@drawable/selectable_list_item"
     android:clickable="true"
-    android:gravity="center_vertical"
-    android:minHeight="74dp"
+                android:minHeight="74dp"
     android:orientation="horizontal"
-    android:paddingRight="20dp"
-    android:tag="front"
-    android:visibility="visible">
+                android:tag="front"
+    android:visibility="visible"
+    >
 
     <LinearLayout
-        android:id="@+id/top"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:gravity="bottom"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingRight="20dp">
 
         <LinearLayout
-            android:layout_width="84dp"
+            android:id="@+id/top"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="bottom|center_horizontal"
+            android:layout_alignParentTop="true"
+            android:gravity="bottom"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imgBusy"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_action_busy" />
+            <LinearLayout
+                android:layout_width="84dp"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|center_horizontal"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imgBusy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_action_busy" />
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12:30"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_20sp" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/time"
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12:30"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_20sp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="name"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_16sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/top"
-        android:layout_marginTop="8dp"
-        android:gravity="bottom"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="84dp"
-            android:layout_height="match_parent"
-            android:gravity="bottom|center_horizontal"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="12dp"
-                android:layout_height="16dp"
-                android:paddingBottom="3dp"
-                android:paddingTop="2dp"
-                android:src="@drawable/ic_distance" />
-
-            <TextView
-                android:id="@+id/distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:text="6 km"
+                android:text="name"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_14sp" />
+                android:textSize="@dimen/text_16sp" />
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/address"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:text="address"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/wash_service_text_gray"
-            android:textSize="@dimen/text_14sp" />
+            android:layout_below="@+id/top"
+            android:layout_marginTop="8dp"
+            android:gravity="bottom"
+            android:orientation="horizontal">
 
+            <LinearLayout
+                android:layout_width="84dp"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|center_horizontal"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="12dp"
+                    android:layout_height="16dp"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="2dp"
+                    android:src="@drawable/ic_distance" />
+
+                <TextView
+                    android:id="@+id/distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="6 km"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_14sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="address"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/wash_service_text_gray"
+                android:textSize="@dimen/text_14sp" />
+
+        </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/avaiable_rec"
+        android:id="@+id/txtAvailable"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/text_green_background"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:layout_marginTop="2dp"/>
 
 </RelativeLayout>
 

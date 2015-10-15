@@ -99,7 +99,10 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
         public TextView address;
         public TextView distance;
         public TextView date;
+        public TextView txtAvailable;
+
         public ImageView imgBusy;
+
 
         public View itemView;
 
@@ -126,6 +129,8 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
                     this.distance = (TextView) itemView.findViewById(R.id.distance);
                     this.date = (TextView) itemView.findViewById(R.id.date);
                     this.imgBusy = (ImageView) itemView.findViewById(R.id.imgBusy);
+
+                    txtAvailable = (TextView) itemView.findViewById(R.id.txtAvailable);
 
                     layout_button_rec = (RelativeLayout) itemView.findViewById(R.id.rec);
                     layout_button_call = (RelativeLayout) itemView.findViewById(R.id.call);
@@ -185,6 +190,11 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
                         layout_button_more.setTag(position);
 
                     //time.setText(s.getTime_periods() == null ? "0" : "" + s.getTime_periods().size());
+                    if (s.getTime_periods() != null && s.getTime_periods().size() > 0 && s.isActive())
+                        txtAvailable.setVisibility(View.VISIBLE);
+                    else
+                        txtAvailable.setVisibility(View.GONE);
+
                     if (s.getTime_periods() == null || s.getTime_periods().size() == 0) {
                         imgBusy.setVisibility(View.VISIBLE);
                         time.setVisibility(View.GONE);
@@ -305,4 +315,10 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
         }
     };
 
+    public void remove(int position) {
+        list.remove(position);
+        notifyItemRemoved(position);
+
+        notifyItemRangeChanged(position, list.size());
+    }
 }

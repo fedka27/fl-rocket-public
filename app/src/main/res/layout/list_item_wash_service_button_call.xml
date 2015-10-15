@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_button_call"
-    android:layout_width="84dp"
-    android:layout_height="74dp"
+    android:layout_width="@dimen/list_item_button_width"
+    android:layout_height="@dimen/list_item_carwash_height"
     android:background="@drawable/selectable_call"
     android:clickable="true"
     android:minHeight="74dp"
     android:orientation="horizontal"
-    android:tag="front">
+    android:tag="front"
+                android:padding="@dimen/padding_12dp">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -16,7 +17,7 @@
         android:src="@drawable/ic_action_call_phone_white"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="12dp" />
+        />
 
     <TextView
         android:id="@+id/caption"
@@ -27,8 +28,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/text_10sp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/imageView6"
-        android:layout_marginTop="8dp" />
+        android:layout_alignParentBottom="true"/>
 
 
 </RelativeLayout>

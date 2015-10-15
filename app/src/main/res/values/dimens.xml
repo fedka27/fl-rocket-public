@@ -55,6 +55,9 @@
     <dimen name="dimen12dp">12dp</dimen>
     <dimen name="dimen26dp">26dp</dimen>
     <dimen name="test_18sp">18sp</dimen>
+    <dimen name="list_item_carwash_height">90dp</dimen>
+    <dimen name="padding_12dp">12dp</dimen>
+    <dimen name="list_item_button_width">84dp</dimen>
 
 
 </resources>

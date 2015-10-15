@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/green_vertical_line">
+             android:layout_width="fill_parent"
+             android:layout_height="@dimen/list_item_carwash_height"
+             android:background="@drawable/green_vertical_line">
 
     <RelativeLayout
         android:id="@+id/back"
         android:layout_width="match_parent"
-        android:layout_height="74dp"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:gravity="center_vertical"
         android:minHeight="74dp"
@@ -21,21 +21,21 @@
             android:layout_width="@dimen/list_iem_button_width"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="false"
-            android:layout_toLeftOf="@+id/more" />
+            android:layout_toLeftOf="@+id/more"/>
 
         <include
             android:id="@+id/more"
             layout="@layout/list_item_wash_service_button_more"
             android:layout_width="@dimen/list_iem_button_width"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/call" />
+            android:layout_toLeftOf="@+id/call"/>
 
         <include
             android:id="@+id/call"
             layout="@layout/list_item_wash_service_button_call"
             android:layout_width="@dimen/list_iem_button_width"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"/>
 
     </RelativeLayout>
 
@@ -43,6 +43,6 @@
         layout="@layout/list_item_wash_service_include_g"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"/>
 
 </FrameLayout>

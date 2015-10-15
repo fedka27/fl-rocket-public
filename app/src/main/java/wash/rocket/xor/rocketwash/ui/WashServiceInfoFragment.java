@@ -392,12 +392,15 @@ public class WashServiceInfoFragment extends BaseFragment {
             }
         });
 
+        toolbar = setToolbar(rootView, mTitle);
+
+        /*
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setTitle(mTitle);
-        }
+        }*/
 
         actionWash = (RelativeLayout) rootView.findViewById(R.id.actionWash);
         actionWash.setVisibility(View.GONE);

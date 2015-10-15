@@ -2,18 +2,19 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="@dimen/list_item_carwash_height">
 
     <RelativeLayout
         android:id="@+id/back"
         android:layout_width="match_parent"
-        android:layout_height="74dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:clickable="true"
         android:gravity="center_vertical"
         android:minHeight="74dp"
         android:orientation="horizontal"
-        android:tag="back">
+        android:tag="back"
+        >
 
         <include
             android:id="@+id/hide"
@@ -45,7 +46,8 @@
     <include
         layout="@layout/list_item_wash_service_include"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical" />
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        />
 
 </FrameLayout>

@@ -31,7 +31,7 @@
         swipe:swipeBackView="@+id/back"
         swipe:swipeCloseAllItemsWhenMoveList="true"
         swipe:swipeFrontView="@+id/front"
-        swipe:swipeMode="both">
+        swipe:swipeMode="left">
 
     </wash.rocket.xor.rocketwash.widgets.SwipeListView>
 

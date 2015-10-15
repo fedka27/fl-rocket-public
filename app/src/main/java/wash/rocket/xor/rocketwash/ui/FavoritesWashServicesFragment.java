@@ -1,11 +1,11 @@
 package wash.rocket.xor.rocketwash.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,13 +28,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wash.rocket.xor.rocketwash.R;
+import wash.rocket.xor.rocketwash.adapters.FavoritesWashServicesAdapter;
 import wash.rocket.xor.rocketwash.adapters.WashServicesAdapter;
+import wash.rocket.xor.rocketwash.model.ProfileResult;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.model.WashServiceResult;
 import wash.rocket.xor.rocketwash.requests.FavoritesWashServiceRequest;
+import wash.rocket.xor.rocketwash.requests.RemoveFavoriteRequest;
 import wash.rocket.xor.rocketwash.services.GSonRocketWashApiService;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.widgets.BaseSwipeListViewListener;
+import wash.rocket.xor.rocketwash.widgets.SlideInDownAnimator;
 import wash.rocket.xor.rocketwash.widgets.SwipeListView;
 
 /**
@@ -46,6 +50,8 @@ public class FavoritesWashServicesFragment extends BaseFragment {
     public static final String TAG = "FavoritesWashServicesFragment";
 
     private static final String LIST = "LIST";
+    private static final int DIALOG_REMOVE = 1;
+    private static final String DIALOG_REMOVE_TAG = "DIALOG_REMOVE";
 
     private List<WashService> list;
 
@@ -54,15 +60,16 @@ public class FavoritesWashServicesFragment extends BaseFragment {
     private int mDistance;
     private int mPage;
 
-    private WashServicesAdapter adapter;
+    private FavoritesWashServicesAdapter adapter;
     private SwipeListView swipeListView;
     private RecyclerView.LayoutManager mLayoutManager;
     private Toolbar toolbar;
     private ProgressBar progressBar;
     private LinearLayout layoutError;
     private LinearLayout layoutEmpty;
-
     private SpiceManager spiceManager = new SpiceManager(GSonRocketWashApiService.class);
+
+    private int mPosition = -1;
 
     public FavoritesWashServicesFragment() {
     }
@@ -92,7 +99,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         else
             list = savedInstanceState.getParcelableArrayList(LIST);
 
-        adapter = new WashServicesAdapter(list);
+        adapter = new FavoritesWashServicesAdapter(list);
         swipeListView = (SwipeListView) getView().findViewById(R.id.recyclerView);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -100,7 +107,8 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         swipeListView.addItemDecoration(new SpacesItemDecoration(1));
         swipeListView.setHasFixedSize(true);
         swipeListView.setLayoutManager(layoutManager);
-        swipeListView.setItemAnimator(itemAnimator);
+        swipeListView.setItemAnimator(new SlideInDownAnimator());
+        swipeListView.getItemAnimator().setRemoveDuration(500);
         swipeListView.setAdapter(adapter);
 
         swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener() {
@@ -156,15 +164,11 @@ public class FavoritesWashServicesFragment extends BaseFragment {
 
             @Override
             public void onClickBackView(int position, View view) {
-                Log.d("swipe !!!", String.format("onClickBackView %d", position));
+
             }
 
             @Override
             public void onDismiss(int[] reverseSortedPositions) {
-                for (int position : reverseSortedPositions) {
-                    // data.remove(position);
-                }
-                adapter.notifyDataSetChanged();
             }
         });
 
@@ -193,6 +197,11 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                         break;
                     // more
                     case 4:
+
+                        mPosition = position;
+                        showDialogYesNo(R.string.fragment_nearest_wash_services_remove_to_vaf, "", DIALOG_REMOVE, DIALOG_REMOVE_TAG);
+                        //getSpiceManager().execute(new RemoveFavoriteRequest(), "wash", DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
+
                         break;
                 }
             }
@@ -207,17 +216,17 @@ public class FavoritesWashServicesFragment extends BaseFragment {
             }
         });
 
-        // parcel/
-        //String session = "kC2EJtXFUfYAab5WSzuc4bkUJAy38lgC6l84bFSmYyjRFmIjSDptLThreL0Q6mVg5rKQ/C2fDAIOanZ77buL77sEewWZYJOrsRc3Taivtt9NC8+h5o1GOjQhDJodEMjdUd/ePw==";
-        String session = pref.getSessionID();
         if (savedInstanceState == null)
-            getSpiceManager().execute(new FavoritesWashServiceRequest(session, mPage), "wash", DurationInMillis.ALWAYS_EXPIRED, new FavoritesWashServiceRequestListenner());
+            getSpiceManager().execute(new FavoritesWashServiceRequest(pref.getSessionID(), mPage), "wash", DurationInMillis.ALWAYS_EXPIRED, new FavoritesWashServiceRequestListenner());
 
+        toolbar = setToolbar(getView());
+
+        /*
         toolbar = (Toolbar) getView().findViewById(R.id.toolbar);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        }*/
 
         layoutError = (LinearLayout) getView().findViewById(R.id.layoutError);
         layoutEmpty = (LinearLayout) getView().findViewById(R.id.layoutEmpty);
@@ -323,6 +332,15 @@ public class FavoritesWashServicesFragment extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case DIALOG_REMOVE:
+                    swipeListView.closeAnimate(mPosition);
+                    getSpiceManager().execute(new RemoveFavoriteRequest(pref.getSessionID(), list.get(mPosition).getId()), "remove", DurationInMillis.ALWAYS_EXPIRED, new REmoveFavoiteListener());
+                    adapter.remove(mPosition);
+                    break;
+            }
+        }
     }
 
     @Override
@@ -335,5 +353,20 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private void showDialogYesNo(int title, String message, int id, String tag) {
+        AlertDialogFragment f = AlertDialogFragment.newInstance(title, message, id, this);
+        f.show(getFragmentManager(), tag);
+    }
 
+    private class REmoveFavoiteListener implements RequestListener<wash.rocket.xor.rocketwash.model.ProfileResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+        }
+
+        @Override
+        public void onRequestSuccess(ProfileResult profileResult) {
+
+        }
+    }
 }

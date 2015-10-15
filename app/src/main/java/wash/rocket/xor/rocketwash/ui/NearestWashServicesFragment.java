@@ -158,6 +158,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         swipeListView.setHasFixedSize(true);
         swipeListView.setLayoutManager(layoutManager);
         swipeListView.setItemAnimator(new SlideInDownAnimator());
+        swipeListView.getItemAnimator().setRemoveDuration(500);
+
         swipeListView.setAdapter(adapter);
 
         swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener() {
@@ -190,6 +192,9 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             @Override
             public void onClickFrontView(int position) {
                 Log.d("swipe", String.format("onClickFrontView %d", position));
+
+                mDrawerLayout.closeDrawers();
+                swipeListView.closeAnimateAll();
 
                 if (position > list.size() - 1)
                     return;
@@ -260,6 +265,9 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                 WashService s = list.get(position);
 
+                mDrawerLayout.closeDrawers();
+                swipeListView.closeAnimateAll();
+
                 if (s.getType() == WashServicesAdapter.TYPE_GROUP)
                     return;
 
@@ -279,7 +287,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                                 .add(R.id.container, f, WashServiceInfoFragmentQuick.TAG)
                                 .addToBackStack(TAG)
                                 .commit();
-                        mDrawerLayout.closeDrawers();
                         break;
 
                     // hide
@@ -405,7 +412,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-
+                swipeListView.closeAnimateAll();
             }
         };
 
@@ -426,6 +433,9 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         mMenuAdapter.setOnSelectedItem(new MenuCursorAdapter.IOnSelectedItem() {
             @Override
             public void onSelectedItem(int position, int id) {
+
+                mDrawerLayout.closeDrawers();
+                swipeListView.closeAnimateAll();
 
                 switch (id) {
                     case 1:
@@ -700,9 +710,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 case DIALOG_HIDE:
 
                     swipeListView.closeAnimate(mPosition);
-                    //swipeListView.
-                    list.remove(mPosition);
-                    adapter.notifyDataSetChanged();
+                    adapter.remove(mPosition);
 
                     break;
             }

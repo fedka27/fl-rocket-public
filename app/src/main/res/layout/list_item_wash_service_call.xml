@@ -2,12 +2,12 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="@dimen/list_item_carwash_height">
 
     <RelativeLayout
         android:id="@+id/back"
         android:layout_width="match_parent"
-        android:layout_height="74dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:clickable="true"
         android:gravity="center_vertical"

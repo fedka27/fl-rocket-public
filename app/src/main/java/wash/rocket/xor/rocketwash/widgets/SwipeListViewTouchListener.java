@@ -150,7 +150,7 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
     private void setFrontView(View frontView, final int childPosition) {
         this.frontView = frontView;
 
-        if (this.frontView  == null)
+        if (this.frontView == null)
             return;
 
         frontView.setOnClickListener(new View.OnClickListener() {
@@ -377,6 +377,25 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
                 }
             }
         }
+    }
+
+    protected void closeAll() {
+        if (swipeListView != null) {
+            int firstVisibleChildPosition = mLayoutManager.findFirstVisibleItemPosition();
+
+            int lastVisibleChildPosition = mLayoutManager.findLastVisibleItemPosition();
+
+            for (int i = firstVisibleChildPosition; i <= lastVisibleChildPosition; i++) {
+                final View childContainer = swipeListView.getChildAt(i - firstVisibleChildPosition);
+                if (childContainer != null) {
+                    final View child = childContainer.findViewById(swipeFrontView);
+                    if (child != null) {
+                        closeAnimate(child, i);
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -862,7 +881,7 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
                         downX = motionEvent.getRawX();
                         downPosition = childPosition;
 
-                        if (frontView != null ) {
+                        if (frontView != null) {
                             frontView.setClickable(!opened.get(downPosition));
                             frontView.setLongClickable(!opened.get(downPosition));
                         }
