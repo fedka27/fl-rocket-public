@@ -20,6 +20,8 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
@@ -144,5 +146,32 @@ public class Dialoglist extends DialogFragment implements OnItemClickListener {
     public void onStart() {
         super.onStart();
         spiceManager.start(getActivity());
+    }
+
+    public void shwToast(String text, int resback, int length) {
+
+        LayoutInflater mInflater = LayoutInflater.from(getActivity());
+        Toast t = Toast.makeText(getActivity(), text, length);
+        View v = mInflater.inflate(resback, null);
+        TextView tv = (TextView) v.findViewById(R.id.text);
+        tv.setText(text);
+        t.setView(v);
+        t.show();
+    }
+
+    public void shwToastOk(String text) {
+        shwToast(text, R.layout.toast_ok, Toast.LENGTH_SHORT);
+    }
+
+    public void shwToastOk(int res) {
+        shwToastOk(getActivity().getString(res));
+    }
+
+    public void shwToastError(String text) {
+        shwToast(text, R.layout.toast_error, Toast.LENGTH_LONG);
+    }
+
+    public void shwToastError(int res) {
+        shwToastError(getActivity().getString(res));
     }
 }

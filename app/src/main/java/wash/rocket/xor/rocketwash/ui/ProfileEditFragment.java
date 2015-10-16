@@ -1,5 +1,6 @@
 package wash.rocket.xor.rocketwash.ui;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -45,9 +46,7 @@ import wash.rocket.xor.rocketwash.requests.CarsMakesRequest;
 import wash.rocket.xor.rocketwash.requests.ProfileSaveRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+@SuppressLint("LongLogTag")
 public class ProfileEditFragment extends BaseFragment {
 
     public static final String TAG = "ProfileEditFragment";
@@ -319,19 +318,18 @@ public class ProfileEditFragment extends BaseFragment {
     public final class SaveProfileRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка сохранения данных", Toast.LENGTH_SHORT).show();
-            // progressBar.setVisibility(View.GONE);
+            showToastError(R.string.error_save_profile_data);
             progressBar.setVisibility(View.GONE);
         }
+
 
         @Override
         public void onRequestSuccess(final ProfileResult result) {
             progressBar.setVisibility(View.GONE);
             if (Constants.SUCCESS.equals(result.getStatus())) {
-                Toast.makeText(getActivity(), "данные успешно сохраненны", Toast.LENGTH_SHORT).show();
+                showToastOk(R.string.data_save_success);
 
-                Log.d("dfsf", result.getData().getString());
-
+                Log.d("SaveProfileRequestListener", result.getData().getString());
                 pref.setProfile(result.getData());
 
                 if (getTargetFragment() != null)
@@ -339,7 +337,7 @@ public class ProfileEditFragment extends BaseFragment {
 
                 getActivity().getSupportFragmentManager().popBackStack();
             } else {
-                Toast.makeText(getActivity(), "Ошибка при записи", Toast.LENGTH_SHORT).show();
+                showToastError(R.string.error_save_profile_data);
             }
         }
     }
@@ -355,7 +353,7 @@ public class ProfileEditFragment extends BaseFragment {
     public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+            showToastError(R.string.error_loading_profile_data);
             mCallback.onLoading();
         }
 
@@ -385,7 +383,6 @@ public class ProfileEditFragment extends BaseFragment {
                         r.setBrandName(a);
                         r.setModelName(b);
                     }
-
                 }
 
                 if (mProfile != null && mProfile.getCars_attributes() != null) {

@@ -341,7 +341,7 @@ public class LoginFragment extends BaseFragment {
             pref.setLastTimeClick(-1);
             btnReplyPin.setText(R.string.fragment_login_btn_retry_pin);
         } else
-            btnReplyPin.setText(getActivity().getString(R.string.fragment_login_btn_retry_pin_after) + " " + util.SecondsToMS(t));
+            btnReplyPin.setText(String.format("%s %s", getActivity().getString(R.string.fragment_login_btn_retry_pin_after), util.SecondsToMS(t)));
     }
 
 
@@ -362,7 +362,7 @@ public class LoginFragment extends BaseFragment {
     public final class LoginRequestListener implements RequestListener<LoginResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+            showToastError(R.string.error_loading_data);
             progressBar.setVisibility(View.GONE);
         }
 
@@ -381,7 +381,7 @@ public class LoginFragment extends BaseFragment {
                 } else {
                     final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
                     String error = res == 0 ? result.getData().getResult() : getString(res);
-                    Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                    showToastError(error);
                 }
         }
     }
@@ -389,7 +389,7 @@ public class LoginFragment extends BaseFragment {
     public final class PinRequestListener implements RequestListener<PinResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
+            showToastError(R.string.request_pin_error);
             // progressBar.setVisibility(View.GONE);
         }
 
@@ -400,14 +400,13 @@ public class LoginFragment extends BaseFragment {
             Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
-                Toast.makeText(getActivity(), R.string.request_pin_success, Toast.LENGTH_SHORT).show();
+                showToastOk(R.string.request_pin_success);
             } else {
                 // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
                 // String error = res == 0 ? result.getData().getResult() : getString(res);
                 // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-
                 //XXX сбросить таймер ?
-                Toast.makeText(getActivity(), R.string.request_pin_phone_error, Toast.LENGTH_SHORT).show();
+                showToastError(R.string.request_pin_phone_error);
             }
         }
     }

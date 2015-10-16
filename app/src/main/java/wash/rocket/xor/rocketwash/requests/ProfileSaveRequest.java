@@ -64,6 +64,7 @@ public class ProfileSaveRequest extends GoogleHttpClientSpiceRequest<ProfileResu
                         .appendQueryParameter("car_make_id", "" + c.getCar_make_id())
                         .appendQueryParameter("car_model_id", "" + c.getCar_model_id())
                         .appendQueryParameter("year", "" + 0)
+                        .appendQueryParameter("tag", c.getTag())
                         .build().toString();
 
                 request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null).setHeaders(header);
@@ -81,6 +82,7 @@ public class ProfileSaveRequest extends GoogleHttpClientSpiceRequest<ProfileResu
                         .appendQueryParameter("car_make_id", "" + c.getCar_make_id())
                         .appendQueryParameter("car_model_id", "" + c.getCar_model_id())
                         .appendQueryParameter("year", "" + 0)
+                        .appendQueryParameter("tag", c.getTag())
                         .build().toString();
                 request = getHttpRequestFactory().buildPutRequest(new GenericUrl(uri), null).setHeaders(header);
                 content = request.execute().getContent();

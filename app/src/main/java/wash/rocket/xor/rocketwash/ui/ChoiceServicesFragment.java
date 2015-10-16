@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -143,7 +142,8 @@ public class ChoiceServicesFragment extends BaseFragment {
     public final class ChoiseServiceRequestListener implements RequestListener<ChoiseServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            showToastError(getActivity().getString(R.string.error_loading_data));
+
             progressBar.setVisibility(View.GONE);
             // mSwipeRefreshLayout.setRefreshing(false);
         }
@@ -177,7 +177,7 @@ public class ChoiceServicesFragment extends BaseFragment {
                 // String error = res == 0 ? result.getData().getResult() : getString(res);
                 // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
                 //XXX сбросить таймер ?
-                Toast.makeText(getActivity(), "данные не отдались", Toast.LENGTH_SHORT).show();
+                showToastError(getActivity().getString(R.string.error_loading_data));
             }
         }
     }

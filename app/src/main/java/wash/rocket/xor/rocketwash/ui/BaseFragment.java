@@ -17,13 +17,17 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
@@ -51,6 +55,7 @@ public class BaseFragment extends Fragment {
     private boolean isBoundLocationService;
     private ConnectivityManager connectivityManager;
     private Intent mServiceIntent;
+    private LayoutInflater mInflater;
 
 
     public BaseFragment() {
@@ -92,7 +97,15 @@ public class BaseFragment extends Fragment {
                 });
             }
         });
+    }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        mInflater = inflater;
+
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -408,5 +421,40 @@ public class BaseFragment extends Fragment {
     protected void call(String phone) {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "Your Phone_number"));
         startActivity(intent);
+    }
+
+
+    public void showToast(String text, int resback, int length) {
+        mInflater = LayoutInflater.from(getActivity());
+        Toast t = Toast.makeText(getActivity(), text, length);
+        View v = mInflater.inflate(resback, null);
+        TextView tv = (TextView) v.findViewById(R.id.text);
+        tv.setText(text);
+        t.setView(v);
+        t.show();
+    }
+
+    public void showToastOk(String text) {
+        showToast(text, R.layout.toast_ok, Toast.LENGTH_SHORT);
+    }
+
+    public void showToastOk(int res) {
+        showToastOk(getActivity().getString(res));
+    }
+
+    public void showToastError(String text) {
+        showToast(text, R.layout.toast_error, Toast.LENGTH_LONG);
+    }
+
+    public void showToastError(int res) {
+        showToastError(getActivity().getString(res));
+    }
+
+    public void showToastWarn(String text) {
+        showToast(text, R.layout.toast_warning, Toast.LENGTH_LONG);
+    }
+
+    public void showToastWarn(int res) {
+        showToastError(getActivity().getString(res));
     }
 }

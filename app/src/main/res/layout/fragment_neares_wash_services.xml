@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/text_gray"
-    tools:context=".MainActivityFragment">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/text_gray"
+                tools:context=".MainActivityFragment">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
@@ -12,135 +12,106 @@
         android:layout_below="@+id/toolbar">
 
         <!-- Content -->
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/refresh"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignWithParentIfMissing="true">
+            android:layout_height="match_parent">
 
-            <wash.rocket.xor.rocketwash.widgets.SwipeListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/recyclerView"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/refresh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true">
+
+                <wash.rocket.xor.rocketwash.widgets.SwipeListView android:id="@+id/recyclerView"
+                                                                  xmlns:swipe="http://schemas.android.com/apk/res-auto"
+                                                                  android:layout_width="match_parent"
+                                                                  android:layout_height="match_parent"
+                                                                  android:listSelector="#00000000"
+                                                                  swipe:leftDistance="252dp"
+                                                                  swipe:onlyOneOpenedWhenSwipe="true"
+                                                                  swipe:rightDistance="84dp"
+                                                                  swipe:swipeBackView="@+id/back"
+                                                                  swipe:swipeCloseAllItemsWhenMoveList="true"
+                                                                  swipe:swipeFrontView="@+id/front"
+                                                                  swipe:swipeMode="left">
+
+                </wash.rocket.xor.rocketwash.widgets.SwipeListView>
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutWarn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:listSelector="#00000000"
-                swipe:leftDistance="252dp"
-                swipe:onlyOneOpenedWhenSwipe="true"
-                swipe:rightDistance="84dp"
-                swipe:swipeBackView="@+id/back"
-                swipe:swipeCloseAllItemsWhenMoveList="true"
-                swipe:swipeFrontView="@+id/front"
-                swipe:swipeMode="left">
+                android:background="@color/white"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
-            </wash.rocket.xor.rocketwash.widgets.SwipeListView>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen20dp">
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+                    <ImageView
+                        android:id="@+id/imageView7"
+                        android:layout_width="219dp"
+                        android:layout_height="71dp"
+                        android:layout_alignParentLeft="false"
+                        android:layout_alignParentStart="false"
+                        android:layout_alignParentTop="false"
+                        android:layout_marginTop="45dp"
+                        android:src="@drawable/back_wash"/>
+
+                    <ImageView
+                        android:id="@+id/imgLogo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/location_error1"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/txtWarn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen20dp"
+                    android:layout_marginTop="@dimen/dimen20dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/fragment_network_error_caption"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/primary_text_color"
+                    android:textIsSelectable="false"
+                    android:textSize="@dimen/text_16sp"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
 
         <!-- Side Drawer -->
         <include
             layout="@layout/navigation_drawer"
             android:layout_width="@dimen/navigator_width"
             android:layout_height="match_parent"
-            android:layout_gravity="left" />
+            android:layout_gravity="left"/>
     </android.support.v4.widget.DrawerLayout>
 
 
-    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="?attr/colorPrimary"
-        android:elevation="2dp"
-        app:title="@string/fragment_nearest_wash_services"
-        app:theme="@style/AppTheme">
-        <include layout="@layout/include_toolbar_message" />
+    <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+                                       xmlns:app="http://schemas.android.com/apk/res-auto"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="wrap_content"
+                                       android:layout_alignParentTop="true"
+                                       android:background="?attr/colorPrimary"
+                                       android:elevation="2dp"
+                                       app:theme="@style/AppTheme"
+                                       app:title="@string/fragment_nearest_wash_services">
+
+        <include layout="@layout/include_toolbar_message"/>
     </android.support.v7.widget.Toolbar>
 
-    <LinearLayout
-        android:id="@+id/layoutError"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView10"
-            android:src="@drawable/ic_action_info_outline_blue" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/network_error"
-            android:id="@+id/txtError"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_16sp" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/layoutWarnEmpty"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView11"
-            android:src="@drawable/ic_action_info_outline_blue" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/empty_data"
-            android:id="@+id/txtError1"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_16sp"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutWarnGPS"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView12"
-            android:src="@drawable/ic_action_info_outline_blue" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/gps_warn"
-            android:id="@+id/txtError3"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_16sp"
-            android:layout_weight="1" />
-
-    </LinearLayout>
 
 </RelativeLayout>

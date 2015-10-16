@@ -58,6 +58,7 @@ import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.requests.MapDirectionRequest;
 import wash.rocket.xor.rocketwash.requests.MapReverceGeocodingRequest;
 import wash.rocket.xor.rocketwash.requests.ReserveCancelRequest;
+import wash.rocket.xor.rocketwash.util.util;
 
 @SuppressLint("LongLogTag")
 public class WashServiceInfoFragmentReserved extends BaseFragment {
@@ -380,6 +381,11 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
             }
         });
 
+        mFont = Typeface.createFromAsset(getActivity().getAssets(), "roboto_light.ttf");
+
+        //txtSumm.setTypeface(mFont);
+
+
         //  View v = rootView.findViewById(R.id.root_time_info);
         //  mProgressBar3 = (ProgressBar) v.findViewById(R.id.progressBar3);
         //  mProgressBar3.setVisibility(View.GONE);
@@ -390,9 +396,9 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         if (mReserved != null) {
-            txtTime.setText("Вы записаны на: " + mReserved.getTime_start_format());
-            txtDuration.setText("Длительность: " + mReserved.getFull_duration());
-            txtSumm.setText("Стоимость: " + mReserved.getPrice());
+            txtTime.setText(String.format("Вы записаны на: %s", mReserved.getTime_start_format()));
+            txtDuration.setText(String.format("Длительность: %s", util.minutesToText(mReserved.getFull_duration())));
+            txtSumm.setText(String.format("Стоимость: %s %s", mReserved.getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
         }
     }
 
@@ -418,28 +424,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
                     // moveToLocation(latLng, false);
                 }
             });
-        }
-    }
-
-
-    private void addMarkers(ArrayList<Point> points) {
-
-        if (points.size() + mPoints.size() > MAX_MARKERS) {
-            int i = points.size();
-            while (i >= 0) {
-                mPoints.remove(0);
-                Marker marker = mMarkers.get(0);
-                mMarkers.remove(0);
-                marker.remove();
-                i--;
-            }
-        }
-
-        for (int i = 0; i < points.size(); i++) {
-            Point p = points.get(i);
-            mPoints.add(p);
-            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(p.lat, p.lon)).icon(BitmapDescriptorFactory.defaultMarker()));
-            mMarkers.add(marker);
         }
     }
 
@@ -516,7 +500,8 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            showToastError("Ошибка получения данных");
             // progressBar.setVisibility(View.GONE);
 
             txtInfoTitile.setVisibility(View.VISIBLE);
@@ -559,7 +544,10 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Не удалось проложить маршрут", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Не удалось проложить маршрут", Toast.LENGTH_SHORT).show();
+
+            showToastError("Не удалось проложить маршрут");
+
             // progressBar.setVisibility(View.GONE);
 
             txtInfoTitile.setVisibility(View.VISIBLE);
@@ -574,7 +562,8 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
             if (result != null) {
 
-                Toast.makeText(getActivity(), "Маршрут проложен", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Маршрут проложен", Toast.LENGTH_SHORT).show();
+                showToastOk("Маршрут проложен");
 
                 ArrayList<LatLng> points = null;
                 PolylineOptions lineOptions = null;
@@ -702,12 +691,15 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         public void onRequestSuccess(ReserveCancelResult reserveCancelResult) {
 
             if (reserveCancelResult.isData()) {
-                Toast.makeText(getActivity(), "Запись отменена", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Запись отменена", Toast.LENGTH_SHORT).show();
+                showToastOk("Запись отменена");
                 manual = true;
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, new Intent());
                 getFragmentManager().popBackStack();
             } else
-                Toast.makeText(getActivity(), "Не удалось отменить запись", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Не удалось отменить запись", Toast.LENGTH_SHORT).show();
+                showToastOk("Не удалось отменить запись");
+
             progressBar.setVisibility(View.GONE);
         }
     }

@@ -231,14 +231,10 @@ public class SendSmsFragment extends BaseFragment {
         spinner.post(new Runnable() {
             @Override
             public void run() {
-
                 int id = idl == 0 ? cur_country_id : idl;
-
                 if (last_country_id > 0)
                     id = last_country_id;
-
                 // System.out.println("id country = " + id);
-
                 spinner.setSelection(id, false);
             }
         });
@@ -309,13 +305,14 @@ public class SendSmsFragment extends BaseFragment {
             pref.setLastTimeClick(-1);
             btnSendSMS.setText(R.string.button_next);
         } else
-            btnSendSMS.setText(getActivity().getString(R.string.fragment_login_btn_retry_pin_after) + " " + util.SecondsToMS(t));
+            btnSendSMS.setText(String.format("%s %s", getActivity().getString(R.string.fragment_login_btn_retry_pin_after), util.SecondsToMS(t)));
     }
 
     public final class PinRequestListener implements RequestListener<PinResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
+            showToastError(R.string.request_pin_phone_error);
             progressBar.setVisibility(View.GONE);
         }
 
@@ -334,7 +331,8 @@ public class SendSmsFragment extends BaseFragment {
                         .addToBackStack(TAG).commit();
 
             } else {
-                Toast.makeText(getActivity(), R.string.request_pin_phone_error, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), R.string.request_pin_phone_error, Toast.LENGTH_SHORT).show();
+                showToastError(R.string.request_pin_phone_error);
             }
         }
     }
@@ -342,7 +340,8 @@ public class SendSmsFragment extends BaseFragment {
     public final class PhoneSetListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
+            showToastError(R.string.request_pin_error);
             progressBar.setVisibility(View.GONE);
         }
 
@@ -352,7 +351,6 @@ public class SendSmsFragment extends BaseFragment {
             Log.d("PhoneSetListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
-                //  Toast.makeText(getActivity(), R.string.request_pin_success, Toast.LENGTH_SHORT).show();
 
                 if (TextUtils.isEmpty(result.getData().getPhone())) {
                     waiting = false;
@@ -360,8 +358,14 @@ public class SendSmsFragment extends BaseFragment {
                     pref.setLastTimeClick(-1);
                     btnSendSMS.setText(R.string.button_next);
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), "Данный телефоный номер уже зарегистрирован в системе", Toast.LENGTH_SHORT).show();
-                    //pref.setProfile(result.getData());
+
+                    getActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                            .add(R.id.container, new LoginQuickFragment(), LoginQuickFragment.TAG)
+                            .addToBackStack(TAG)
+                            .commit();
 
                 } else {
                     pref.setProfile(result.getData());
@@ -369,8 +373,7 @@ public class SendSmsFragment extends BaseFragment {
                 }
 
             } else {
-                Toast.makeText(getActivity(), R.string.request_pin_phone_error, Toast.LENGTH_SHORT).show();
-
+                showToastError(R.string.request_pin_phone_error);
                 waiting = false;
                 stopCalculateTimer();
                 pref.setLastTimeClick(-1);
@@ -383,7 +386,7 @@ public class SendSmsFragment extends BaseFragment {
     public final class CreateEmptyUserListener implements RequestListener<EmptyUserResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
             // progressBar.setVisibility(View.GONE);
         }
 
@@ -401,12 +404,10 @@ public class SendSmsFragment extends BaseFragment {
                     pref.setSessionID(result.getData().getSession_id());
 
                     getSpiceManager().execute(new ProfileSaveRequest(pref.getSessionID(), mProfile), "save_profile", DurationInMillis.ALWAYS_EXPIRED, new SaveProfileRequestListener());
-                    getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
+                    getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, numCar, result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
 
                 } else {
-                    //final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                    //String error = res == 0 ? result.getData().getResult() : getString(res);
-                    //Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+
                 }
         }
     }
@@ -419,9 +420,7 @@ public class SendSmsFragment extends BaseFragment {
 
         @Override
         public void onRequestSuccess(ProfileResult profileResult) {
-
             getSpiceManager().execute(new SetPhoneRequest(pref.getLastUsedPhoneCode() + pref.getLastUsedPhone(), pref.getSessionID()), "phone_set", DurationInMillis.ALWAYS_EXPIRED, new PhoneSetListener());
-
         }
     }
 

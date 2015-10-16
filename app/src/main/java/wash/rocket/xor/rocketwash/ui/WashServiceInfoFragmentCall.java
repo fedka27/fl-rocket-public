@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -59,6 +58,7 @@ import wash.rocket.xor.rocketwash.requests.MapDirectionRequest;
 import wash.rocket.xor.rocketwash.requests.MapReverceGeocodingRequest;
 import wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget;
 
+@SuppressLint("LongLogTag")
 public class WashServiceInfoFragmentCall extends BaseFragment {
 
     public static final String TAG = "WashServiceInfoFragmentCall";
@@ -291,12 +291,15 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
             }
         });
 
+        /*
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setTitle(mTitle);
-        }
+        }*/
+
+        setToolbar(rootView, mTitle);
 
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
@@ -438,11 +441,11 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            showToastError(R.string.error_loading_data);
             // progressBar.setVisibility(View.GONE);
 
             txtInfoTitile.setVisibility(View.VISIBLE);
-            txtInfoTitile.setText("Не удалось уточнить адрес");
+            txtInfoTitile.setText(R.string.error_find_address);
             txtInfoDistance.setVisibility(View.GONE);
             infoBtnPath.setVisibility(View.GONE);
             infoProgressBar.setVisibility(View.GONE);
@@ -458,7 +461,7 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
                     txtInfoDistance.setVisibility(View.VISIBLE);
                     infoProgressBar.setVisibility(View.GONE);
                     infoBtnPath.setVisibility(View.VISIBLE);
-                    txtInfoTitile.setText(result.getStreet() + ", " + result.getHouse());
+                    txtInfoTitile.setText(String.format("%s, %s", result.getStreet(), result.getHouse()));
                     txtInfoDistance.setText(String.format(getActivity().getString(R.string.wash_distance), mService.getDistance()));
 
                     if (mMarker != null && mMarker.isInfoWindowShown()) {
@@ -476,11 +479,12 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Не удалось проложить маршрут", Toast.LENGTH_SHORT).show();
+
+            showToastError(R.string.error_direction);
             // progressBar.setVisibility(View.GONE);
 
             txtInfoTitile.setVisibility(View.VISIBLE);
-            txtInfoTitile.setText("Не удалось уточнить адрес");
+            txtInfoTitile.setText(R.string.error_find_address);
             txtInfoDistance.setVisibility(View.GONE);
             infoBtnPath.setVisibility(View.GONE);
             infoProgressBar.setVisibility(View.GONE);
@@ -490,7 +494,8 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
         public void onRequestSuccess(final MapRouteResult result) {
 
             if (result != null) {
-                Toast.makeText(getActivity(), "Маршрут проложен", Toast.LENGTH_SHORT).show();
+                showToastOk(R.string.success_direction);
+
                 ArrayList<LatLng> points = null;
                 PolylineOptions lineOptions = null;
                 MarkerOptions markerOptions = new MarkerOptions();
@@ -559,7 +564,6 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_position))
                                 //.anchor(0.5f, 0.5f)
                         .position(new LatLng(mLatitude, mLongitude)));
-
             }
 
             animateMarker(mPositionMarker, location); // Helper method for smooth

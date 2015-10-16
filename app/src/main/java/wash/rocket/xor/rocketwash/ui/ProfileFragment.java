@@ -19,7 +19,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -101,11 +100,15 @@ public class ProfileFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 RadioButton radioButton = (RadioButton) radioGroup.findViewById(i);
+
                 int index = radioGroup.indexOfChild(radioButton);
 
-                pref.setCarName(radioButton.getText().toString());
+                CarsAttributes r = (CarsAttributes) radioButton.getTag();
+
+                pref.setCarName(r.getBrandName() + " " + r.getModelName());
                 pref.setUseCar(index);
-                pref.setCarModelId((Integer) radioButton.getTag());
+                pref.setCarModelId(r.getCar_model_id());
+                pref.setCarNum(r.getTag());
                 //Log.d("dfgdfg", "" + index);
             }
         });
@@ -118,7 +121,7 @@ public class ProfileFragment extends BaseFragment {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .replace(R.id.container, ProfileEditFragment.newInstance(mProfile , false), "profileedit")
+                        .replace(R.id.container, ProfileEditFragment.newInstance(mProfile, false), "profileedit")
                         .addToBackStack("profile").commit();
             }
         });
@@ -178,10 +181,11 @@ public class ProfileFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private int res = 0;
     public final class ProfileRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            showToastError(R.string.error_loading_profile_data);
             progressBar.setVisibility(View.GONE);
         }
 
@@ -190,10 +194,18 @@ public class ProfileFragment extends BaseFragment {
             Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
             if (Constants.SUCCESS.equals(result.getStatus())) {
 
+                res = res + 1000;
+
                 radioGroupCars.removeAllViews();
 
                 if (result.getData() != null) {
+
                     List<CarsAttributes> c = result.getData().getCars_attributes();
+
+                    int selected = pref.getUseCar();
+                    if (selected > (c.size() - 1))
+                        selected = 0;
+
                     for (int i = 0; i < c.size(); i++) {
                         CarsAttributes r = c.get(i);
                         RadioButton rb = (RadioButton) mInflater.inflate(R.layout.radio_button, null);
@@ -214,12 +226,12 @@ public class ProfileFragment extends BaseFragment {
 
                         r.setBrandName(a);
                         r.setModelName(b);
-                        rb.setText(a + " " + b);
-                        rb.setTag(r.getCar_model_id());
-                        rb.setId(i + 1000);
+                        rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
+                        rb.setTag(r);
+                        rb.setId(i + res);
                         radioGroupCars.addView(rb);
                         //rb.setSelected(i == 0);
-                        rb.setChecked(i == 0);
+                        rb.setChecked(i == selected);
                     }
 
                     txtFullName.setText(result.getData().getName());
@@ -232,11 +244,7 @@ public class ProfileFragment extends BaseFragment {
                 progressBar.setVisibility(View.GONE);
                 Log.d("onRequestSuccess", "fill data");
             } else {
-                // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                // String error = res == 0 ? result.getData().getResult() : getString(res);
-                // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                //XXX сбросить таймер ?
-                Toast.makeText(getActivity(), "данные не отдались", Toast.LENGTH_SHORT).show();
+                showToastError(R.string.error_loading_profile_data);
             }
         }
     }
@@ -244,7 +252,7 @@ public class ProfileFragment extends BaseFragment {
     public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
         }
 

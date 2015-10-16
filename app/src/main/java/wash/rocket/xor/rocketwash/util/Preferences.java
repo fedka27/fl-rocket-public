@@ -273,6 +273,18 @@ public class Preferences {
         return prefs.getString("CarName", "");
     }
 
+    public void setCarNum(String value) {
+        SharedPreferences prefs = getSharedPreferences(mcontext);
+        Editor editor = prefs.edit();
+        editor.putString("CarNum", value);
+        editor.commit();
+    }
+
+    public String getCarNum() {
+        SharedPreferences prefs = getSharedPreferences(mcontext);
+        return prefs.getString("CarNum", "");
+    }
+
     public void setCarName(String value) {
         SharedPreferences prefs = getSharedPreferences(mcontext);
         Editor editor = prefs.edit();

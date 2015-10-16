@@ -1,6 +1,8 @@
 package wash.rocket.xor.rocketwash.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +79,7 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
         public EditText edNumberCar;
         public LinearLayout linearLayout;
         public ImageView imgDelete;
+        public TextWatcherEx txtw;
 
         public ViewHolder(View itemView, LayoutInflater inflater, int type) {
             super(itemView);
@@ -89,6 +92,11 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
             linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout);
             imgDelete = (ImageView) itemView.findViewById(R.id.imgDelete);
             this.type = type;
+
+            if (edNumberCar != null) {
+                txtw = new TextWatcherEx(0);
+                edNumberCar.addTextChangedListener(txtw);
+            }
         }
 
         public void populate(CarsAttributes c, int position) {
@@ -98,7 +106,8 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
                     txtTitle.setText(String.format(f, "" + (position + 1)));
                     edBrandCar.setText(c.getBrandName());
                     edModelCar.setText(c.getModelName());
-                    //edNumberCar.setText();
+                    txtw.updatePosition(position);
+                    edNumberCar.setText(c.getTag());
                     linearLayout.setTag(position);
 
                     edBrandCar.setTag(position);
@@ -138,6 +147,8 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
                     break;
                 case TYPE_ADD_CAR:
 
+                    //edNumberCar.addTextChangedListener(new TextWatcherEx(position));
+
                     linearLayout.setTag(position);
                     this.linearLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -166,11 +177,11 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
     }
 
     public interface IOnSelectedItem {
-         void onSelecredItem(CarsAttributes item, int position, int type);
+        void onSelecredItem(CarsAttributes item, int position, int type);
     }
 
     public interface IOnRequestNextPage {
-         void onRequestNextPage();
+        void onRequestNextPage();
     }
 
     public void setOnSelectedItem(IOnSelectedItem onSelectedItem) {
@@ -195,5 +206,33 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
         return mSelectedId;
     }
 
+
+    private class TextWatcherEx implements TextWatcher {
+
+        int mPosition;
+
+        public TextWatcherEx(final int position) {
+            mPosition = position;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            //list.get(mPosition).setTag(s.toString());
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            //list.get(mPosition).setTag(s.toString());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            list.get(mPosition).setTag(s.toString());
+        }
+
+        public void updatePosition(int position) {
+            this.mPosition = position;
+        }
+    }
 
 }

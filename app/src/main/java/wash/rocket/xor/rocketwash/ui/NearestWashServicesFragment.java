@@ -22,10 +22,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -102,9 +102,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     private TextView txtCarNumber;
     private ProgressBar progressBar;
 
-    private LinearLayout layoutError;
-    private LinearLayout layoutWarnEmpty;
-    private LinearLayout layoutWarnGPS;
+    private LinearLayout layoutWarn;
 
     private SpiceManager spiceManager = new SpiceManager(GSonRocketWashApiService.class);
     private Reservation mReserved;
@@ -331,9 +329,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 mPage = 1;
                 getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), "wash", DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
                 list.clear();
-                layoutError.setVisibility(View.GONE);
-                layoutWarnEmpty.setVisibility(View.GONE);
-                layoutWarnGPS.setVisibility(View.GONE);
+                layoutWarn.setVisibility(View.GONE);
             }
         });
 
@@ -356,14 +352,16 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             initNavigationMenu();
         }
 
-        layoutError = (LinearLayout) getView().findViewById(R.id.layoutError);
-        layoutError.setVisibility(View.GONE);
+        layoutWarn = (LinearLayout) getView().findViewById(R.id.layoutWarn);
+        layoutWarn.setVisibility(View.GONE);
 
+        /*
         layoutWarnEmpty = (LinearLayout) getView().findViewById(R.id.layoutWarnEmpty);
         layoutWarnEmpty.setVisibility(View.GONE);
 
         layoutWarnGPS = (LinearLayout) getView().findViewById(R.id.layoutWarnGPS);
-        layoutWarnGPS.setVisibility(View.GONE);
+        layoutWarnGPS.setVisibility(View.GONE);*/
+
 
         if (mLatitude != 0 && mLongitude != 0) {
             getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
@@ -374,7 +372,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 }
             });
         } else {
-            layoutWarnGPS.setVisibility(View.VISIBLE);
+            showShowGPSWarn();
         }
 
         //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.fragment_nearest_wash_services);
@@ -393,7 +391,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 if (profile != null) {
                     txtFIO.setText(profile.getName());
                     txtCar.setText(pref.getCarName());
-                    txtCarNumber.setText("");
+                    txtCarNumber.setText("Гос. номер " + pref.getCarNum());
                 } else {
                     txtFIO.setText("");
                     txtCar.setText("");
@@ -560,11 +558,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     public final class NearestWashServiceRequestListener implements RequestListener<WashServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
-            // progressBar.setVisibility(View.GONE);
-            layoutError.setVisibility(View.VISIBLE);
-            layoutWarnGPS.setVisibility(View.GONE);
-
+            showError();
             mSwipeRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
@@ -576,17 +570,10 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
         @Override
         public void onRequestSuccess(final WashServiceResult result) {
-            // progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-
-            layoutError.setVisibility(View.GONE);
-            layoutWarnGPS.setVisibility(View.GONE);
-
+            layoutWarn.setVisibility(View.GONE);
             Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
-                // list.clear();
-
                 adapter.remove_by_type(WashServicesAdapter.TYPE_LOADER, true); //XXX
 
                 if (result.getData() != null) {
@@ -615,9 +602,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                 Log.d("onRequestSuccess", "fill data");
             } else {
-                //XXX сбросить таймер ?
-                Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+                showError();
                 mSwipeRefreshLayout.post(new Runnable() {
                     @Override
                     public void run() {
@@ -722,7 +708,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     public final class ProfileRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            showToastError(R.string.error_loading_profile_data);
             progressBar.setVisibility(View.GONE);
         }
 
@@ -767,11 +753,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     progressBar.setVisibility(View.GONE);
                     Log.d("onRequestSuccess", "fill data");
                 } else {
-                    // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                    // String error = res == 0 ? result.getData().getResult() : getString(res);
-                    // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                    //XXX сбросить таймер ?
-                    Toast.makeText(getActivity(), "данные не отдались", Toast.LENGTH_SHORT).show();
+                    showToastError(R.string.error_loading_profile_data);
                 }
             }
         }
@@ -780,7 +762,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
         }
 
@@ -797,11 +778,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     public final class ReservedRequestListener implements RequestListener<ReservedResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
-            //progressBar.setVisibility(View.GONE);
-
             adapter.notifyDataSetChanged();
-
             mSwipeRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
@@ -842,7 +819,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             adapter.notifyDataSetChanged();
 
             if (list.size() <= 0)
-                layoutWarnEmpty.setVisibility(View.VISIBLE);
+                showNoDataWarn();
 
             mSwipeRefreshLayout.post(new Runnable() {
                 @Override
@@ -869,9 +846,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 mPage = 1;
                 getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), "wash", 3000, new NearestWashServiceRequestListener());
                 list.clear();
-                layoutError.setVisibility(View.GONE);
-                layoutWarnEmpty.setVisibility(View.GONE);
-                layoutWarnGPS.setVisibility(View.GONE);
+                layoutWarn.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         }
@@ -892,18 +867,37 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Не удалось добавить", Toast.LENGTH_SHORT).show();
+            showToastError(R.string.favorite_add_fail);
         }
 
         @Override
         public void onRequestSuccess(ProfileResult profileResult) {
-            Toast.makeText(getActivity(), "Добавлена успешно", Toast.LENGTH_SHORT).show();
-
-            //ContentValues cv = new ContentValues();
-            //cv.put(taxicallContent.orders.Columns.ORDER_DATE.getName(), time);
-            //getActivity().getContentResolver().update( NavigationMenuContent.MENU_CONTENT_URI, cv, NavigationMenuContent.MENU_ID + "=?",
-            //      new String[]{String.valueOf(2)});
-
+            showToastOk(R.string.favorite_add_success);
         }
+    }
+
+
+    private void showShowGPSWarn() {
+        layoutWarn.setVisibility(View.VISIBLE);
+        TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
+        ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
+        t.setText(R.string.gps_warn);
+        i.setImageResource(R.drawable.location_wash);
+    }
+
+    private void showNoDataWarn() {
+        layoutWarn.setVisibility(View.VISIBLE);
+        TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
+        ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
+        t.setText(R.string.empty);
+        i.setImageResource(R.drawable.location_error1);
+    }
+
+    private void showError() {
+        layoutWarn.setVisibility(View.VISIBLE);
+        TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
+        ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
+        t.setText(R.string.network_error);
+        i.setImageResource(R.drawable.location_error1);
     }
 }

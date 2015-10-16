@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
-import android.widget.Toast;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -64,7 +63,7 @@ public class DialoglistCarBrands extends Dialoglist {
     public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+            shwToastError(getActivity().getString(R.string.error_loading_data));
             progressBar.setVisibility(View.GONE);
         }
 

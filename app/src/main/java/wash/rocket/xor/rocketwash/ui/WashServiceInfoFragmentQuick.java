@@ -192,12 +192,15 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         mInflater = inflater;
 
         mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
+        /*
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //toolbar.setTitle(mTitle);
-        }
+        }*/
+
+        setToolbar(rootView, mTitle);
 
         initControls(rootView);
 
@@ -287,7 +290,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        txtCarName.setText(pref.getCarName());
+        txtCarName.setText(pref.getCarName() + " (" + pref.getCarNum() + ")");
         getSpiceManager().execute(new ChoiseServiceRequest(mIdService, pref.getCarModelId(), pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
     }
 
@@ -579,7 +582,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     public final class ReservationRequestListener implements RequestListener<ReservationResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.fragment_info_wash_service_reserved_fail, Toast.LENGTH_SHORT).show();
+            showToastError(R.string.fragment_info_wash_service_reserved_fail);
             progressBar.setVisibility(View.GONE);
         }
 
@@ -589,9 +592,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
             progressBar.setVisibility(View.GONE);
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
-                Toast.makeText(getActivity(), R.string.fragment_info_wash_service_reserved_succes, Toast.LENGTH_SHORT).show();
-                //setReservedTip();
-
+                showToastOk(R.string.fragment_info_wash_service_reserved_succes);
                 getActivity().getSupportFragmentManager().popBackStack();
 
                 WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService, mLatitude, mLongitude, mTitle, mService, result.getData());
@@ -605,7 +606,8 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                         .commit();
 
             } else {
-                Toast.makeText(getActivity(), result.getData().getResult(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), result.getData().getResult(), Toast.LENGTH_SHORT).show();
+                showToastError(result.getData().getResult());
             }
         }
     }
@@ -613,7 +615,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     public final class ChoiseServiceRequestListener implements RequestListener<ChoiseServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
             mProgressBar2.setVisibility(View.GONE);
         }
 
@@ -642,11 +644,6 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
                 fillChoiseServises(list);
             } else {
-                // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                // String error = res == 0 ? result.getData().getResult() : getString(res);
-                // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                //XXX сбросить таймер ?
-                //Toast.makeText(getActivity(), "данные не отдались", Toast.LENGTH_SHORT).show();
             }
 
             mProgressBar2.setVisibility(View.GONE);

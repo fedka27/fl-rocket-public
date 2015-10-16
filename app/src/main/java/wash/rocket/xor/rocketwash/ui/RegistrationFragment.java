@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import wash.rocket.xor.rocketwash.R;
 
@@ -94,7 +93,7 @@ public class RegistrationFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(edBrandCar.getText().toString()))
-                    Toast.makeText(getActivity(), R.string.need_first_select_carbrand, Toast.LENGTH_SHORT).show();
+                    showToastWarn(R.string.need_first_select_carbrand);
                 else {
                     dlgModels = DialoglistCarModels.newInstance(mCarBrandId);
                     dlgModels.setTargetFragment(RegistrationFragment.this, DIALOG_CAR_MODEL);
@@ -113,8 +112,8 @@ public class RegistrationFragment extends BaseFragment {
                             .getSupportFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .add(R.id.container, f, "SendSmsFragment")
-                            .addToBackStack("registration").commit();
+                            .add(R.id.container, f, SendSmsFragment.TAG)
+                            .addToBackStack(TAG).commit();
                 }
             }
         });
@@ -167,17 +166,17 @@ public class RegistrationFragment extends BaseFragment {
     private boolean check() {
 
         if (TextUtils.isEmpty(edBrandCar.getText().toString())) {
-            Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_without_registration_brand_warn), Toast.LENGTH_SHORT).show();
+            showToastWarn(R.string.fragment_without_registration_brand_warn);
             return false;
         }
 
         if (TextUtils.isEmpty(edModelCar.getText().toString())) {
-            Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_without_registration_model_warn), Toast.LENGTH_SHORT).show();
+            showToastWarn(R.string.fragment_without_registration_model_warn);
             return false;
         }
 
         if (TextUtils.isEmpty(edFIO.getText().toString())) {
-            Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_registration_fio_warn), Toast.LENGTH_SHORT).show();
+            showToastWarn(R.string.fragment_registration_fio_warn);
             return false;
         }
 

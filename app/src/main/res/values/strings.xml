@@ -66,7 +66,7 @@
     </string-array>
 
     <string name="need_first_select_carbrand">Сперва выберите марку автомобиля</string>
-    <string name="error_loading_data">Не удалось загрузить данные, попробуйте еще раз позже</string>
+    <string name="error_loading_data">Не удалось загрузить данные, попробуйте еще раз по позже</string>
     <string name="select_car_brand">Выбор марки автомобиля</string>
 
     <string name="login_wrong_pin">Не верный пинкод</string>
@@ -126,10 +126,9 @@
     <string name="cancel_record">ОТМЕНИТЬ ЗАПИСЬ</string>
     <string name="fragment_favorites_wash_services_title">Избранные мойки</string>
     <string name="empty">Нет данных.</string>
+    <string name="empty_ex">Автомойки в вашем городе не зарегистрированы, оставьте отзыв в Меню->Информация и мы добавим список автомоек для Вас</string>
     <string name="share_with">Рекомендовать друзьям</string>
     <string name="share_data">Рекомендую использовать приложение RocketWash для записи на автомойку. Оно экономит мое время. Скачивай по ссылке: http://goo.gl/5j7dVZ</string>
-
-
     <string name="fragment_information_title">Информация</string>
     <string name="url_info">http://rocketwash.me/information/index.php</string>
     <string name="group_name_reserved">ВЫ ЗАПИСАНЫ, ЖДЕМ ВАС</string>
@@ -151,6 +150,15 @@
     <string name="remove">УДАЛИТЬ</string>
     <string name="fragment_nearest_wash_services_remove_to_vaf">Удалить из избранных ?</string>
     <string name="avaiable_rec">МОЖНО ЗАПИСАТЬСЯ</string>
-
+    <string name="fragment_login_quick_already_registered">Вы уже зарегистрированы в нашем приложении, пожалуйста введите пароль и получите доступ</string>
+    <string name="empty_favorites">Вы еще не добавили ни одну мойку в избранные</string>
+    <string name="error_loading_profile_data">Не удалось получить данные вашего профиля</string>
+    <string name="favorite_add_success">Добавлена успешно</string>
+    <string name="favorite_add_fail">Не удалось добавить в избранные</string>
+    <string name="error_save_profile_data">Не удалось сохранить измеения профиля</string>
+    <string name="data_save_success">Изменения  успешно сохранены</string>
+    <string name="error_direction">Не удалось проложить маршрут</string>
+    <string name="error_find_address">Не удалось уточнить адрес</string>
+    <string name="success_direction">Маршрут проложен</string>
 
 </resources>

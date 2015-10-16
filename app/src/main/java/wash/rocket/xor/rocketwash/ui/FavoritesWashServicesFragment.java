@@ -15,9 +15,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -65,9 +66,10 @@ public class FavoritesWashServicesFragment extends BaseFragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private Toolbar toolbar;
     private ProgressBar progressBar;
-    private LinearLayout layoutError;
-    private LinearLayout layoutEmpty;
+
     private SpiceManager spiceManager = new SpiceManager(GSonRocketWashApiService.class);
+
+    private LinearLayout layoutWarn;
 
     private int mPosition = -1;
 
@@ -228,11 +230,8 @@ public class FavoritesWashServicesFragment extends BaseFragment {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }*/
 
-        layoutError = (LinearLayout) getView().findViewById(R.id.layoutError);
-        layoutEmpty = (LinearLayout) getView().findViewById(R.id.layoutEmpty);
-
-        layoutError.setVisibility(View.GONE);
-        layoutEmpty.setVisibility(View.GONE);
+        layoutWarn = (LinearLayout) getView().findViewById(R.id.layoutWarn);
+        layoutWarn.setVisibility(View.GONE);
         //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.fragment_nearest_wash_services);
     }
 
@@ -255,16 +254,16 @@ public class FavoritesWashServicesFragment extends BaseFragment {
     public final class FavoritesWashServiceRequestListenner implements RequestListener<WashServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            showToastError("Ошибка получения данных");
             // progressBar.setVisibility(View.GONE);
-            layoutError.setVisibility(View.VISIBLE);
+            showError();
         }
 
         @Override
         public void onRequestSuccess(final WashServiceResult result) {
             // progressBar.setVisibility(View.GONE);
             //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-            layoutError.setVisibility(View.GONE);
+            layoutWarn.setVisibility(View.GONE);
             Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
@@ -283,14 +282,13 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                     }
 
                     if (list.size() <= 0)
-                        layoutEmpty.setVisibility(View.VISIBLE);
+                        showNoDataWarn();
                 }
                 adapter.notifyDataSetChanged();
 
                 Log.d("onRequestSuccess", "fill data");
             } else {
-                //XXX сбросить таймер ?
-                Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+                showToastError("Ошибка получения данных");
             }
         }
     }
@@ -368,5 +366,32 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         public void onRequestSuccess(ProfileResult profileResult) {
 
         }
+    }
+
+    private void showShowGPSWarn()
+    {
+        layoutWarn.setVisibility(View.VISIBLE);
+        TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
+        ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
+        t.setText(R.string.gps_warn);
+        i.setImageResource(R.drawable.location_wash);
+    }
+
+    private void showNoDataWarn()
+    {
+        layoutWarn.setVisibility(View.VISIBLE);
+        TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
+        ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
+        t.setText(R.string.empty_favorites);
+        i.setImageResource(R.drawable.location_wash);
+    }
+
+    private void showError()
+    {
+        layoutWarn.setVisibility(View.VISIBLE);
+        TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
+        ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
+        t.setText(R.string.network_error);
+        i.setImageResource(R.drawable.location_error1);
     }
 }

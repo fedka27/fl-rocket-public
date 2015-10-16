@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -19,6 +18,7 @@ import wash.rocket.xor.rocketwash.model.CarMake;
 import wash.rocket.xor.rocketwash.model.CarsAttributes;
 import wash.rocket.xor.rocketwash.model.CarsMakes;
 import wash.rocket.xor.rocketwash.model.CarsMakesResult;
+import wash.rocket.xor.rocketwash.model.CarsProfileResult;
 import wash.rocket.xor.rocketwash.model.ProfileResult;
 import wash.rocket.xor.rocketwash.requests.CarsMakesRequest;
 import wash.rocket.xor.rocketwash.requests.ProfileRequest;
@@ -30,6 +30,8 @@ import wash.rocket.xor.rocketwash.util.Constants;
 public class LoaderFragment extends BaseFragment {
 
     public static final String TAG = "LoaderFragment";
+
+    private List<CarsAttributes> pcars;
 
     public LoaderFragment() {
     }
@@ -61,7 +63,7 @@ public class LoaderFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ONE_SECOND * 30, new CarsRequestListener());
+        getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ONE_HOUR, new CarsRequestListener());
     }
 
 
@@ -70,7 +72,7 @@ public class LoaderFragment extends BaseFragment {
     public final class ProfileRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+            showToastError(R.string.error_loading_data);
             mCallback.onLoading();
         }
 
@@ -104,13 +106,14 @@ public class LoaderFragment extends BaseFragment {
                         }
 
                         pref.setCarName(a + " " + b);
+                        pref.setCarNum(r.getTag());
                     }
 
                     pref.setProfile(result.getData());
 
                     Log.d("onRequestSuccess", "fill data");
                 } else {
-                    Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+                    showToastError(R.string.error_loading_data);
                 }
             }
 
@@ -121,7 +124,7 @@ public class LoaderFragment extends BaseFragment {
     public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+            showToastError(R.string.error_loading_data);
             mCallback.onLoading();
         }
 
@@ -131,9 +134,22 @@ public class LoaderFragment extends BaseFragment {
             if (result != null) {
                 list_cars = result.getData();
                 getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new ProfileRequestListener());
+                //getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new CarProfileRequestListener());
             }
         }
     }
 
 
+    private class CarProfileRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.CarsProfileResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+        }
+
+        @Override
+        public void onRequestSuccess(CarsProfileResult carsProfileResult) {
+            pcars = carsProfileResult.getData();
+            getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new ProfileRequestListener());
+        }
+    }
 }

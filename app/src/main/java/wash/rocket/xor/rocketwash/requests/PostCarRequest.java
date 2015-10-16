@@ -19,13 +19,15 @@ public class PostCarRequest extends GoogleHttpClientSpiceRequest<PostCarResult> 
     private int id_carBrand;
     private int id_carModel;
     private String id_session;
+    private String tag;
 
-    public PostCarRequest(int id_carBrand, int id_carModel, String id_session) {
+    public PostCarRequest(int id_carBrand, int id_carModel, String tag, String id_session) {
         super(PostCarResult.class);
         this.baseUrl = "http://test.rocketwash.me/v2/cars";
         this.id_carBrand = id_carBrand;
         this.id_carModel = id_carModel;
         this.id_session = id_session;
+        this.tag = tag;
     }
 
     @Override
@@ -34,6 +36,7 @@ public class PostCarRequest extends GoogleHttpClientSpiceRequest<PostCarResult> 
                 .buildUpon()
                 .appendQueryParameter("car_make_id", "" + id_carBrand)
                 .appendQueryParameter("car_model_id", "" + id_carModel)
+                .appendQueryParameter("tag", tag)
                 .build().toString();
         Log.d("loadDataFromNetwork", "uri = " + uri);
         HttpHeaders header = new HttpHeaders();

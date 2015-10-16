@@ -48,6 +48,7 @@ public class WithoutRegistrationFragment extends BaseFragment {
 
     private EditText edBrandCar;
     private EditText edModelCar;
+    private EditText edNumCar;
 
     private int mCarBrandId = 0;
     private int mCarMoldelId = 0;
@@ -125,12 +126,12 @@ public class WithoutRegistrationFragment extends BaseFragment {
                 hideKeyboard();
 
                 if (TextUtils.isEmpty(edBrandCar.getText().toString())) {
-                    Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_without_registration_brand_warn), Toast.LENGTH_SHORT).show();
+                    showToastWarn(R.string.fragment_without_registration_brand_warn);
                     return;
                 }
 
                 if (TextUtils.isEmpty(edModelCar.getText().toString())) {
-                    Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_without_registration_model_warn), Toast.LENGTH_SHORT).show();
+                    showToastWarn(R.string.fragment_without_registration_model_warn);
                     return;
                 }
 
@@ -188,8 +189,7 @@ public class WithoutRegistrationFragment extends BaseFragment {
     public final class CreateEmptyUserListener implements RequestListener<EmptyUserResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
-            // progressBar.setVisibility(View.GONE);
+            showToastError(R.string.error_loading_data);
         }
 
         @Override
@@ -204,7 +204,7 @@ public class WithoutRegistrationFragment extends BaseFragment {
                 if (Constants.SUCCESS.equals(result.getStatus())) {
                     Log.d("CreateEmptyUserListener", "getSession_id = " + result.getData().getSession_id());
                     pref.setSessionID(result.getData().getSession_id());
-                    getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
+                    getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, "", result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
 
                 } else {
                     //final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
@@ -217,14 +217,14 @@ public class WithoutRegistrationFragment extends BaseFragment {
     public final class CreateCarListener implements RequestListener<PostCarResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
+            showToastError(R.string.error_loading_data);
             progressBar.setVisibility(View.GONE);
         }
 
         @Override
         public void onRequestSuccess(final PostCarResult result) {
             progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
+
             Log.d("CreateCarListener", result.toString());
             if (result != null)
                 if (Constants.SUCCESS.equals(result.getStatus())) {
@@ -241,9 +241,7 @@ public class WithoutRegistrationFragment extends BaseFragment {
                         mCallback.onLogged();
 
                 } else {
-                    //final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                    //String error = res == 0 ? result.getData().getResult() : getString(res);
-                    //Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+
                 }
         }
     }

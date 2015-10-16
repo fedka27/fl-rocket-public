@@ -41,7 +41,6 @@ public class util {
     }
 
 
-
     //XXX to utils
     public static String SecondsToMS(long seconds) {
         //final int hours = (int) seconds / 3600;
@@ -133,4 +132,18 @@ public class util {
         return adress;
     }
 
+    public static String minutesToText(long mins) {
+        long seconds = mins * 60;
+
+        final int hours = (int) seconds / 3600;
+        final int min = (int) (seconds % 3600) / 60;
+        final int sec = (int) seconds % 60;
+
+        if (hours > 0)
+            return String.format("%d час %d мин", hours, min);
+        else
+            return String.format("%d мин", min);
+
+        //return String.format("%02d м.", min) + " " + String.format("%02d с.", sec);
+    }
 }

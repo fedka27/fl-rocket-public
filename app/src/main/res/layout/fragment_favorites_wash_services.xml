@@ -37,61 +37,53 @@
 
 
     <LinearLayout
-        android:id="@+id/layoutError"
+        android:id="@+id/layoutWarn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_below="@+id/toolbar">
 
-        <ImageView
-            android:id="@+id/imageView10"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_info_outline_blue" />
+            android:layout_marginTop="@dimen/dimen20dp">
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="219dp"
+                android:layout_height="71dp"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentTop="false"
+                android:layout_marginTop="45dp"
+                android:src="@drawable/back_wash"/>
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:layout_alignParentTop="false"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/location_error1"/>
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/txtError"
+            android:id="@+id/txtWarn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/network_error"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_16sp" />
-
+            android:layout_marginBottom="@dimen/dimen20dp"
+            android:layout_marginTop="@dimen/dimen20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/fragment_network_error_caption"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/primary_text_color"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/text_16sp"/>
     </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/layoutEmpty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
-
-        <ImageView
-            android:id="@+id/imageView12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_info_outline_blue" />
-
-        <TextView
-            android:id="@+id/txtEmpty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/empty"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_16sp" />
-
-    </LinearLayout>
-
 
 </RelativeLayout>

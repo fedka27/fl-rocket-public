@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import wash.rocket.xor.rocketwash.R;
 
@@ -67,43 +66,21 @@ public class InformationFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         setToolbar(getView());
-
-        //final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-        //progressBar = ProgressDialog.show(getActivity(), "Подождите...", "Идет загрузка");
-
         web.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.i(TAG, "Processing webview url click...");
                 view.loadUrl(url);
                 return true;
             }
 
             public void onPageFinished(WebView view, String url) {
-                Log.i(TAG, "Finished loading URL: " + url);
-                /*
-                if (progressBar.isShowing()) {
-                    progressBar.dismiss();
-                }*/
             }
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 Log.e(TAG, "Error: " + description);
-                Toast.makeText(getActivity(), "Oh no! " + description, Toast.LENGTH_SHORT).show();
-                /*
-                alertDialog.setTitle("Error");
-                alertDialog.setMessage(description);
-                alertDialog.setButton(0, "Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                alertDialog.show();*/
+                showToastError("Ошибка" + description);
             }
         });
-
         web.loadUrl(getActivity().getString(R.string.url_info));
     }
 
