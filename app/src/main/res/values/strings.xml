@@ -37,7 +37,7 @@
 
     <string name="button_next">ПРОДОЛЖИТЬ</string>
 
-    <string name="drawer">we</string>
+    <string name="drawer"></string>
 
     <string-array name="menu_list">
         <item>shift</item>
@@ -160,5 +160,11 @@
     <string name="error_direction">Не удалось проложить маршрут</string>
     <string name="error_find_address">Не удалось уточнить адрес</string>
     <string name="success_direction">Маршрут проложен</string>
+    <string name="cancel_record1">ОТМЕНИТЬ</string>
+    <string name="fragment_nearest_wash_services_cancel_reserved">Отменить запись на мойку ?</string>
+    <string name="select_country">Выбор страны</string>
+    <string name="error_creating_account">Ошибка создания аккаунта</string>
+    <string name="car_number">Гос. номер</string>
+    <string name="after_refresh_washes">\"После обновления списка моек скрытые мойки вновь появятся.\"</string>
 
 </resources>

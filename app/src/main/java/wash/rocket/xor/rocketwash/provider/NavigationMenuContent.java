@@ -139,6 +139,8 @@ public class NavigationMenuContent extends ContentProvider {
         TypedArray icons = getContext().getResources().obtainTypedArray(R.array.menu_icons);
         MatrixCursor menuResCursor = new MatrixCursor(new String[]{MENU_ID, MENU_NAME, MENU_RES_ICON}, 1);
 
+        profile = prefs.getProfile();
+
         for (int i = 0; i < menu_list.length; i++) {
 
             if (profile != null && !profile.isPhone_verified()) {

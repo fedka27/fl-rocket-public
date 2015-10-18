@@ -796,20 +796,14 @@ public class WashServiceInfoFragment extends BaseFragment {
 
                             r.setBrandName(a);
                             r.setModelName(b);
-                            rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
+                            if (TextUtils.isEmpty(r.getTag()))
+                                rb.setText(String.format("%s %s", a, b));
+                            else
+                                rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
                             rb.setTag(r);
                             rb.setId(res + i);
                             radioGroupCars.addView(rb);
                             rb.setChecked(selected == i);
-
-                            /*
-                            radioGroupCars.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    radioGroupCars.check(res);
-                                }
-                            });*/
-
                         }
 
                     } finally {
@@ -817,7 +811,6 @@ public class WashServiceInfoFragment extends BaseFragment {
                         radioGroupCars.post(new Runnable() {
                             @Override
                             public void run() {
-                                // radioGroupCars.
                                 radioGroupCars.invalidate();
                             }
                         });
@@ -825,7 +818,11 @@ public class WashServiceInfoFragment extends BaseFragment {
                         loading = false;
                     }
 
-                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, pref.getCarModelId(), pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+                    int id_model = pref.getCarModelId();
+                    if (id_model == 0)
+                        id_model = pref.getProfile().getCars_attributes().get(0).getCar_model_id();
+
+                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
                 }
             } else {
                 showToastError(R.string.error_loading_data);
@@ -1111,25 +1108,6 @@ public class WashServiceInfoFragment extends BaseFragment {
             }
         }
     }
-
-/*
-    private void addDefaultService() {
-        TableRow t = (TableRow) mInflater.inflate(R.layout.service_table_row, null);
-        TextView sum = (TextView) t.findViewById(R.id.sum);
-        CheckBox c = (CheckBox) t.findViewById(R.id.checkBox);
-        c.setChecked(true);
-        c.setText(mService.getService_name());
-        sum.setTypeface(mFont);
-        sum.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
-        t.setTag(1);
-        tableServicesContent.addView(t);
-        int price = 0;
-
-        txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
-        // txtDiscount.setText(String.format("%d %s", discount, getActivity().getString(R.string.rubleSymbolJava)));
-        txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
-    }*/
-
 
     public final class ChoiseServiceRequestListener implements RequestListener<ChoiseServiceResult> {
         @Override

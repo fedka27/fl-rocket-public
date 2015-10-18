@@ -1,5 +1,6 @@
 package wash.rocket.xor.rocketwash.ui;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -33,6 +34,7 @@ import wash.rocket.xor.rocketwash.util.Constants;
 /**
  * A placeholder fragment containing a simple view.
  */
+@SuppressLint("LongLogTag")
 public class WithoutRegistrationFragment extends BaseFragment {
 
     public static final String TAG = "WithoutRegistrationFragment";
@@ -154,6 +156,7 @@ public class WithoutRegistrationFragment extends BaseFragment {
         super.onResume();
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -194,23 +197,14 @@ public class WithoutRegistrationFragment extends BaseFragment {
 
         @Override
         public void onRequestSuccess(final EmptyUserResult result) {
-            // progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-            Log.d("CreateEmptyUserListener", " result = " + result.toString());
+            if (result != null && Constants.SUCCESS.equals(result.getStatus())) {
+                Log.d("CreateEmptyUserListener", "getSession_id = " + result.getData().getSession_id());
+                pref.setSessionID(result.getData().getSession_id());
+                getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, "", result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
 
-            pref.setSessionID(result.getData().getSession_id());
-
-            if (result != null)
-                if (Constants.SUCCESS.equals(result.getStatus())) {
-                    Log.d("CreateEmptyUserListener", "getSession_id = " + result.getData().getSession_id());
-                    pref.setSessionID(result.getData().getSession_id());
-                    getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, "", result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
-
-                } else {
-                    //final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                    //String error = res == 0 ? result.getData().getResult() : getString(res);
-                    //Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                }
+            } else {
+                showToastError(R.string.error_creating_account);
+            }
         }
     }
 
@@ -225,27 +219,14 @@ public class WithoutRegistrationFragment extends BaseFragment {
         public void onRequestSuccess(final PostCarResult result) {
             progressBar.setVisibility(View.GONE);
 
-            Log.d("CreateCarListener", result.toString());
-            if (result != null)
-                if (Constants.SUCCESS.equals(result.getStatus())) {
-                    // mCallback.onLogged();
-                    /*
-                    pref.setRegistered(true);
-                    getActivity()
-                            .getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .replace(R.id.container, new LoaderFragment(), "loader_fragment")
-                            .commit();*/
-                    if (mCallback != null)
-                        mCallback.onLogged();
-
-                } else {
-
-                }
+            if (result != null && Constants.SUCCESS.equals(result.getStatus())) {
+                if (mCallback != null)
+                    mCallback.onLogged();
+            } else {
+                showToastError(R.string.error_loading_data);
+            }
         }
     }
-
 
     @Override
     public void onDetach() {

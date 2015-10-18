@@ -200,10 +200,10 @@ public class CountryMaster
 			country = mCountries.get(i++);
 			if (country.mCountryIso.equals(isoCode))
 			{
-				break;
+				return country;
 			}
 		}
-		return country;
+		return null;
 	}
 
 	/**

@@ -3,7 +3,6 @@ package wash.rocket.xor.rocketwash.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -26,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -45,6 +45,7 @@ import wash.rocket.xor.rocketwash.model.CarsMakesResult;
 import wash.rocket.xor.rocketwash.model.Profile;
 import wash.rocket.xor.rocketwash.model.ProfileResult;
 import wash.rocket.xor.rocketwash.model.Reservation;
+import wash.rocket.xor.rocketwash.model.ReserveCancelResult;
 import wash.rocket.xor.rocketwash.model.ReservedResult;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.model.WashServiceResult;
@@ -53,11 +54,13 @@ import wash.rocket.xor.rocketwash.requests.AddToFavoriteRequest;
 import wash.rocket.xor.rocketwash.requests.CarsMakesRequest;
 import wash.rocket.xor.rocketwash.requests.NearestWashServiceRequest;
 import wash.rocket.xor.rocketwash.requests.ProfileRequest;
+import wash.rocket.xor.rocketwash.requests.ReserveCancelRequest;
 import wash.rocket.xor.rocketwash.requests.ReservedRequest;
 import wash.rocket.xor.rocketwash.services.GSonRocketWashApiService;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.util;
 import wash.rocket.xor.rocketwash.widgets.BaseSwipeListViewListener;
+import wash.rocket.xor.rocketwash.widgets.DividerItemDecoration;
 import wash.rocket.xor.rocketwash.widgets.SlideInDownAnimator;
 import wash.rocket.xor.rocketwash.widgets.SwipeListView;
 
@@ -77,8 +80,10 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
     private static final int DIALOG_FAVORITE = 5;
     private static final int DIALOG_HIDE = 6;
+    private static final int DIALOG_CANCEL_RESERVED = 7;
     private static final String DIALOG_HIDE_TAG = "DIALOG_HIDE";
     private static final String DIALOG_FAVORITE_TAG = "DIALOG_FAVORITE";
+    private static final String DIALOG_CANCEL_RESERVED_TAG = "DIALOG_CANCEL_RESERVED";
 
     private List<WashService> list;
 
@@ -89,7 +94,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
     private WashServicesAdapter adapter;
     private SwipeListView swipeListView;
-    private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Toolbar toolbar;
@@ -134,12 +138,14 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         //mLatitude = 56.140901;
         //mLongitude = 47.244521;
 
         mDistance = 20;
         mPage = 1;
+
+        if (getView() == null)
+            return;
 
         if (savedInstanceState == null)
             list = new ArrayList<>();
@@ -152,7 +158,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         //RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
 
-        swipeListView.addItemDecoration(new SpacesItemDecoration(1));
+        swipeListView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         swipeListView.setHasFixedSize(true);
         swipeListView.setLayoutManager(layoutManager);
         swipeListView.setItemAnimator(new SlideInDownAnimator());
@@ -249,9 +255,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
             @Override
             public void onDismiss(int[] reverseSortedPositions) {
-                for (int position : reverseSortedPositions) {
-                    // data.remove(position);
-                }
                 adapter.notifyDataSetChanged();
             }
         });
@@ -278,7 +281,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     case 2:
 
                         WashServiceInfoFragmentQuick f = WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s);
-                        f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
+                        f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_QUICK);
 
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
@@ -290,7 +293,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     // hide
                     case 3:
                         mPosition = position;
-                        showDialogYesNo(R.string.fragment_nearest_wash_services_hide, "После обновления списка моек скрытые мойки вновь появятся.", DIALOG_HIDE, DIALOG_HIDE_TAG);
+                        showDialogYesNo(R.string.fragment_nearest_wash_services_hide, getActivity().getString(R.string.after_refresh_washes), DIALOG_HIDE, DIALOG_HIDE_TAG);
                         break;
                     // more
                     case 4:
@@ -298,6 +301,9 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                         showDialogYesNo(R.string.fragment_nearest_wash_services_add_to_vaf, "", DIALOG_FAVORITE, DIALOG_FAVORITE_TAG);
                         break;
 
+                    case 5:
+                        showDialogYesNo(R.string.fragment_nearest_wash_services_cancel_reserved, "", DIALOG_CANCEL_RESERVED, DIALOG_CANCEL_RESERVED_TAG);
+                        break;
                 }
             }
         });
@@ -312,16 +318,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         });
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.refresh);
-
-        /*
-        swipeListView.addOnItemTouchListener(
-                new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        Toast.makeText(SwipeListViewExampleActivity.this,""+position,Toast.LENGTH_LONG).show();
-                    }
-                })
-        );*/
-
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -333,35 +329,21 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             }
         });
 
-        // parcel/
-        //String session = "kC2EJtXFUfYAab5WSzuc4bkUJAy38lgC6l84bFSmYyjRFmIjSDptLThreL0Q6mVg5rKQ/C2fDAIOanZ77buL77sEewWZYJOrsRc3Taivtt9NC8+h5o1GOjQhDJodEMjdUd/ePw==";
-        /*
-        String session = pref.getSessionID();
-        if (savedInstanceState == null)
-            getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
-        else
-            getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
-            //getSpiceManager().addListenerIfPending(WashServiceResult.class, NEAREST_WASH_KEY_CASH, new NearestWashServiceRequestListener());
-            */
-
         toolbar = (Toolbar) getView().findViewById(R.id.toolbar);
         if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            AppCompatActivity a = (AppCompatActivity) getActivity();
+            if (a != null) {
+                a.setSupportActionBar(toolbar);
+                if (a.getSupportActionBar() != null) {
+                    a.getSupportActionBar().setHomeButtonEnabled(true);
+                    a.getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }
+            }
             initNavigationMenu();
         }
 
         layoutWarn = (LinearLayout) getView().findViewById(R.id.layoutWarn);
         layoutWarn.setVisibility(View.GONE);
-
-        /*
-        layoutWarnEmpty = (LinearLayout) getView().findViewById(R.id.layoutWarnEmpty);
-        layoutWarnEmpty.setVisibility(View.GONE);
-
-        layoutWarnGPS = (LinearLayout) getView().findViewById(R.id.layoutWarnGPS);
-        layoutWarnGPS.setVisibility(View.GONE);*/
-
 
         if (mLatitude != 0 && mLongitude != 0) {
             getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
@@ -374,11 +356,13 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         } else {
             showShowGPSWarn();
         }
-
-        //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.fragment_nearest_wash_services);
     }
 
     private void initNavigationMenu() {
+
+        if (getView() == null)
+            return;
+
         mDrawerLayout = (DrawerLayout) getView().findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout, toolbar, R.string.drawer, R.string.drawer) {
 
@@ -391,7 +375,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 if (profile != null) {
                     txtFIO.setText(profile.getName());
                     txtCar.setText(pref.getCarName());
-                    txtCarNumber.setText("Гос. номер " + pref.getCarNum());
+                    txtCarNumber.setText(String.format("%s %s", getActivity().getString(R.string.car_number), pref.getCarNum()));
                 } else {
                     txtFIO.setText("");
                     txtCar.setText("");
@@ -421,7 +405,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
 
-        recyclerView.addItemDecoration(new SpacesItemDecoration(0));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setHasFixedSize(true);
         mMenuAdapter = new MenuCursorAdapter(getActivity(), null);
         recyclerView.setLayoutManager(layoutManager);
@@ -437,10 +421,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                 switch (id) {
                     case 1:
-
                         ProfileFragment p = new ProfileFragment();
                         p.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_PROFILE);
-
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
@@ -450,7 +432,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                         break;
 
                     case 2:
-
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
@@ -460,7 +441,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                         break;
 
                     case 8:
-
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
@@ -559,13 +539,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             showError();
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-            });
-
+            stopRefrash();
         }
 
         @Override
@@ -592,46 +566,16 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
                 else {
                     adapter.notifyDataSetChanged();
-                    mSwipeRefreshLayout.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
+                    stopRefrash();
                 }
 
                 Log.d("onRequestSuccess", "fill data");
             } else {
-                //Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
                 showError();
-                mSwipeRefreshLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                stopRefrash();
             }
         }
     }
-
-    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int space;
-
-        public SpacesItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            outRect.left = space;
-            outRect.right = space;
-            outRect.bottom = space;
-
-            if (parent.getChildPosition(view) == 0)
-                outRect.top = space;
-        }
-    }
-
 
     @Override
     public void onStart() {
@@ -645,17 +589,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         if (spiceManager.isStarted()) {
             spiceManager.shouldStop();
         }
-
-        // stopTracking();
-        //doStopLocationService();
     }
-
-    /*
-    @Override
-    public SpiceManager getSpiceManager() {
-        return spiceManager;
-    }*/
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -674,6 +608,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
+
+                case FRAGMENT_QUICK:
                 case FRAGMENT_RESERVED:
 
                     if (data != null) {
@@ -699,6 +635,12 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     adapter.remove(mPosition);
 
                     break;
+
+                case DIALOG_CANCEL_RESERVED:
+                    swipeListView.closeAnimate(mPosition);
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    getSpiceManager().execute(new ReserveCancelRequest(pref.getSessionID(), mReserved.getId()), "cancel", DurationInMillis.ALWAYS_EXPIRED, new CancelRequestListener());
+                    break;
             }
         }
     }
@@ -722,10 +664,11 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                     int i = pref.getUseCar();
 
-                    if (i > c.size())
-                        i = 0;
-
                     if (c != null) {
+
+                        if (i > c.size())
+                            i = 0;
+
                         CarsAttributes r = c.get(i);
 
                         String a = "", b = "";
@@ -743,8 +686,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                             }
                         }
 
-                        txtCar.setText(a + " " + b);
-                        pref.setCarName(a + " " + b);
+                        txtCar.setText(String.format("%s %s", a, b));
+                        pref.setCarName(String.format("%s %s", a, b));
                     }
 
                     txtFIO.setText(result.getData().getName());
@@ -830,6 +773,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         }
     }
 
+    long last_time = 0;
 
     @Override
     public void onLocationChanged(Location location) {
@@ -841,14 +785,22 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
 
-            if (list.size() <= 0 && !mSwipeRefreshLayout.isRefreshing()) {
+            if (list.size() <= 0 && !mSwipeRefreshLayout.isRefreshing() && last_time == 0) {
                 String session = pref.getSessionID();
                 mPage = 1;
                 getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), "wash", 3000, new NearestWashServiceRequestListener());
                 list.clear();
                 layoutWarn.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setRefreshing(true);
+
+                last_time = System.currentTimeMillis();
             }
+
+            // refresh per 30 sec
+            if (last_time > 0)
+                if (System.currentTimeMillis() - last_time > 30000)
+                    last_time = 0;
+
         }
     }
 
@@ -876,7 +828,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         }
     }
 
-
     private void showShowGPSWarn() {
         layoutWarn.setVisibility(View.VISIBLE);
         TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
@@ -889,7 +840,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         layoutWarn.setVisibility(View.VISIBLE);
         TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
-        t.setText(R.string.empty);
+        t.setText(R.string.empty_ex);
         i.setImageResource(R.drawable.location_error1);
     }
 
@@ -899,5 +850,39 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
         t.setText(R.string.network_error);
         i.setImageResource(R.drawable.location_error1);
+    }
+
+    private class CancelRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.ReserveCancelResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Toast.makeText(getActivity(), "Не удалось отменить запись", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onRequestSuccess(ReserveCancelResult reserveCancelResult) {
+            if (reserveCancelResult.isData()) {
+                showToastOk("Запись отменена");
+
+                adapter.remove_by_type(WashServicesAdapter.TYPE_RESERVED, true);
+                adapter.remove_by_type(WashServicesAdapter.TYPE_GROUP, true);
+                adapter.notifyDataSetChanged();
+
+                stopRefrash();
+
+            } else
+                showToastOk("Не удалось отменить запись");
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+
+    private void stopRefrash() {
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 }

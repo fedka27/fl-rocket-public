@@ -80,11 +80,15 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     @Override
     public void onLogged() {
         pref.setRegistered(true);
+        removePrevFragments();
         showLoaderFragment();
     }
 
     @Override
     public void onLoading() {
+
+        removePrevFragments();
+
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                 .replace(R.id.container, new NearestWashServicesFragment(), NearestWashServicesFragment.TAG)
@@ -214,6 +218,30 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     private void removePrevFragments()
     {
         Fragment f = getSupportFragmentManager().findFragmentByTag( LoginFragment.TAG );
+        if (f != null)
+            getSupportFragmentManager().beginTransaction().remove(f).commit();
+
+        f = getSupportFragmentManager().findFragmentByTag( NearestWashServicesFragment.TAG );
+        if (f != null)
+            getSupportFragmentManager().beginTransaction().remove(f).commit();
+
+        f = getSupportFragmentManager().findFragmentByTag( SendSmsFragment.TAG );
+        if (f != null)
+            getSupportFragmentManager().beginTransaction().remove(f).commit();
+
+        f = getSupportFragmentManager().findFragmentByTag( ConfirmationFragment.TAG );
+        if (f != null)
+            getSupportFragmentManager().beginTransaction().remove(f).commit();
+
+        f = getSupportFragmentManager().findFragmentByTag( WashServiceInfoFragment.TAG );
+        if (f != null)
+            getSupportFragmentManager().beginTransaction().remove(f).commit();
+
+        f = getSupportFragmentManager().findFragmentByTag( WashServiceInfoFragmentCall.TAG );
+        if (f != null)
+            getSupportFragmentManager().beginTransaction().remove(f).commit();
+
+        f = getSupportFragmentManager().findFragmentByTag( WashServiceInfoFragmentQuick.TAG );
         if (f != null)
             getSupportFragmentManager().beginTransaction().remove(f).commit();
 

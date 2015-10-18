@@ -3,18 +3,17 @@ package wash.rocket.xor.rocketwash.ui;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -28,19 +27,15 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import wash.rocket.xor.rocketwash.R;
-import wash.rocket.xor.rocketwash.adapters.CountryAdapter;
 import wash.rocket.xor.rocketwash.model.LoginResult;
 import wash.rocket.xor.rocketwash.model.PinResult;
 import wash.rocket.xor.rocketwash.requests.LoginRequest;
 import wash.rocket.xor.rocketwash.requests.PinRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
-import wash.rocket.xor.rocketwash.util.Country;
-import wash.rocket.xor.rocketwash.util.CountryMaster;
 import wash.rocket.xor.rocketwash.util.util;
 
 /**
@@ -50,11 +45,14 @@ public class LoginFragment extends BaseFragment {
 
     public static final String TAG = "LoginFragment";
     private static final int MINUTES_WAIT = 1;
+    private static final int DIALOG_COUNTRY = 2;
+    private static final String DIALOG_COUNTRY_TAG = "DIALOG_COUNTRY";
 
     private TextView txtCaption;
     //  private TextView txtPhoneCode;
     private EditText edPhone;
     private EditText edPinCode;
+    private EditText edPhoneCode;
     private Button btnReplyPin;
     private Button btnLogin;
     private Button btnRegister;
@@ -69,7 +67,9 @@ public class LoginFragment extends BaseFragment {
     private int last_country_id = 0;
     private int cur_country_id = 0;
 
-    private LoginRequest loginRequest;
+    //private LoginRequest loginRequest;
+
+    private DialoglistCountries dlg_country;
 
     public LoginFragment() {
     }
@@ -106,9 +106,10 @@ public class LoginFragment extends BaseFragment {
             return;
 
         txtCaption = (TextView) getView().findViewById(R.id.txtCaption);
-        //  txtPhoneCode = (TextView) getView().findViewById(R.id.txtPhoneCode);
+        edPhoneCode = (EditText) getView().findViewById(R.id.edPhoneCode);
         edPhone = (EditText) getView().findViewById(R.id.edPhone);
         edPinCode = (EditText) getView().findViewById(R.id.edPinCode);
+
         btnReplyPin = (Button) getView().findViewById(R.id.btnReplyPin);
 
         btnLogin = (Button) getView().findViewById(R.id.btnShare);
@@ -117,6 +118,17 @@ public class LoginFragment extends BaseFragment {
 
         progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
+
+        edPhoneCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //getSpiceManager().execute( carsJsonRequest, "json", DurationInMillis.ONE_MINUTE, new CarsRequestListener() );
+                dlg_country = DialoglistCountries.newInstance();
+                dlg_country.setTargetFragment(LoginFragment.this, DIALOG_COUNTRY);
+                dlg_country.show(getFragmentManager(), DIALOG_COUNTRY_TAG);
+            }
+        });
+
 
         btnReplyPin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,17 +147,15 @@ public class LoginFragment extends BaseFragment {
                 waiting = true;
                 pref.setLastTimeClick(System.currentTimeMillis());
                 createTimer(pref.getLastTimeClick());
-                getSpiceManager().execute(new PinRequest(edPhone.getText().toString()), "pin", DurationInMillis.ALWAYS_EXPIRED, new PinRequestListener());
+                getSpiceManager().execute(new PinRequest(edPhoneCode.getText().toString() + edPhone.getText().toString()), "pin", DurationInMillis.ALWAYS_EXPIRED, new PinRequestListener());
             }
         });
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // XXX tags fragment !!!
-
                 pref.setLastCountryId(last_country_id);
-                // pref.setLastUsedPhoneCode("+" + country.mDialPrefix);
+                pref.setLastUsedPhoneCode(edPhoneCode.getText().toString());
                 pref.saveLastUsedPhone(edPhone.getText().toString());
 
                 hideKeyboard();
@@ -163,10 +173,9 @@ public class LoginFragment extends BaseFragment {
             public void onClick(View v) {
 
                 pref.setLastCountryId(last_country_id);
-                // pref.setLastUsedPhoneCode("+" + country.mDialPrefix);
+                pref.setLastUsedPhoneCode(edPhoneCode.getText().toString());
                 pref.saveLastUsedPhone(edPhone.getText().toString());
 
-                // XXX tags !!!
                 hideKeyboard();
                 getActivity()
                         .getSupportFragmentManager()
@@ -187,55 +196,8 @@ public class LoginFragment extends BaseFragment {
             }
         });
 
-
-        CountryMaster cm = CountryMaster.getInstance(getActivity());
-        ArrayList<Country> countries = cm.getCountries();
-        String countryIsoCode = cm.getDefaultCountryIso();
-        Country country = cm.getCountryByIso(countryIsoCode);
-
-        TelephonyManager manager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-        String countryiso = manager.getSimCountryIso().toUpperCase();
-
-        if (TextUtils.isEmpty(countryiso))
-            countryiso = countryIsoCode;
-
-        int c = 0;
-
-        for (int i = 0; i < countries.size(); i++) {
-            //System.out.println("countries.get(i).mCountryIso  = " + countries.get(i).mCountryIso);
-
-            if (countries.get(i).mCountryIso.equals(countryiso)) {
-                c = i;
-                break;
-            }
-        }
-
-        cur_country_id = c;
-        spinner = (Spinner) getActivity().findViewById(R.id.spinner);
-        CountryAdapter adapter = new CountryAdapter(getActivity(), (LayoutInflater) getActivity().getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE), R.layout.view_country_list_item, countries);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                CountryMaster cm = CountryMaster.getInstance(getActivity());
-                Country country = cm.getCountryByPosition(position);
-                //txtPhoneCode.setText("+" + country.mDialPrefix);
-                pref.setLastCountryId(position);
-                pref.setLastUsedPhoneCode("+" + country.mDialPrefix);
-
-                last_country_id = position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // txtPhoneCode.setText("+");
-            }
-        });
-
-        if (savedInstanceState != null)
-            last_country_id = savedInstanceState.getInt("last_country_id", 0);
-
+        edPhoneCode.setText(getDefaultPhonePrefix());
+        edPhone.setText(pref.getLastUsedPhone());
     }
 
     @Override
@@ -257,25 +219,6 @@ public class LoginFragment extends BaseFragment {
             createTimer(pref.getLastTimeClick());
         }
         onKeyBoardHide();
-
-
-        final int idl = pref.getLastCountryId();
-        //System.out.println("idl = " + idl);
-        spinner.post(new Runnable() {
-            @Override
-            public void run() {
-
-                int id = idl == 0 ? cur_country_id : idl;
-
-                if (last_country_id > 0)
-                    id = last_country_id;
-
-                System.out.println("id country = " + id);
-
-                spinner.setSelection(id, false);
-            }
-        });
-
     }
 
     @TargetApi(3)
@@ -336,10 +279,11 @@ public class LoginFragment extends BaseFragment {
             return;
         long t = 60 * MINUTES_WAIT - ((System.currentTimeMillis() - mLastTime) / 1000);
         if (t <= 0) {
-            waiting = false;
-            stopCalculateTimer();
-            pref.setLastTimeClick(-1);
-            btnReplyPin.setText(R.string.fragment_login_btn_retry_pin);
+            //waiting = false;
+            //stopCalculateTimer();
+            //pref.setLastTimeClick(-1);
+            //btnReplyPin.setText(R.string.fragment_login_btn_retry_pin);
+            resetPINtimer();
         } else
             btnReplyPin.setText(String.format("%s %s", getActivity().getString(R.string.fragment_login_btn_retry_pin_after), util.SecondsToMS(t)));
     }
@@ -364,13 +308,13 @@ public class LoginFragment extends BaseFragment {
         public void onRequestFailure(SpiceException spiceException) {
             showToastError(R.string.error_loading_data);
             progressBar.setVisibility(View.GONE);
+            Log.e("LoginRequestListener", spiceException.getMessage());
         }
 
         @Override
         public void onRequestSuccess(final LoginResult result) {
             progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-            Log.d("onRequestSuccess", result.toString());
+            Log.d("LoginRequestListener", result.toString());
 
             if (result != null)
                 if (Constants.SUCCESS.equals(result.getStatus())) {
@@ -390,25 +334,41 @@ public class LoginFragment extends BaseFragment {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             showToastError(R.string.request_pin_error);
-            // progressBar.setVisibility(View.GONE);
+            resetPINtimer();
         }
 
         @Override
         public void onRequestSuccess(final PinResult result) {
-            // progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-            Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
-
-            if (Constants.SUCCESS.equals(result.getStatus())) {
+            if (result != null && Constants.SUCCESS.equals(result.getStatus())) {
                 showToastOk(R.string.request_pin_success);
             } else {
-                // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                // String error = res == 0 ? result.getData().getResult() : getString(res);
-                // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                //XXX сбросить таймер ?
                 showToastError(R.string.request_pin_phone_error);
+                resetPINtimer();
             }
         }
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case DIALOG_COUNTRY:
+                    edPhoneCode.setText("+" + data.getStringExtra("id"));
+                    pref.setLastUsedPhoneCode("+" + data.getStringExtra("id"));
+                    break;
+
+            }
+        }
+    }
+
+
+    private void resetPINtimer() {
+        waiting = false;
+        stopCalculateTimer();
+        pref.setLastTimeClick(-1);
+        btnReplyPin.setText(R.string.fragment_login_btn_retry_pin);
+    }
 }

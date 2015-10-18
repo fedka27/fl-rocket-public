@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:height="@dimen/text_edit_height">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent"/>
+            <!--background color of box-->
+        </shape>
+    </item>
+
+    <item
+        android:left="-2dp"
+        android:right="-2dp"
+        android:top="-2dp">
+        <shape>
+            <solid android:color="@android:color/transparent"/>
+            <stroke
+                android:width="2dp"
+                android:color="@color/colorPrimary"/>
+            <!-- color of stroke -->
+        </shape>
+    </item>
+
+    <item>
+
+        <rotate
+
+            android:fromDegrees="-45"
+            android:pivotX="155%"
+            android:pivotY="30%"
+            android:toDegrees="-45"
+            >
+            <shape
+                android:shape="rectangle"
+                android:top="1dip">
+
+                <solid android:color="@color/button_blue"/>
+
+            </shape>
+        </rotate>
+    </item>
+
+
+</layer-list>

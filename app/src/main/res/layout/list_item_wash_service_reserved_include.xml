@@ -9,7 +9,8 @@
     android:orientation="horizontal"
     android:paddingRight="20dp"
     android:tag="front"
-    android:background="@drawable/selectable_list_item">
+    android:background="@drawable/selectable_list_item"
+                android:visibility="visible">
 
     <LinearLayout
         android:id="@+id/top"
@@ -58,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/top"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="3dp"
         android:gravity="bottom"
         android:orientation="horizontal">
 

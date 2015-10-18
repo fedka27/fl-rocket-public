@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -133,8 +132,10 @@ public class ProfileEditFragment extends BaseFragment {
         edFIO = (EditText) getView().findViewById(R.id.edFIO);
         edPhone = (TextView) getView().findViewById(R.id.edPhone);
 
-        edFIO.setText(mProfile.getName());
-        edPhone.setText(mProfile.getPhone());
+        if (mProfile != null) {
+            edFIO.setText(mProfile.getName());
+            edPhone.setText(mProfile.getPhone());
+        }
 
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
         adapter = new ProfileRecyclerViewAdapter(list);
@@ -201,13 +202,16 @@ public class ProfileEditFragment extends BaseFragment {
             }
         });
 
+        /*
         toolbar = (Toolbar) getView().findViewById(R.id.toolbar);
         AppCompatActivity a = (AppCompatActivity) getActivity();
         if (a != null) {
             a.setSupportActionBar(toolbar);
             if (a.getSupportActionBar() != null)
                 a.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        }*/
+
+        toolbar = setToolbar(getView());
     }
 
     @Override

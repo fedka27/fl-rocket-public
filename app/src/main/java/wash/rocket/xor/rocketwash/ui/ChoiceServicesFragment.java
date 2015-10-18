@@ -2,9 +2,7 @@ package wash.rocket.xor.rocketwash.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +28,7 @@ import wash.rocket.xor.rocketwash.model.ChoiseService;
 import wash.rocket.xor.rocketwash.model.ChoiseServiceResult;
 import wash.rocket.xor.rocketwash.requests.ChoiseServiceRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
+import wash.rocket.xor.rocketwash.widgets.DividerItemDecoration;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -96,6 +95,9 @@ public class ChoiceServicesFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if (getView() == null)
+            return;
+
         if (savedInstanceState == null)
             list = new ArrayList<>();
         else
@@ -107,7 +109,7 @@ public class ChoiceServicesFragment extends BaseFragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        recyclerView.addItemDecoration(new SpacesItemDecoration(0));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -122,11 +124,14 @@ public class ChoiceServicesFragment extends BaseFragment {
         if (savedInstanceState == null)
             getSpiceManager().execute(new ChoiseServiceRequest(mIdService, mIdCarModel, session), "wash", DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
 
+        toolbar = setToolbar(getView());
+
+        /*
         toolbar = (Toolbar) getView().findViewById(R.id.toolbar);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        }*/
 
         progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
@@ -150,11 +155,9 @@ public class ChoiceServicesFragment extends BaseFragment {
 
         @Override
         public void onRequestSuccess(final ChoiseServiceResult result) {
-            progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-            Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
 
-            if (Constants.SUCCESS.equals(result.getStatus())) {
+            if (result != null && Constants.SUCCESS.equals(result.getStatus())) {
+                Log.d("onRequestSuccess", "res = " + result.getStatus());
                 list.clear();
                 if (result.getData() != null) {
                     for (int i = 0; i < result.getData().size(); i++) {
@@ -173,33 +176,11 @@ public class ChoiceServicesFragment extends BaseFragment {
                 adapter.notifyDataSetChanged();
                 Log.d("onRequestSuccess", "fill data");
             } else {
-                // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                // String error = res == 0 ? result.getData().getResult() : getString(res);
-                // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                //XXX сбросить таймер ?
                 showToastError(getActivity().getString(R.string.error_loading_data));
             }
+            progressBar.setVisibility(View.GONE);
         }
     }
-
-    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int space;
-
-        public SpacesItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            outRect.left = space;
-            outRect.right = space;
-            outRect.bottom = space;
-
-            if (parent.getChildPosition(view) == 0)
-                outRect.top = space;
-        }
-    }
-
 
     @Override
     public void onStart() {
@@ -218,6 +199,7 @@ public class ChoiceServicesFragment extends BaseFragment {
     }
 
     private boolean manual = false;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

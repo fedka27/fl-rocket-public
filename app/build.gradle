@@ -14,6 +14,8 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
+//def String version = "1.00"
+//def String versionCode = "1"
 
 android {
     compileSdkVersion 23
@@ -31,6 +33,17 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    applicationVariants.all {
+        variant ->
+            variant.outputs.each { output ->
+                output.outputFile = new File(
+                        output.outputFile.parent,
+                        output.outputFile.name.replace(".apk", "${versionName.replace(".", "_")}"+"_"+"${versionCode}.apk").replace("debug", "")
+                                .replace("app", "rocketwash")
+                )
+            }
     }
 
     packagingOptions {

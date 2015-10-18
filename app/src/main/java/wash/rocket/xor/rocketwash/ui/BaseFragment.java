@@ -1,5 +1,6 @@
 package wash.rocket.xor.rocketwash.ui;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -21,6 +22,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +36,12 @@ import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.services.LocationService;
+import wash.rocket.xor.rocketwash.util.Country;
+import wash.rocket.xor.rocketwash.util.CountryMaster;
 import wash.rocket.xor.rocketwash.util.Preferences;
 import wash.rocket.xor.rocketwash.widgets.SoftKeyboard;
 
@@ -44,6 +50,8 @@ import wash.rocket.xor.rocketwash.widgets.SoftKeyboard;
  */
 public class BaseFragment extends Fragment {
     protected static final String TAG = BaseFragment.class.getSimpleName();
+    private static final int DIALOG_SHARE = 1;
+    private static final String DIALOG_SHARE_TAG = "DIALOG_SHARE";
     //private SpiceManager spiceManager = new SpiceManager(RobospiceService.class);
     private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
     protected SoftKeyboard softKeyboard;
@@ -102,9 +110,7 @@ public class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         mInflater = inflater;
-
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -174,14 +180,10 @@ public class BaseFragment extends Fragment {
     }
 
     public void share() {
-        //String url = "https://play.google.com/store/apps/details?id=" + getActivity().getPackageName();
-        String url = getActivity().getString(R.string.share_data);
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, url);
-        startActivity(Intent.createChooser(intent, getString(R.string.share_with)));
-    }
 
+        showDialogShare();
+
+    }
 
     static class IncomingHandler extends Handler {
         private final WeakReference<BaseFragment> mService;
@@ -455,6 +457,65 @@ public class BaseFragment extends Fragment {
     }
 
     public void showToastWarn(int res) {
-        showToastError(getActivity().getString(res));
+        showToastWarn(getActivity().getString(res));
+    }
+
+    public String getDefaultPhonePrefix() {
+        CountryMaster cm = CountryMaster.getInstance(getActivity());
+        ArrayList<Country> countries = cm.getCountries();
+        String countryIsoCode = cm.getDefaultCountryIso();
+        Country country = cm.getCountryByIso(countryIsoCode);
+        TelephonyManager manager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+        String countryiso = manager.getSimCountryIso().toUpperCase();
+        String c = pref.getLastUsedPhoneCode();
+        if (!TextUtils.isEmpty(c)) {
+            return c;
+        } else {
+            if (country != null) {
+                return "+" + country.mDialPrefix;
+            } else {
+
+                if (!TextUtils.isEmpty(countryiso)) {
+                    for (int i = 0; i < countries.size(); i++) {
+                        if (countries.get(i).mCountryIso.equals(countryiso)) {
+                            return "+" + country.mDialPrefix;
+                        }
+                    }
+                } else {
+                    return "+" + countries.get(0).mDialPrefix;
+                }
+            }
+        }
+
+        return "+" + countries.get(0).mDialPrefix;
+    }
+
+    private void showDialogShare() {
+        AlertDialogFragment f = AlertDialogFragment.newInstance(R.string.share_friends,
+                getActivity().getString(R.string.share_data),
+                getActivity().getString(R.string.share_friends),
+                getActivity().getString(R.string.cancel), DIALOG_SHARE, this);
+        f.show(getFragmentManager(), DIALOG_SHARE_TAG);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+
+                case DIALOG_SHARE:
+
+                    String url = getActivity().getString(R.string.share_data);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, url);
+                    startActivity(Intent.createChooser(intent, getString(R.string.share_with)));
+
+                    break;
+            }
+        }
+
     }
 }

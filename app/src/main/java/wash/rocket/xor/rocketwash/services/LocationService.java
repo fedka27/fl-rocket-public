@@ -153,11 +153,13 @@ public class LocationService extends Service implements LocationListener, GpsSta
 
         Log.d(TAG, "startTracking");
 
+        //XXX не нужно здесь
+        /*
         try {
             startForeground(NOTIFICATION_ID, new Notification());
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
+        }*/
 
         initGPS();
     }
@@ -187,8 +189,8 @@ public class LocationService extends Service implements LocationListener, GpsSta
 
         mRunning = false;
         //isGooglePlayServicesAvailable = false;
-
-        stopForeground(true);
+        //XXX не нужно здесь
+        //stopForeground(true);
     }
 
     private void initGPS() {
@@ -396,7 +398,7 @@ public class LocationService extends Service implements LocationListener, GpsSta
 
         @Override
         public void onLocationChanged(Location location) {
-            Log.e(TAG, "CompatLocationListener > onLocationChanged; provider = ");
+            //Log.e(TAG, "CompatLocationListener > onLocationChanged; provider = ");
             // Есои гугло сервисы доступны, они будут сообщаять о смене локации
             if (isGooglePlayServicesAvailable)
                 return;

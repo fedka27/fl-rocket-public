@@ -81,7 +81,8 @@ public class Reservation implements Parcelable {
         Date d = getTime_start_Date();
         if (d == null)
             d = util.getDate(getTime_start());
-
+        if (d == null)
+            d = util.getDateS1(getTime_start());
         if (d == null)
             d = new Date();
 

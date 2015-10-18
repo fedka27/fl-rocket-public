@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -126,7 +124,7 @@ public class ConfirmationFragment extends BaseFragment {
                 waiting = true;
                 pref.setLastTimeClickSMS(System.currentTimeMillis());
                 createTimer(pref.getLastTimeClickSMS());
-                getSpiceManager().execute(new PinRequest(pref.getLastUsedPhone()), "pin", DurationInMillis.ONE_MINUTE, new PinRequestListener());
+                getSpiceManager().execute(new PinRequest(pref.getLastUsedPhoneCode() + pref.getLastUsedPhone()), "pin", DurationInMillis.ONE_MINUTE, new PinRequestListener());
             }
         });
 
@@ -135,7 +133,7 @@ public class ConfirmationFragment extends BaseFragment {
             public void onClick(View v) {
                 hideKeyboard();
                 progressBar.setVisibility(View.VISIBLE);
-                getSpiceManager().execute(new VerifyPhoneRequest(edPinCode.getText().toString(), pref.getSessionID()), "pin", DurationInMillis.ONE_MINUTE, new VerifyPhoneRequestListener());
+                getSpiceManager().execute(new VerifyPhoneRequest(edPinCode.getText().toString(), pref.getSessionID()), "verify", DurationInMillis.ONE_MINUTE, new VerifyPhoneRequestListener());
             }
         });
     }
@@ -214,37 +212,27 @@ public class ConfirmationFragment extends BaseFragment {
             return;
 
         if (t <= 0) {
-            waiting = false;
-            stopCalculateTimer();
-            pref.setLastTimeClick(-1);
-            btnRequest.setText(R.string.fragment_login_btn_retry_pin);
+            resetPINtimer();
         } else
-            btnRequest.setText(getActivity().getString(R.string.fragment_login_btn_retry_pin_after) + " " + util.SecondsToMS(t));
+            btnRequest.setText(String.format("%s %s", getActivity().getString(R.string.fragment_login_btn_retry_pin_after), util.SecondsToMS(t)));
     }
 
 
     public final class PinRequestListener implements RequestListener<PinResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
-            // progressBar.setVisibility(View.GONE);
+            showToastError(R.string.request_pin_error);
+            resetPINtimer();
         }
 
         @Override
         public void onRequestSuccess(final PinResult result) {
-            // progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-            Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
 
-            if (Constants.SUCCESS.equals(result.getStatus())) {
-                Toast.makeText(getActivity(), R.string.request_pin_success, Toast.LENGTH_SHORT).show();
+            if (result != null && Constants.SUCCESS.equals(result.getStatus())) {
+                showToastOk(R.string.request_pin_success);
             } else {
-                // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                // String error = res == 0 ? result.getData().getResult() : getString(res);
-                // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-
-                //XXX сбросить таймер ?
-                Toast.makeText(getActivity(), R.string.request_pin_phone_error, Toast.LENGTH_SHORT).show();
+                resetPINtimer();
+                showToastError(R.string.request_pin_phone_error);
             }
         }
     }
@@ -252,31 +240,29 @@ public class ConfirmationFragment extends BaseFragment {
     public final class VerifyPhoneRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), R.string.request_verify_error, Toast.LENGTH_SHORT).show();
+            showToastError(R.string.request_verify_error);
             progressBar.setVisibility(View.GONE);
         }
 
         @Override
         public void onRequestSuccess(final ProfileResult result) {
             progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-            Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
-                // Toast.makeText(getActivity(), R.string.request_pin_success, Toast.LENGTH_SHORT).show();
+
                 pref.setProfile(result.getData());
                 mCallback.onLogged();
 
             } else {
-
-                pref.setLastTimeClick(-1);
-                btnRequest.setText(R.string.button_next);
-                waiting = false;
-                stopCalculateTimer();
-
-                Toast.makeText(getActivity(), "не удалось отправить данные, повторите попозже", Toast.LENGTH_SHORT).show();
+                showToastError(R.string.error_loading_data);
             }
         }
     }
 
+    private void resetPINtimer() {
+        waiting = false;
+        stopCalculateTimer();
+        pref.setLastTimeClick(-1);
+        btnRequest.setText(R.string.fragment_login_btn_retry_pin);
+    }
 }

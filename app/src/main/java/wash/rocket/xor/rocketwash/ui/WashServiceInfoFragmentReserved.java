@@ -26,7 +26,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -181,11 +180,8 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         Log.w(TAG, "onCreateView");
-
         View rootView = inflater.inflate(R.layout.fragment_wash_service_info_reserved, container, false);
-
         mInflater = inflater;
-
         mMap = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
 
         if (mMap != null) {
@@ -304,14 +300,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
         toolbar = setToolbar(rootView);
         toolbar.setTitle(mTitle);
-
-
-        /*
-        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }*/
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -488,21 +476,16 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         Log.d(TAG, "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
 
+        //XXX check rest toolbar
         ((AppCompatActivity) getActivity()).invalidateOptionsMenu();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
-        if (resultCode == Activity.RESULT_OK) {
-
-        }
     }
 
     public final class MapReverceGeocodingListener implements RequestListener<ReverseGeocoding> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            //Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
             showToastError("Ошибка получения данных");
-            // progressBar.setVisibility(View.GONE);
 
             txtInfoTitile.setVisibility(View.VISIBLE);
             txtInfoTitile.setText("Не удалось уточнить адрес");
@@ -544,11 +527,7 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            //Toast.makeText(getActivity(), "Не удалось проложить маршрут", Toast.LENGTH_SHORT).show();
-
             showToastError("Не удалось проложить маршрут");
-
-            // progressBar.setVisibility(View.GONE);
 
             txtInfoTitile.setVisibility(View.VISIBLE);
             txtInfoTitile.setText("Не удалось уточнить адрес");
@@ -561,8 +540,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         public void onRequestSuccess(final MapRouteResult result) {
 
             if (result != null) {
-
-                //Toast.makeText(getActivity(), "Маршрут проложен", Toast.LENGTH_SHORT).show();
                 showToastOk("Маршрут проложен");
 
                 ArrayList<LatLng> points = null;
@@ -683,7 +660,7 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     private class CancelRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.ReserveCancelResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Не удалось отменить запись", Toast.LENGTH_SHORT).show();
+            showToastError("Не удалось отменить запись !");
             progressBar.setVisibility(View.GONE);
         }
 
@@ -691,14 +668,12 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         public void onRequestSuccess(ReserveCancelResult reserveCancelResult) {
 
             if (reserveCancelResult.isData()) {
-                //Toast.makeText(getActivity(), "Запись отменена", Toast.LENGTH_SHORT).show();
                 showToastOk("Запись отменена");
                 manual = true;
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, new Intent());
                 getFragmentManager().popBackStack();
             } else
-                //Toast.makeText(getActivity(), "Не удалось отменить запись", Toast.LENGTH_SHORT).show();
-                showToastOk("Не удалось отменить запись");
+                showToastError("Не удалось отменить запись !");
 
             progressBar.setVisibility(View.GONE);
         }

@@ -15,23 +15,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import wash.rocket.xor.rocketwash.model.ProfileResult;
+import wash.rocket.xor.rocketwash.model.RemoveFavoriteResult;
 
-public class RemoveFavoriteRequest extends GoogleHttpClientSpiceRequest<ProfileResult> {
+public class RemoveFavoriteRequest extends GoogleHttpClientSpiceRequest<RemoveFavoriteResult> {
 
     private String baseUrl;
     private int id;
     private String session_id;
 
     public RemoveFavoriteRequest(String session_id, int id) {
-        super(ProfileResult.class);
+        super(RemoveFavoriteResult.class);
         this.baseUrl = "http://test.rocketwash.me/v2/favourites/";
         this.id = id;
         this.session_id = session_id;
     }
 
     @Override
-    public ProfileResult loadDataFromNetwork() throws IOException {
+    public RemoveFavoriteResult loadDataFromNetwork() throws IOException {
         String uri = Uri.parse(baseUrl +  id)
                 .buildUpon()
                 //.appendQueryParameter("id", "" +id)
@@ -60,10 +60,7 @@ public class RemoveFavoriteRequest extends GoogleHttpClientSpiceRequest<ProfileR
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
 
-        ProfileResult res = mapper.readValue(result, getResultType());
-        res.getData().setString(result);
-
-        return res;
+        return mapper.readValue(result, getResultType());
     }
 
 }

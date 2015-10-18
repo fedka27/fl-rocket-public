@@ -3,10 +3,9 @@ package wash.rocket.xor.rocketwash.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Rect;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -31,14 +29,14 @@ import java.util.List;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.adapters.FavoritesWashServicesAdapter;
 import wash.rocket.xor.rocketwash.adapters.WashServicesAdapter;
-import wash.rocket.xor.rocketwash.model.ProfileResult;
+import wash.rocket.xor.rocketwash.model.RemoveFavoriteResult;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.model.WashServiceResult;
 import wash.rocket.xor.rocketwash.requests.FavoritesWashServiceRequest;
 import wash.rocket.xor.rocketwash.requests.RemoveFavoriteRequest;
-import wash.rocket.xor.rocketwash.services.GSonRocketWashApiService;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.widgets.BaseSwipeListViewListener;
+import wash.rocket.xor.rocketwash.widgets.DividerItemDecoration;
 import wash.rocket.xor.rocketwash.widgets.SlideInDownAnimator;
 import wash.rocket.xor.rocketwash.widgets.SwipeListView;
 
@@ -67,7 +65,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
     private Toolbar toolbar;
     private ProgressBar progressBar;
 
-    private SpiceManager spiceManager = new SpiceManager(GSonRocketWashApiService.class);
+    //private SpiceManager spiceManager = new SpiceManager(GSonRocketWashApiService.class);
 
     private LinearLayout layoutWarn;
 
@@ -105,8 +103,8 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         swipeListView = (SwipeListView) getView().findViewById(R.id.recyclerView);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        swipeListView.addItemDecoration(new SpacesItemDecoration(1));
+
+        swipeListView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         swipeListView.setHasFixedSize(true);
         swipeListView.setLayoutManager(layoutManager);
         swipeListView.setItemAnimator(new SlideInDownAnimator());
@@ -152,7 +150,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .add(R.id.container, WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragment.TAG)
+                            .add(R.id.container, WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), null), WashServiceInfoFragment.TAG)
                             .addToBackStack(TAG).commit();
 
                 } else {
@@ -189,7 +187,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                     case 2:
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                                .add(R.id.container, WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragmentQuick.TAG)
+                                .add(R.id.container, WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), null), WashServiceInfoFragmentQuick.TAG)
                                 .addToBackStack(TAG)
                                 .commit();
                         break;
@@ -223,16 +221,8 @@ public class FavoritesWashServicesFragment extends BaseFragment {
 
         toolbar = setToolbar(getView());
 
-        /*
-        toolbar = (Toolbar) getView().findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }*/
-
         layoutWarn = (LinearLayout) getView().findViewById(R.id.layoutWarn);
         layoutWarn.setVisibility(View.GONE);
-        //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.fragment_nearest_wash_services);
     }
 
     @Override
@@ -262,7 +252,6 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         @Override
         public void onRequestSuccess(final WashServiceResult result) {
             // progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
             layoutWarn.setVisibility(View.GONE);
             Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
 
@@ -272,7 +261,18 @@ public class FavoritesWashServicesFragment extends BaseFragment {
 
                 if (result.getData() != null) {
                     for (int i = 0; i < result.getData().size(); i++) {
-                        list.add(result.getData().get(i).getClone());
+
+                        WashService item = result.getData().get(i).getClone();
+                        Location loc = getLastLocation();
+
+                        if (loc != null) {
+                            float[] results = new float[1];
+                            results[0] = 0;
+                            Location.distanceBetween(loc.getLatitude(), loc.getLongitude(), item.getLatitude(), item.getLongitude(), results);
+                            item.setDistance( results[0] / 1000);
+                        }
+
+                        list.add(item);
                     }
 
                     if (result.getData().size() >= 10) {
@@ -293,37 +293,19 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         }
     }
 
-    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int space;
-
-        public SpacesItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            outRect.left = space;
-            outRect.right = space;
-            outRect.bottom = space;
-
-            if (parent.getChildPosition(view) == 0)
-                outRect.top = space;
-        }
-    }
-
-
     @Override
     public void onStart() {
         super.onStart();
-        spiceManager.start(getActivity());
+       // spiceManager.start(getActivity());
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        /*
         if (spiceManager.isStarted()) {
             spiceManager.shouldStop();
-        }
+        }*/
     }
 
     @Override
@@ -334,7 +316,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
             switch (requestCode) {
                 case DIALOG_REMOVE:
                     swipeListView.closeAnimate(mPosition);
-                    getSpiceManager().execute(new RemoveFavoriteRequest(pref.getSessionID(), list.get(mPosition).getId()), "remove", DurationInMillis.ALWAYS_EXPIRED, new REmoveFavoiteListener());
+                    getSpiceManager().execute(new RemoveFavoriteRequest(pref.getSessionID(), list.get(mPosition).getFavorite_id()), "remove", DurationInMillis.ALWAYS_EXPIRED, new RemoveFavoiteListener());
                     adapter.remove(mPosition);
                     break;
             }
@@ -356,20 +338,19 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         f.show(getFragmentManager(), tag);
     }
 
-    private class REmoveFavoiteListener implements RequestListener<wash.rocket.xor.rocketwash.model.ProfileResult> {
+    private class RemoveFavoiteListener implements RequestListener<RemoveFavoriteResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
 
         }
 
         @Override
-        public void onRequestSuccess(ProfileResult profileResult) {
+        public void onRequestSuccess(RemoveFavoriteResult profileResult) {
 
         }
     }
 
-    private void showShowGPSWarn()
-    {
+    private void showShowGPSWarn() {
         layoutWarn.setVisibility(View.VISIBLE);
         TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
@@ -377,8 +358,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         i.setImageResource(R.drawable.location_wash);
     }
 
-    private void showNoDataWarn()
-    {
+    private void showNoDataWarn() {
         layoutWarn.setVisibility(View.VISIBLE);
         TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
@@ -386,8 +366,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         i.setImageResource(R.drawable.location_wash);
     }
 
-    private void showError()
-    {
+    private void showError() {
         layoutWarn.setVisibility(View.VISIBLE);
         TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);

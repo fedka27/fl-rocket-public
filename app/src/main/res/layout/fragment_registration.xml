@@ -1,20 +1,20 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context="ru.xor.taxicall.Activity_main$PlaceholderFragment">
+<RelativeLayout android:id="@+id/main"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                tools:context="ru.xor.taxicall.Activity_main$PlaceholderFragment">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="?attr/colorPrimary"
-        android:elevation="2dp"
-        app:theme="@style/AppTheme">
+    <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+                                       xmlns:android="http://schemas.android.com/apk/res/android"
+                                       xmlns:app="http://schemas.android.com/apk/res-auto"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="wrap_content"
+                                       android:layout_alignParentTop="true"
+                                       android:background="?attr/colorPrimary"
+                                       android:elevation="2dp"
+                                       app:theme="@style/AppTheme">
 
         <TextView
             android:id="@+id/textView2"
@@ -26,7 +26,7 @@
             android:text="@string/fragment_registration_title"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/white"
-            android:textSize="@dimen/toolbar_title_font_size" />
+            android:textSize="@dimen/toolbar_title_font_size"/>
 
     </android.support.v7.widget.Toolbar>
 
@@ -58,7 +58,7 @@
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/primary_text_color"
-                android:textSize="@dimen/text_16sp" />
+                android:textSize="@dimen/text_16sp"/>
 
             <EditText
                 android:id="@+id/edFIO"
@@ -71,7 +71,7 @@
                 android:lines="1"
                 android:maxLength="50"
                 android:maxLines="1"
-                android:textCursorDrawable="@drawable/color_cursor" />
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <EditText
                 android:id="@+id/edBrandCar"
@@ -84,8 +84,9 @@
                 android:hint="@string/fragment_registration_hint_car_brand"
                 android:inputType="text"
                 android:lines="1"
+                android:longClickable="false"
                 android:maxLines="1"
-                android:textCursorDrawable="@drawable/color_cursor" />
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <EditText
                 android:id="@+id/edModelCar"
@@ -98,8 +99,9 @@
                 android:hint="@string/fragment_registration_hint_car_model"
                 android:inputType="text"
                 android:lines="1"
+                android:longClickable="false"
                 android:maxLines="1"
-                android:textCursorDrawable="@drawable/color_cursor" />
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <EditText
                 android:id="@+id/edNumberCar"
@@ -111,7 +113,7 @@
                 android:lines="1"
                 android:maxLength="50"
                 android:maxLines="1"
-                android:textCursorDrawable="@drawable/color_cursor" />
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
         </LinearLayout>
     </ScrollView>
@@ -133,7 +135,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/button_blue_selector"
             android:text="@string/button_next"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 

@@ -19,7 +19,8 @@
             android:id="@+id/call"
             layout="@layout/list_item_wash_service_button_call"
             android:layout_width="@dimen/list_iem_button_width"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true">
         </include>
 
         <include
@@ -27,15 +28,16 @@
             layout="@layout/list_item_wash_service_button_more"
             android:layout_width="@dimen/list_iem_button_width"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/hide">
+            android:layout_toLeftOf="@+id/call">
         </include>
 
         <include
-            android:id="@+id/hide"
-            layout="@layout/list_item_wash_service_button_hide"
+            android:id="@+id/cancel"
+            layout="@layout/list_item_wash_service_button_cancel"
             android:layout_height="wrap_content"
             android:layout_width="@dimen/list_iem_button_width"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="false"
+            android:layout_toLeftOf="@+id/more">
         </include>
 
     </RelativeLayout>

@@ -89,6 +89,9 @@ public class WashService implements Parcelable {
     @JsonProperty("time_periods")
     private List<TimePeriods> time_periods;
 
+    @JsonProperty("favorite_id")
+    private int favorite_id;
+
     private int type;
     private Date rDate;
 
@@ -320,6 +323,7 @@ public class WashService implements Parcelable {
                 a.time_periods.add(t);
             }
         }
+        a.favorite_id = favorite_id;
         return a;
     }
 
@@ -424,5 +428,13 @@ public class WashService implements Parcelable {
 
     public void setrDate(Date rDate) {
         this.rDate = rDate;
+    }
+
+    public int getFavorite_id() {
+        return favorite_id;
+    }
+
+    public void setFavorite_id(int favorite_id) {
+        this.favorite_id = favorite_id;
     }
 }

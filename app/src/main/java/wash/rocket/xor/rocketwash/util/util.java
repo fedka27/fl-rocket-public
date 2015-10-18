@@ -40,6 +40,20 @@ public class util {
         return null;
     }
 
+    public static Date getDateS1(String str) {
+        //2014-11-24T11:24:40.000Z
+        //2015-10-09T18:45:00.000Z
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        //sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            return sdf.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
     //XXX to utils
     public static String SecondsToMS(long seconds) {
@@ -76,7 +90,6 @@ public class util {
         //return String.format("%02d:%02d", min, sec);
     }
 
-
     public static String dateToHM(Date date) {
         SimpleDateFormat ft = new SimpleDateFormat("HH:mm");
         return ft.format(date);
@@ -88,7 +101,7 @@ public class util {
     }
 
     public static String dateToDMYHM(Date date) {
-        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        SimpleDateFormat ft = new SimpleDateFormat("HH:mm dd/MM/yyyy");
         return ft.format(date);
     }
 

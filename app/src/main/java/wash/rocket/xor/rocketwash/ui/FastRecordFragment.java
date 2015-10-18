@@ -284,27 +284,14 @@ public class FastRecordFragment extends BaseFragment {
     public final class PinRequestListener implements RequestListener<PinResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            //Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
             showToastError(R.string.request_pin_error);
-            // progressBar.setVisibility(View.GONE);
         }
 
         @Override
         public void onRequestSuccess(final PinResult result) {
-            // progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-            Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
-
-            if (Constants.SUCCESS.equals(result.getStatus())) {
-                //Toast.makeText(getActivity(), R.string.request_pin_success, Toast.LENGTH_SHORT).show();
+            if (result != null &&Constants.SUCCESS.equals(result.getStatus())) {
                 showToastOk(R.string.request_pin_success);
             } else {
-                // final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
-                // String error = res == 0 ? result.getData().getResult() : getString(res);
-                // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-
-                //XXX сбросить таймер ?
-                //Toast.makeText(getActivity(), R.string.request_pin_phone_error, Toast.LENGTH_SHORT).show();
                 showToastError(R.string.request_pin_phone_error);
             }
         }

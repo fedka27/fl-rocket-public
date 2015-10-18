@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -226,11 +227,13 @@ public class ProfileFragment extends BaseFragment {
 
                         r.setBrandName(a);
                         r.setModelName(b);
-                        rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
+                        if (TextUtils.isEmpty(r.getTag()))
+                            rb.setText(String.format("%s %s", a, b));
+                        else
+                            rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
                         rb.setTag(r);
                         rb.setId(i + res);
                         radioGroupCars.addView(rb);
-                        //rb.setSelected(i == 0);
                         rb.setChecked(i == selected);
                     }
 

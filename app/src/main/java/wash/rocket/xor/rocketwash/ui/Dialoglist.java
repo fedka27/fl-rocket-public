@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.adapters.DialogRecyclerViewAdapter;
 import wash.rocket.xor.rocketwash.model.DialogItem;
+import wash.rocket.xor.rocketwash.widgets.DividerItemDecoration;
 
 
 public class Dialoglist extends DialogFragment implements OnItemClickListener {
@@ -79,7 +80,7 @@ public class Dialoglist extends DialogFragment implements OnItemClickListener {
         adapter = new DialogRecyclerViewAdapter(list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        recyclerView.addItemDecoration(new SpacesItemDecoration(0));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setHasFixedSize(true);
         //recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);

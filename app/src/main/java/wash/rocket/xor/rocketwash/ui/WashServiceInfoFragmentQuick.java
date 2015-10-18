@@ -37,10 +37,13 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.software.shell.fab.ActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import wash.rocket.xor.rocketwash.R;
+import wash.rocket.xor.rocketwash.model.AvailableTimesResult;
 import wash.rocket.xor.rocketwash.model.CarsMakes;
 import wash.rocket.xor.rocketwash.model.ChoiseService;
 import wash.rocket.xor.rocketwash.model.ChoiseServiceResult;
@@ -48,6 +51,7 @@ import wash.rocket.xor.rocketwash.model.Profile;
 import wash.rocket.xor.rocketwash.model.ReservationResult;
 import wash.rocket.xor.rocketwash.model.TimePeriods;
 import wash.rocket.xor.rocketwash.model.WashService;
+import wash.rocket.xor.rocketwash.requests.AvailableTimesRequest;
 import wash.rocket.xor.rocketwash.requests.ChoiseServiceRequest;
 import wash.rocket.xor.rocketwash.requests.ReservationRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
@@ -192,15 +196,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         mInflater = inflater;
 
         mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
-        /*
-        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            //toolbar.setTitle(mTitle);
-        }*/
-
-        setToolbar(rootView, mTitle);
+        toolbar = setToolbar(rootView, mTitle);
 
         initControls(rootView);
 
@@ -225,7 +221,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         mNoTime.setVisibility(View.GONE);
 
         mProgressBar3 = (ProgressBar) v.findViewById(R.id.progressBar3);
-        mProgressBar3.setVisibility(View.GONE);
+        mProgressBar3.setVisibility(View.VISIBLE);
 
         mSlidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_time, R.id.title);
@@ -249,7 +245,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         });
 
         if (mService != null) {
-            fillCalendar(mService.getTime_periods());
+            //fillCalendar(mService.getTime_periods());
         }
 
         tableServicesContent = (TableLayout) rootView.findViewById(R.id.tableServicesContent);
@@ -290,8 +286,26 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        txtCarName.setText(pref.getCarName() + " (" + pref.getCarNum() + ")");
-        getSpiceManager().execute(new ChoiseServiceRequest(mIdService, pref.getCarModelId(), pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+        if (TextUtils.isEmpty(pref.getCarNum()))
+            txtCarName.setText(pref.getCarName());
+        else
+            txtCarName.setText(String.format("%s (%s)", pref.getCarName(), pref.getCarNum()));
+
+        int id_model = pref.getCarModelId();
+        if (id_model == 0)
+            id_model = pref.getProfile().getCars_attributes().get(0).getCar_model_id();
+
+        getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+
+        TimeZone utc = TimeZone.getTimeZone("UTC");
+        Calendar c = Calendar.getInstance(utc);
+        String a = util.dateToZZ(c.getTime());
+
+        c.add(Calendar.HOUR_OF_DAY, 24 * 2);
+        c.set(Calendar.HOUR_OF_DAY, 23);
+        c.set(Calendar.MINUTE, 59);
+        String b = util.dateToZZ(c.getTime());
+        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "cars", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
     }
 
     @Override
@@ -323,39 +337,10 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         if (resultCode == Activity.RESULT_OK) {
-
-            /*
-
-            tableServicesContent.removeAllViews();
-            list = data.getParcelableArrayListExtra("list");
-
-            Log.d(TAG, "list = " + (list == null ? "null" : "data"));
-            if (list != null) {
-                int price = 0;
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getCheck() == 1) {
-                        TableRow t = (TableRow) mInflater.inflate(R.layout.service_table_row, null);
-                        TextView sum = (TextView) t.findViewById(R.id.sum);
-                        CheckBox c = (CheckBox) t.findViewById(R.id.checkBox);
-                        c.setChecked(true);
-                        c.setText(list.get(i).getName());
-                        sum.setTypeface(mFont);
-                        sum.setText(String.format("%d %s", list.get(i).getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
-                        tableServicesContent.addView(t);
-                        price = price + list.get(i).getPrice();
-                    }
-                }
-
-                int discount = 0;
-                txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
-                txtDiscount.setText(String.format("%d %s", discount, getActivity().getString(R.string.rubleSymbolJava)));
-                txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
-
-            }*/
-
             switch (requestCode) {
                 case DIALOG_WASH1:
                     reservation(selected_time);
@@ -727,5 +712,35 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         }
 
         return "";
+    }
+
+    private class AvailableTimesRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.AvailableTimesResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            mSlidingTabLayout.setVisibility(View.GONE);
+            mNoTime.setVisibility(View.VISIBLE);
+            mProgressBar3.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onRequestSuccess(AvailableTimesResult availableTimesResult) {
+
+            if (availableTimesResult != null) {
+                List<TimePeriods> times = new ArrayList<>();
+
+                for (int i = 0; i < availableTimesResult.getData().size(); i++) {
+                    String a = availableTimesResult.getData().get(i);
+                    TimePeriods t = new TimePeriods();
+                    t.setTime_from(a);
+                    times.add(t);
+                }
+
+                if (times.size() > 0)
+                    first_time = times.get(0).getTime_from();
+
+                fillCalendar(times);
+            }
+            mProgressBar3.setVisibility(View.GONE);
+        }
     }
 }

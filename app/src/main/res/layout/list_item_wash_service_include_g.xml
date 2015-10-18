@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/top"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="3dp"
             android:gravity="bottom"
             android:orientation="horizontal">
 
@@ -118,11 +118,11 @@
         android:layout_gravity="top|right"
         android:layout_marginRight="8dp"
         android:layout_marginTop="2dp"
-        android:background="@drawable/text_green_background"
+        android:background="@drawable/text_green_background1"
         android:text="@string/avaiable_rec"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/white"
-        android:textSize="12sp"/>
+        android:textSize="10sp"/>
 
 </RelativeLayout>
 

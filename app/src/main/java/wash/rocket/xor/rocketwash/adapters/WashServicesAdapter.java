@@ -110,6 +110,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
         RelativeLayout layout_button_call;
         RelativeLayout layout_button_hide;
         RelativeLayout layout_button_more;
+        RelativeLayout layout_button_cancel;
 
         public ViewHolder(View itemView, LayoutInflater inflater, int type) {
             super(itemView);
@@ -136,12 +137,12 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
                     layout_button_call = (RelativeLayout) itemView.findViewById(R.id.call);
                     layout_button_hide = (RelativeLayout) itemView.findViewById(R.id.hide);
                     layout_button_more = (RelativeLayout) itemView.findViewById(R.id.more);
+                    layout_button_cancel = (RelativeLayout) itemView.findViewById(R.id.cancel);
 
 
                     if (layout_button_rec != null) {
                         layout_button_rec.setOnClickListener(backButtonClickListenerRec);
                     }
-
                     if (layout_button_call != null) {
                         layout_button_call.setOnClickListener(backButtonClickListenerCall);
                     }
@@ -150,6 +151,9 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
                     }
                     if (layout_button_more != null) {
                         layout_button_more.setOnClickListener(backButtonClickListenerMore);
+                    }
+                    if (layout_button_cancel != null) {
+                        layout_button_cancel.setOnClickListener(backButtonClickListenerCancel);
                     }
 
                     this.itemView.setOnClickListener(new OnClickListener() {
@@ -188,6 +192,8 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
                         layout_button_hide.setTag(position);
                     if (layout_button_more != null)
                         layout_button_more.setTag(position);
+                    if (layout_button_cancel != null)
+                        layout_button_cancel.setTag(position);
 
                     //time.setText(s.getTime_periods() == null ? "0" : "" + s.getTime_periods().size());
                     if (s.getTime_periods() != null && s.getTime_periods().size() > 0 && s.isActive())
@@ -223,6 +229,8 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
                         layout_button_hide.setTag(position);
                     if (layout_button_more != null)
                         layout_button_more.setTag(position);
+                    if (layout_button_cancel != null)
+                        layout_button_cancel.setTag(position);
 
                     if (s.getrDate() != null) {
                         time.setText(util.dateToHM(s.getrDate()));
@@ -311,6 +319,17 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
             final int sel = (Integer) v.getTag();
             if (mOnSelectedItem != null) {
                 mOnSelectedItem.onSelecredItem(list.get(sel), sel, 4);
+            }
+        }
+    };
+
+    private OnClickListener backButtonClickListenerCancel = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            final int sel = (Integer) v.getTag();
+            if (mOnSelectedItem != null) {
+                mOnSelectedItem.onSelecredItem(list.get(sel), sel, 5);
             }
         }
     };
