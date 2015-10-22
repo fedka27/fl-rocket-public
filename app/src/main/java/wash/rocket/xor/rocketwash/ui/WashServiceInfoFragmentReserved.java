@@ -602,7 +602,7 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
             mLongitude = location.getLongitude();
 
 
-            if (mPositionMarker == null) {
+            if (mPositionMarker == null && mMap != null) {
                 mPositionMarker = mMap.addMarker(new MarkerOptions()
                         .flat(true)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_position))
@@ -623,6 +623,10 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     }
 
     public void animateMarker(final Marker marker, final Location location) {
+
+        if (mMap == null || marker == null)
+            return;
+
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         final LatLng startLatLng = marker.getPosition();

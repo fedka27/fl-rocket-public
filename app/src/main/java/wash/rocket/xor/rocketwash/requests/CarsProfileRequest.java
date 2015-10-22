@@ -2,8 +2,7 @@ package wash.rocket.xor.rocketwash.requests;
 
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -45,12 +44,23 @@ public class CarsProfileRequest extends GoogleHttpClientSpiceRequest<CarsProfile
             result = out.toString("UTF-8");
         }
 
-        Log.d("loadDataFromNetwork", " res = " + result);
+        //Log.d("loadDataFromNetwork", " res = " + result);
         //JsonNode json = new ObjectMapper().readTree(result);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper.readValue(result, getResultType());
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //return mapper.readValue(result, getResultType());
 
+        Log.d("CarsProfileRequest", " res = " + result);
+        Log.w("CarsProfileRequest", " start parse json ");
+
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //WashServiceResult res = mapper.readValue(result, getResultType());
+
+        CarsProfileResult res = LoganSquare.parse(result, CarsProfileResult.class);
+        Log.w("CarsProfileRequest", " end parse json ");
+
+        return res;
     }
 
 }

@@ -44,7 +44,7 @@ public class DialoglistCarBrands extends Dialoglist {
         adapter = new DialogRecyclerViewAdapter(list);
         recyclerView.setAdapter(adapter);
 
-        getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+        getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
         toolbar.setTitle(getActivity().getString(R.string.select_car_brand));
 
         adapter.setOnSelectedItem(new DialogRecyclerViewAdapter.IOnSelectedItem() {

@@ -1,11 +1,16 @@
 package wash.rocket.xor.rocketwash.model;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.google.api.client.util.Key;
 
+@JsonObject
 public class CarMake {
     @Key
+    @JsonField
     private int id;
     @Key
+    @JsonField
     private String name;
 
     public int getId() {

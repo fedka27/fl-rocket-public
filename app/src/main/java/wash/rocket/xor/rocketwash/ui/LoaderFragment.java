@@ -33,6 +33,10 @@ public class LoaderFragment extends BaseFragment {
 
     private List<CarsAttributes> pcars;
 
+    private boolean mProfileLoaded = false;
+    private boolean mCarsLoaded = false;
+
+
     public LoaderFragment() {
     }
 
@@ -63,7 +67,9 @@ public class LoaderFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+        getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+        getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new ProfileRequestListener());
+        //getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new CarProfileRequestListener());
     }
 
 
@@ -82,34 +88,23 @@ public class LoaderFragment extends BaseFragment {
             if (Constants.SUCCESS.equals(result.getStatus())) {
 
                 if (result.getData() != null) {
-                    List<CarsAttributes> c = result.getData().getCars_attributes();
-                    if (c != null) {
-
-                        int i = pref.getUseCar();
-                        if (i > c.size())
-                            i = 0;
-
-                        CarsAttributes r = c.get(i);
-                        String a = "", b = "";
-
-                        for (int j = 0; j < list_cars.size(); j++) {
-                            if (list_cars.get(j).getId() == r.getCar_make_id()) {
-                                a = list_cars.get(j).getName();
-                                CarMake m;
-                                for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
-                                    m = list_cars.get(j).getCar_models().get(k);
-                                    if (m.getId() == r.getCar_model_id())
-                                        b = m.getName();
-                                }
-                                break;
-                            }
-                        }
-
-                        pref.setCarName(a + " " + b);
-                        pref.setCarNum(r.getTag());
-                    }
 
                     pref.setProfile(result.getData());
+                    getApp().setProfile(result.getData());
+
+                    List<CarsAttributes> a = result.getData().getCars_attributes();
+
+                    if (a == null)
+                        Log.w("onRequestSuccess", "esult.getData().getCars_attributes() = null");
+                    else
+                        Log.w("onRequestSuccess", "esult.getData().getCars_attributes() =  " + result.getData().getCars_attributes().size());
+
+                    mProfileLoaded = true;
+
+                    result.getData().var_dump();
+
+                    if (mCarsLoaded)
+                        initCars(result.getData().getCars_attributes());
 
                     Log.d("onRequestSuccess", "fill data");
                 } else {
@@ -133,12 +128,13 @@ public class LoaderFragment extends BaseFragment {
             //progressBar.setVisibility(View.GONE);
             if (result != null) {
                 list_cars = result.getData();
-                getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new ProfileRequestListener());
-                //getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new CarProfileRequestListener());
+                mCarsLoaded = true;
+
+                if (mProfileLoaded)
+                    initCars(getApp().getProfile().getCars_attributes());
             }
         }
     }
-
 
     private class CarProfileRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.CarsProfileResult> {
         @Override
@@ -150,6 +146,33 @@ public class LoaderFragment extends BaseFragment {
         public void onRequestSuccess(CarsProfileResult carsProfileResult) {
             pcars = carsProfileResult.getData();
             getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new ProfileRequestListener());
+        }
+    }
+
+    private void initCars(List<CarsAttributes> c) {
+        if (c != null) {
+            int i = pref.getUseCar();
+            if (i > c.size())
+                i = 0;
+
+            CarsAttributes r = c.get(i);
+            String a = "", b = "";
+
+            for (int j = 0; j < list_cars.size(); j++) {
+                if (list_cars.get(j).getId() == r.getCar_make_id()) {
+                    a = list_cars.get(j).getName();
+                    CarMake m;
+                    for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
+                        m = list_cars.get(j).getCar_models().get(k);
+                        if (m.getId() == r.getCar_model_id())
+                            b = m.getName();
+                    }
+                    break;
+                }
+            }
+
+            pref.setCarName(a + " " + b);
+            pref.setCarNum(r.getTag());
         }
     }
 }

@@ -191,6 +191,9 @@ public class LoginFragment extends BaseFragment {
             public void onClick(View v) {
                 hideKeyboard();
 
+                pref.setLastUsedPhoneCode(edPhoneCode.getText().toString());
+                pref.saveLastUsedPhone(edPhone.getText().toString());
+
                 progressBar.setVisibility(View.VISIBLE);
                 getSpiceManager().execute(new LoginRequest(pref.getLastUsedPhoneCode() + edPhone.getText().toString(), edPinCode.getText().toString()), "login", DurationInMillis.ALWAYS_EXPIRED, new LoginRequestListener());
             }
@@ -320,6 +323,7 @@ public class LoginFragment extends BaseFragment {
                 if (Constants.SUCCESS.equals(result.getStatus())) {
                     pref.setSessionID(result.getData().getSession_id());
                     pref.setProfile(result.getData().getProfile());
+                    getApp().setProfile(result.getData().getProfile());
                     if (mCallback != null)
                         mCallback.onLogged();
                 } else {
@@ -359,7 +363,6 @@ public class LoginFragment extends BaseFragment {
                     edPhoneCode.setText("+" + data.getStringExtra("id"));
                     pref.setLastUsedPhoneCode("+" + data.getStringExtra("id"));
                     break;
-
             }
         }
     }

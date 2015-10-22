@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -64,8 +65,8 @@ import wash.rocket.xor.rocketwash.model.CarsAttributes;
 import wash.rocket.xor.rocketwash.model.CarsMakes;
 import wash.rocket.xor.rocketwash.model.CarsMakesResult;
 import wash.rocket.xor.rocketwash.model.CarsProfileResult;
-import wash.rocket.xor.rocketwash.model.ChoiseService;
-import wash.rocket.xor.rocketwash.model.ChoiseServiceResult;
+import wash.rocket.xor.rocketwash.model.ChoiceService;
+import wash.rocket.xor.rocketwash.model.ChoiceServiceResult;
 import wash.rocket.xor.rocketwash.model.MapRouteResult;
 import wash.rocket.xor.rocketwash.model.Point;
 import wash.rocket.xor.rocketwash.model.Profile;
@@ -75,7 +76,6 @@ import wash.rocket.xor.rocketwash.model.TimePeriods;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.requests.AvailableTimesRequest;
 import wash.rocket.xor.rocketwash.requests.CarsMakesRequest;
-import wash.rocket.xor.rocketwash.requests.CarsProfileRequest;
 import wash.rocket.xor.rocketwash.requests.ChoiseServiceRequest;
 import wash.rocket.xor.rocketwash.requests.MapDirectionRequest;
 import wash.rocket.xor.rocketwash.requests.MapReverceGeocodingRequest;
@@ -85,6 +85,7 @@ import wash.rocket.xor.rocketwash.util.util;
 import wash.rocket.xor.rocketwash.widgets.ButtonWithState;
 import wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget;
 import wash.rocket.xor.rocketwash.widgets.NestedScrollView;
+import wash.rocket.xor.rocketwash.widgets.NiceSupportMapFragment;
 import wash.rocket.xor.rocketwash.widgets.SlidingTabLayout;
 
 @SuppressLint("LongLogTag")
@@ -143,7 +144,7 @@ public class WashServiceInfoFragment extends BaseFragment {
     private LayoutInflater mInflater;
     private List<CarsMakes> list_cars;
     private SlidingTabLayout mSlidingTabLayout = null;
-    private ArrayList<ChoiseService> list;
+    private ArrayList<ChoiceService> list;
     private CalendarScrollWidget mCalendar;
     private WashService mService;
     private Typeface mFont;
@@ -210,8 +211,6 @@ public class WashServiceInfoFragment extends BaseFragment {
         Log.w(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
-//doStartLocationService();
-
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
@@ -252,9 +251,10 @@ public class WashServiceInfoFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_wash_service_info, container, false);
 
         mInflater = inflater;
+        //mMap = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
 
-        mMap = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
-
+        NiceSupportMapFragment mapFragment = (NiceSupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mMap = mapFragment.getMap();
 
         if (mMap != null) {
             mMap.setMyLocationEnabled(true);
@@ -363,12 +363,13 @@ public class WashServiceInfoFragment extends BaseFragment {
         });
 
         mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
+        /*
         ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).setListener(new MapFragmentWrapper.OnTouchListener() {
             @Override
             public void onTouch() {
                 mScrollView1.requestDisallowInterceptTouchEvent(true);
             }
-        });
+        });*/
 
         setUpMapIfNeeded();
 
@@ -471,7 +472,11 @@ public class WashServiceInfoFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                ChoiceServicesFragment f = ChoiceServicesFragment.newInstance(mIdService, pref.getCarModelId(), list);
+                int id_model = pref.getCarModelId();
+                if (id_model == 0)
+                    id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
+
+                ChoiceServicesFragment f = ChoiceServicesFragment.newInstance(mIdService, id_model, list);
                 f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_SERVCES);
 
                 getActivity().getSupportFragmentManager()
@@ -487,7 +492,7 @@ public class WashServiceInfoFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                ProfileEditFragment f = ProfileEditFragment.newInstance(pref.getProfile(), false);
+                ProfileEditFragment f = ProfileEditFragment.newInstance(getApp().getProfile(), false);
                 f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_PROFILE_EDIT);
 
                 getActivity().getSupportFragmentManager()
@@ -606,9 +611,12 @@ public class WashServiceInfoFragment extends BaseFragment {
         });
 
         actionWash = (RelativeLayout) rootView.findViewById(R.id.actionWash);
-
         txtStub = (TextView) rootView.findViewById(R.id.txtStub);
-        txtStub.setText(mService.getMobile_stub_text());
+
+        if (mService != null)
+            txtStub.setText(mService.getMobile_stub_text());
+        else
+            txtStub.setText("");
 
         ViewGroup content_share = (ViewGroup) rootView.findViewById(R.id.content_share);
         share = (Button) content_share.findViewById(R.id.btnShare);
@@ -623,7 +631,7 @@ public class WashServiceInfoFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Profile prof = pref.getProfile();
+        Profile prof = getApp().getProfile();
 
         if (prof != null)
             mDiscount = prof.getDiscount();
@@ -632,7 +640,7 @@ public class WashServiceInfoFragment extends BaseFragment {
 
         txtDiscount.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_discount), mDiscount));
         txtBal.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_counter), 0));
-        getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ALWAYS_EXPIRED, new CarsRequestListener());
+        getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
 
         TimeZone utc = TimeZone.getTimeZone("UTC");
         Calendar c = Calendar.getInstance(utc);
@@ -642,7 +650,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         c.set(Calendar.HOUR_OF_DAY, 23);
         c.set(Calendar.MINUTE, 59);
         String b = util.dateToZZ(c.getTime());
-        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "cars", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
+        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "times", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
     }
 
     private void setUpMapIfNeeded() {
@@ -708,6 +716,8 @@ public class WashServiceInfoFragment extends BaseFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        setTargetFragment(null, -1);
+
         outState.putParcelableArrayList(POINTS, mPoints);
         super.onSaveInstanceState(outState);
     }
@@ -727,6 +737,11 @@ public class WashServiceInfoFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        BaseFragment f = (BaseFragment) getFragmentManager().findFragmentById(R.id.container);
+        if (f != null && !f.equals(this))
+            return false;
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().getSupportFragmentManager().popBackStack();
@@ -738,12 +753,11 @@ public class WashServiceInfoFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        MapFragmentWrapper f = (MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map);
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
         if (f != null)
             // getFragmentManager().beginTransaction().remove(f).commit();
             getChildFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
     }
-
 
     private int res = 0;
 
@@ -758,9 +772,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         public void onRequestSuccess(final CarsProfileResult result) {
 
             Log.d("CarsProfileRequestListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
-
             res = res + 1000;
-
             if (Constants.SUCCESS.equals(result.getStatus())) {
 
                 radioGroupCars.removeAllViews();
@@ -819,8 +831,10 @@ public class WashServiceInfoFragment extends BaseFragment {
                     }
 
                     int id_model = pref.getCarModelId();
-                    if (id_model == 0)
-                        id_model = pref.getProfile().getCars_attributes().get(0).getCar_model_id();
+                    if (id_model == 0) {
+                        id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
+                        pref.setCarModelId(id_model);
+                    }
 
                     getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
                 }
@@ -840,11 +854,80 @@ public class WashServiceInfoFragment extends BaseFragment {
 
         @Override
         public void onRequestSuccess(final CarsMakesResult result) {
-            //progressBar.setVisibility(View.GONE);
-            Log.d("CarsRequestListener", "onRequestSuccess = " + result.getStatus() == null ? "null" : result.getStatus());
             if (result != null) {
+                Log.d("CarsRequestListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
                 list_cars = result.getData();
-                getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "cars_profile", DurationInMillis.ALWAYS_EXPIRED, new CarsProfileRequestListener());
+                //getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "cars_profile", DurationInMillis.ALWAYS_EXPIRED, new CarsProfileRequestListener());
+
+
+                res = res + 1000;
+                //if (Constants.SUCCESS.equals(result.getStatus())) {
+
+                radioGroupCars.removeAllViews();
+                if (result.getData() != null) {
+
+                    loading = true;
+                    try {
+
+                        int selected = pref.getUseCar();
+
+                        if (selected > (result.getData().size() - 1))
+                            selected = 0;
+
+                        Log.e("CarsProfileRequestListener", "selected = " + selected);
+
+                        for (int i = 0; i < getApp().getProfile().getCars_attributes().size(); i++) {
+                            CarsAttributes r = getApp().getProfile().getCars_attributes().get(i);
+                            RadioButton rb = (RadioButton) mInflater.inflate(R.layout.radio_button, null);
+                            String a = "", b = "";
+
+                            for (int j = 0; j < list_cars.size(); j++) {
+                                if (list_cars.get(j).getId() == r.getCar_make_id()) {
+                                    a = list_cars.get(j).getName();
+                                    CarMake m;
+                                    for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
+                                        m = list_cars.get(j).getCar_models().get(k);
+                                        if (m.getId() == r.getCar_model_id())
+                                            b = m.getName();
+                                    }
+                                    break;
+                                }
+                            }
+
+                            r.setBrandName(a);
+                            r.setModelName(b);
+                            if (TextUtils.isEmpty(r.getTag()))
+                                rb.setText(String.format("%s %s", a, b));
+                            else
+                                rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
+                            rb.setTag(r);
+                            rb.setId(res + i);
+                            radioGroupCars.addView(rb);
+                            rb.setChecked(selected == i);
+                        }
+
+                    } finally {
+
+                        radioGroupCars.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                radioGroupCars.invalidate();
+                            }
+                        });
+
+                        loading = false;
+                    }
+
+                    int id_model = pref.getCarModelId();
+                    if (id_model == 0) {
+                        id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
+                        pref.setCarModelId(id_model);
+                    }
+
+                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+                }
+                mProgressBar1.setVisibility(View.GONE);
+                overrideFonts(getActivity(), radioGroupCars);
             }
         }
     }
@@ -861,12 +944,12 @@ public class WashServiceInfoFragment extends BaseFragment {
 
             switch (requestCode) {
                 case FRAGMENT_SERVCES:
-                    ArrayList<ChoiseService> l = data.getParcelableArrayListExtra("list");
+                    ArrayList<ChoiceService> l = data.getParcelableArrayListExtra("list");
                     fillChoiseServises(l);
                     break;
                 case FRAGMENT_PROFILE_EDIT:
                     mProgressBar1.setVisibility(View.VISIBLE);
-                    getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ALWAYS_EXPIRED, new CarsRequestListener());
+                    getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
                     break;
 
                 case DIALOG_WASH1:
@@ -892,8 +975,6 @@ public class WashServiceInfoFragment extends BaseFragment {
     }
 
     private void fillCalendar(List<TimePeriods> time_periods) {
-
-        //XXX move to func
         Log.d("fillCalendar", "start");
         if (time_periods != null) {
             Log.d("fillCalendar", "time_periods.size() = " + time_periods.size());
@@ -952,6 +1033,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                     mSlidingTabLayout.addTab("Сегодня", "", true);
                     //mSlidingTabLayout.addTab("Завтра", "", false);
                     pages.add(cnt);
+                    overrideFonts(getActivity(), cnt);
                 }
 
                 k = 0;
@@ -994,6 +1076,8 @@ public class WashServiceInfoFragment extends BaseFragment {
                     //mSlidingTabLayout.addTab("Сегодня", "", true);
                     mSlidingTabLayout.addTab("Завтра", "", false);
                     pages.add(cnt);
+
+                    overrideFonts(getActivity(), cnt);
                 }
 
                 mCalendar.setPages(pages);
@@ -1001,6 +1085,9 @@ public class WashServiceInfoFragment extends BaseFragment {
                 mSlidingTabLayout.setVisibility(View.GONE);
                 mNoTime.setVisibility(View.VISIBLE);
             }
+
+            overrideFonts(getActivity(), mSlidingTabLayout);
+
         }
     }
 
@@ -1109,7 +1196,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
     }
 
-    public final class ChoiseServiceRequestListener implements RequestListener<ChoiseServiceResult> {
+    public final class ChoiseServiceRequestListener implements RequestListener<ChoiceServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             showToastError(R.string.error_loading_data);
@@ -1119,7 +1206,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
 
         @Override
-        public void onRequestSuccess(final ChoiseServiceResult result) {
+        public void onRequestSuccess(final ChoiceServiceResult result) {
             Log.d("ChoiseServiceRequestListener", "onRequestSuccess = " + result.getStatus() == null ? "null" : result.getStatus());
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
@@ -1131,7 +1218,7 @@ public class WashServiceInfoFragment extends BaseFragment {
 
                 if (result.getData() != null) {
                     for (int i = 0; i < result.getData().size(); i++) {
-                        ChoiseService b = result.getData().get(i).getClone();
+                        ChoiceService b = result.getData().get(i).getClone();
                         if (mService != null && !TextUtils.isEmpty(mService.getService_name()) && mService.getService_name().toLowerCase().trim().equals(b.getName() == null ? "xcv" : b.getName().toLowerCase().trim())) {
                             b.setCheck(1);
                             Log.e("fghfgh", b.getName() == null ? "" : b.getName() + " " + b.getPrice());
@@ -1152,7 +1239,7 @@ public class WashServiceInfoFragment extends BaseFragment {
     }
 
     //XXX
-    private void fillChoiseServises(ArrayList<ChoiseService> in) {
+    private void fillChoiseServises(ArrayList<ChoiceService> in) {
         /*
         for (int i = 0; i < tableServicesContent.getChildCount(); i++) {
             View v = tableServicesContent.getChildAt(i);
@@ -1191,6 +1278,8 @@ public class WashServiceInfoFragment extends BaseFragment {
             txtDiscountSrv.setText(String.format("%d %s", mDiscount, getActivity().getString(R.string.rubleSymbolJava)));
             txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
         }
+
+        overrideFonts(getActivity(), tableServicesContent);
     }
 
 
@@ -1217,7 +1306,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         @Override
         public void onClick(View v) {
             if (v.getTag() != null) {
-                ChoiseService b = list.get((Integer) v.getTag());
+                ChoiceService b = list.get((Integer) v.getTag());
                 b.setCheck(((CheckBox) v).isChecked() ? 1 : 0);
             }
 
@@ -1293,7 +1382,7 @@ public class WashServiceInfoFragment extends BaseFragment {
 
     private void reservation(String time) {
 
-        Profile prof = pref.getProfile();
+        Profile prof = getApp().getProfile();
         if (prof != null && prof.isPhone_verified()) {
 
             /*
@@ -1378,7 +1467,7 @@ public class WashServiceInfoFragment extends BaseFragment {
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
 
-            if (mPositionMarker == null) {
+            if (mPositionMarker == null && mMap != null) {
                 mPositionMarker = mMap.addMarker(new MarkerOptions()
                         .flat(true)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_position))
@@ -1399,6 +1488,10 @@ public class WashServiceInfoFragment extends BaseFragment {
     }
 
     public void animateMarker(final Marker marker, final Location location) {
+
+        if (mMap == null || marker == null)
+            return;
+
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         final LatLng startLatLng = marker.getPosition();

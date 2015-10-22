@@ -1,19 +1,23 @@
 package wash.rocket.xor.rocketwash.adapters;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import wash.rocket.xor.rocketwash.R;
-import wash.rocket.xor.rocketwash.model.ChoiseService;
+import wash.rocket.xor.rocketwash.model.ChoiceService;
+import wash.rocket.xor.rocketwash.widgets.ButtonWithState;
 
 public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<ChoiceServicesRecyclerViewAdapter.ViewHolder> {
 
@@ -21,7 +25,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
     public static final int TYPE_LOADER = 1;
 
 
-    private ArrayList<ChoiseService> list;
+    private ArrayList<ChoiceService> list;
     private int mSelectedId = -1;
     private int mOldSelectedId = -1;
 
@@ -29,7 +33,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
     private IOnRequestNextPage mOnRequestNextPage;
     private Typeface mFont;
 
-    public ChoiceServicesRecyclerViewAdapter(ArrayList<ChoiseService> list) {
+    public ChoiceServicesRecyclerViewAdapter(ArrayList<ChoiceService> list) {
         this.list = list;
     }
 
@@ -53,7 +57,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
 
     @Override
     public void onBindViewHolder(ChoiceServicesRecyclerViewAdapter.ViewHolder holder, int position) {
-        ChoiseService r = list.get(position);
+        ChoiceService r = list.get(position);
         holder.populate(r, position);
 
         if (mOnRequestNextPage != null) {
@@ -89,6 +93,8 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
             this.linearLayout = (RelativeLayout) itemView.findViewById(R.id.linearLayout);
             this.type = type;
 
+            overrideFonts(inflater.getContext(), itemView);
+
 
             this.txtDescription.setVisibility(View.GONE);
 
@@ -113,7 +119,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
                             CheckBox c = (CheckBox) v.findViewById(R.id.check);
                             if (c != null) {
                                 c.setChecked(!c.isChecked());
-                                ChoiseService l = list.get(mSelectedId);
+                                ChoiceService l = list.get(mSelectedId);
                                 l.setCheck(c.isChecked() ? 1 : 0);
                             }
 
@@ -132,7 +138,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
             }
         }
 
-        public void populate(ChoiseService p, int position) {
+        public void populate(ChoiceService p, int position) {
             switch (type) {
                 case TYPE_ITEM:
                     txtTitle.setText(p.getName());
@@ -159,7 +165,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
     }
 
     public interface IOnSelectedItem {
-        void onSelecredItem(ChoiseService item, int position);
+        void onSelecredItem(ChoiceService item, int position);
     }
 
     public interface IOnRequestNextPage {
@@ -188,5 +194,30 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
         return mSelectedId;
     }
 
+    public void overrideFonts(final Context context, final View v) {
+        try {
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(context, child);
+                }
+            } else {
+                if (v instanceof TextView)
+                    ((TextView) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof Button)
+                    ((Button) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof ButtonWithState)
+                    ((ButtonWithState) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof CheckBox)
+                    ((CheckBox) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof RadioButton)
+                    ((RadioButton) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+            }
+
+        } catch (Exception e) {
+            // do not show;
+        }
+    }
 
 }

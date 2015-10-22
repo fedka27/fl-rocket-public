@@ -3,8 +3,7 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -63,10 +62,23 @@ public class AvailableTimesRequest extends GoogleHttpClientSpiceRequest<Availabl
             result = out.toString("UTF-8");
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-        return mapper.readValue(result, getResultType());
+        Log.d("AvailableTimesResult", " res = " + result);
+        Log.w("AvailableTimesResult", " start parse json ");
+
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //WashServiceResult res = mapper.readValue(result, getResultType());
+
+        AvailableTimesResult res = LoganSquare.parse(result, AvailableTimesResult.class);
+
+        Log.w("AvailableTimesResult", " end parse json ");
+
+        return res;
+
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //return mapper.readValue(result, getResultType());
     }
 
 }

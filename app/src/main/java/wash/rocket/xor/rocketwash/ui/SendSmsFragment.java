@@ -259,7 +259,6 @@ public class SendSmsFragment extends BaseFragment {
     public final class PinRequestListener implements RequestListener<PinResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            //Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
             showToastError(R.string.request_pin_phone_error);
             progressBar.setVisibility(View.GONE);
         }
@@ -270,7 +269,6 @@ public class SendSmsFragment extends BaseFragment {
             Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
-                //  Toast.makeText(getActivity(), R.string.request_pin_success, Toast.LENGTH_SHORT).show();
                 getActivity()
                         .getSupportFragmentManager()
                         .beginTransaction()
@@ -279,7 +277,6 @@ public class SendSmsFragment extends BaseFragment {
                         .addToBackStack(TAG).commit();
 
             } else {
-                //Toast.makeText(getActivity(), R.string.request_pin_phone_error, Toast.LENGTH_SHORT).show();
                 showToastError(R.string.request_pin_phone_error);
             }
         }
@@ -288,18 +285,15 @@ public class SendSmsFragment extends BaseFragment {
     public final class PhoneSetListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            // Toast.makeText(getActivity(), R.string.request_pin_error, Toast.LENGTH_SHORT).show();
             showToastError(R.string.request_pin_error);
             progressBar.setVisibility(View.GONE);
         }
 
         @Override
         public void onRequestSuccess(final ProfileResult result) {
-            // progressBar.setVisibility(View.GONE);
-            Log.d("PhoneSetListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
 
-            if (Constants.SUCCESS.equals(result.getStatus())) {
-
+            if (result != null && Constants.SUCCESS.equals(result.getStatus())) {
+                //Log.d("PhoneSetListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
                 if (TextUtils.isEmpty(result.getData().getPhone())) {
                     waiting = false;
                     stopCalculateTimer();
@@ -315,8 +309,14 @@ public class SendSmsFragment extends BaseFragment {
                             .addToBackStack(TAG)
                             .commit();
 
+                    waiting = false;
+                    stopCalculateTimer();
+                    pref.setLastTimeClick(-1);
+                    btnSendSMS.setText(R.string.button_next);
+
                 } else {
                     pref.setProfile(result.getData());
+                    getApp().setProfile(result.getData());
                     getSpiceManager().execute(new PinRequest(pref.getLastUsedPhoneCode() + pref.getLastUsedPhone()), "pin", DurationInMillis.ONE_MINUTE, new PinRequestListener());
                 }
 
@@ -334,29 +334,21 @@ public class SendSmsFragment extends BaseFragment {
     public final class CreateEmptyUserListener implements RequestListener<EmptyUserResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            //Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
-            // progressBar.setVisibility(View.GONE);
+
         }
 
         @Override
         public void onRequestSuccess(final EmptyUserResult result) {
-            // progressBar.setVisibility(View.GONE);
-            //Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
-            Log.d("CreateEmptyUserListener", " result = " + result.toString());
-
-            pref.setSessionID(result.getData().getSession_id());
-
-            if (result != null)
+            if (result != null) {
                 if (Constants.SUCCESS.equals(result.getStatus())) {
                     Log.d("CreateEmptyUserListener", "getSession_id = " + result.getData().getSession_id());
                     pref.setSessionID(result.getData().getSession_id());
-
                     getSpiceManager().execute(new ProfileSaveRequest(pref.getSessionID(), mProfile), "save_profile", DurationInMillis.ALWAYS_EXPIRED, new SaveProfileRequestListener());
                     getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, numCar, result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
-
-                } else {
-
                 }
+            } else {
+
+            }
         }
     }
 

@@ -150,7 +150,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .add(R.id.container, WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), null), WashServiceInfoFragment.TAG)
+                            .add(R.id.container, WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragment.TAG)
                             .addToBackStack(TAG).commit();
 
                 } else {
@@ -187,7 +187,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                     case 2:
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                                .add(R.id.container, WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), null), WashServiceInfoFragmentQuick.TAG)
+                                .add(R.id.container, WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragmentQuick.TAG)
                                 .addToBackStack(TAG)
                                 .commit();
                         break;
@@ -200,7 +200,6 @@ public class FavoritesWashServicesFragment extends BaseFragment {
 
                         mPosition = position;
                         showDialogYesNo(R.string.fragment_nearest_wash_services_remove_to_vaf, "", DIALOG_REMOVE, DIALOG_REMOVE_TAG);
-                        //getSpiceManager().execute(new RemoveFavoriteRequest(), "wash", DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
 
                         break;
                 }
@@ -296,7 +295,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-       // spiceManager.start(getActivity());
+        // spiceManager.start(getActivity());
     }
 
     @Override

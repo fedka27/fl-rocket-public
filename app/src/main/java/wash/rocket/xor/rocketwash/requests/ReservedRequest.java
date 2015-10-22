@@ -3,8 +3,7 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -52,11 +51,12 @@ public class ReservedRequest extends GoogleHttpClientSpiceRequest<ReservedResult
 
         Log.d("ReservationRequest", " res = " + result);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //ObjectMapper mapper = new ObjectMapper();
+       // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+       // mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
 
-        ReservedResult res = mapper.readValue(result, getResultType());
+        ReservedResult res = LoganSquare.parse(result, ReservedResult.class);
+        //ReservedResult res = mapper.readValue(result, getResultType());
 
         return res;
     }

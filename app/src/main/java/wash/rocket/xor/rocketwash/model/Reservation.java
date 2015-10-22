@@ -3,46 +3,78 @@ package wash.rocket.xor.rocketwash.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
 import wash.rocket.xor.rocketwash.util.util;
 
+@JsonObject
 public class Reservation implements Parcelable {
 
     @JsonProperty("id")
+    @JsonField
     int id;
     @JsonProperty("user_id")
+    @JsonField
     int user_id;
+    @JsonField
     int service_location_lane_id;
+    @JsonField
     String time_start;
+    @JsonField
     String rating;
+    @JsonField
     String created_at;
+    @JsonField
     String updated_at;
+    @JsonField
     String status;
+    @JsonField
     String thank_message;
+    @JsonField
     String thank_the_client;
+    @JsonField
     String comments;
+    @JsonField
     String name;
+    @JsonField
     String time_end;
+    @JsonField
     String paid;
+    @JsonField
     int car_id;
+    @JsonField
     boolean mobile;
+    @JsonField
     int full_duration;
+    @JsonField
     int ordinal;
+    @JsonField
     String admin_status;
+    @JsonField
     String full_discount;
+    @JsonField
     String notes;
+    @JsonField
     String paid_at;
+    @JsonField
     String price;
+    @JsonField
     String discounted_price;
+    @JsonField
     String rounded_price;
     @JsonProperty("result")
+    @JsonField
     String result;
 
+    @JsonField
     int carwash_id;
+    @JsonField
     String time_from;
+    @JsonField
     WashService carwash;
 
     public int getId() {

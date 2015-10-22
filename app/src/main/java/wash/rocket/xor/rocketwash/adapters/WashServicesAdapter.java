@@ -1,11 +1,16 @@
 package wash.rocket.xor.rocketwash.adapters;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,6 +20,7 @@ import java.util.List;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.util.util;
+import wash.rocket.xor.rocketwash.widgets.ButtonWithState;
 
 public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapter.ViewHolder> {
 
@@ -100,10 +106,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
         public TextView distance;
         public TextView date;
         public TextView txtAvailable;
-
         public ImageView imgBusy;
-
-
         public View itemView;
 
         RelativeLayout layout_button_rec;
@@ -173,6 +176,8 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
                 case TYPE_LOADER:
                     break;
             }
+
+            overrideFonts(inflater.getContext(), itemView);
         }
 
         public void populate(WashService s, int position) {
@@ -339,5 +344,31 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
         notifyItemRemoved(position);
 
         notifyItemRangeChanged(position, list.size());
+    }
+
+    public static void overrideFonts(final Context context, final View v) {
+        try {
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(context, child);
+                }
+            } else {
+                if (v instanceof TextView)
+                    ((TextView) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof Button)
+                    ((Button) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof ButtonWithState)
+                    ((ButtonWithState) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof CheckBox)
+                    ((CheckBox) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof RadioButton)
+                    ((RadioButton) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+            }
+
+        } catch (Exception e) {
+            // do not show;
+        }
     }
 }

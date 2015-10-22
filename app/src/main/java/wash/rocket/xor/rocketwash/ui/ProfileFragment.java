@@ -1,7 +1,9 @@
 package wash.rocket.xor.rocketwash.ui;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -46,7 +48,7 @@ public class ProfileFragment extends BaseFragment {
     public static final String TAG = "ProfileFragment";
 
     private static final int DIALOG_CAR_BRAND = 1;
-    private static final int DIALOG_CAR_MODEL = 2;
+    private static final int FRAGMENT_EDIT_PROFILE = 2;
 
     private TextView txtFullName;
     private TextView txtPhone;
@@ -74,11 +76,16 @@ public class ProfileFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+
+        Log.d(TAG, "onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mInflater = inflater;
+
+        Log.d(TAG, "onCreateView");
+
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -87,6 +94,8 @@ public class ProfileFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         if (getView() == null)
             return;
+
+        Log.d(TAG, "onActivityCreated");
 
         setToolbar(getView());
 
@@ -115,15 +124,20 @@ public class ProfileFragment extends BaseFragment {
         });
 
         actionChange = (RelativeLayout) getView().findViewById(R.id.actionChange);
+        actionChange.setVisibility(View.GONE);
 
         actionChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager()
+
+                ProfileEditFragment f = ProfileEditFragment.newInstance(mProfile, false);
+                f.setTargetFragment(ProfileFragment.this, FRAGMENT_EDIT_PROFILE);
+                getFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .replace(R.id.container, ProfileEditFragment.newInstance(mProfile, false), "profileedit")
-                        .addToBackStack("profile").commit();
+                        .add(R.id.container, f, ProfileEditFragment.TAG)
+                        .addToBackStack(TAG)
+                        .commit();
             }
         });
 
@@ -135,7 +149,7 @@ public class ProfileFragment extends BaseFragment {
         txtPromo = (TextView) getView().findViewById(R.id.txtPromo);
         btnShare = (Button) getView().findViewById(R.id.btnShare);
 
-        getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+        getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
     }
 
     @Override
@@ -146,6 +160,7 @@ public class ProfileFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
     }
 
     @TargetApi(3)
@@ -163,26 +178,48 @@ public class ProfileFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //inflater.inflate(R.menu.change_with_text, menu);
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        BaseFragment f = (BaseFragment) getFragmentManager().findFragmentById(R.id.container);
+        if (f != null && !f.equals(this))
+            return false;
+
         switch (item.getItemId()) {
             case android.R.id.home:
+                Log.d(TAG, "onOptionsItemSelected");
                 getActivity().getSupportFragmentManager().popBackStack();
                 return true;
             case R.id.action_change:
-
                 //String session = pref.getSessionID();
                 //getSpiceManager().execute(new ProfileSaveRequest(session, mProfile), "wash", DurationInMillis.ALWAYS_EXPIRED, new SaveProfileRequestListener());
-
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case FRAGMENT_EDIT_PROFILE:
+                    progressBar.setVisibility(View.VISIBLE);
+                    getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+                    break;
+            }
+        }
+        Log.w(TAG, "onActivityResult");
+
+        setToolbar(getView());
+    }
+
     private int res = 0;
+
     public final class ProfileRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -242,20 +279,23 @@ public class ProfileFragment extends BaseFragment {
 
                     mProfile = result.getData();
                     pref.setProfile(mProfile);
+                    getApp().setProfile(mProfile);
                 }
 
                 progressBar.setVisibility(View.GONE);
+                actionChange.setVisibility(View.VISIBLE);
                 Log.d("onRequestSuccess", "fill data");
             } else {
                 showToastError(R.string.error_loading_profile_data);
             }
+
+            overrideFonts(getActivity(), radioGroupCars);
         }
     }
 
     public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-          //  Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
         }
 

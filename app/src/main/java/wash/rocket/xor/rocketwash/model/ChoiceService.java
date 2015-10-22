@@ -12,16 +12,27 @@ package wash.rocket.xor.rocketwash.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ChoiseService implements Parcelable {
+@JsonObject
+public class ChoiceService implements Parcelable {
+
 
     @JsonProperty("id")
+    @JsonField
     private int id;
+
+    @JsonField
     @JsonProperty("name")
     private String name;
+
+    @JsonField
     @JsonProperty("price")
     private int price;
+
+    @JsonField
     @JsonProperty("duration")
     private int duration;
 
@@ -96,11 +107,11 @@ public class ChoiseService implements Parcelable {
         dest.writeInt(check);
     }
 
-    public ChoiseService() {
+    public ChoiceService() {
 
     }
 
-    public ChoiseService(Parcel in) {
+    public ChoiceService(Parcel in) {
         id = in.readInt();
         name = in.readString();
         price = in.readInt();
@@ -109,18 +120,18 @@ public class ChoiseService implements Parcelable {
         check = in.readInt();
     }
 
-    public static final Creator<ChoiseService> CREATOR = new Creator<ChoiseService>() {
-        public ChoiseService createFromParcel(Parcel in) {
-            return new ChoiseService(in);
+    public static final Creator<ChoiceService> CREATOR = new Creator<ChoiceService>() {
+        public ChoiceService createFromParcel(Parcel in) {
+            return new ChoiceService(in);
         }
 
-        public ChoiseService[] newArray(int size) {
-            return new ChoiseService[size];
+        public ChoiceService[] newArray(int size) {
+            return new ChoiceService[size];
         }
     };
 
-    public ChoiseService getClone() {
-        ChoiseService s = new ChoiseService();
+    public ChoiceService getClone() {
+        ChoiceService s = new ChoiceService();
         s.id = this.id;
         s.name = this.name;
         s.price = this.price;

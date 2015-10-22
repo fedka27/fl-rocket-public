@@ -7,8 +7,9 @@
                 android:clickable="true"
                 android:minHeight="74dp"
                 android:orientation="horizontal"
-                android:padding="@dimen/padding_12dp"
-                android:tag="front">
+                android:tag="front"
+                android:paddingTop="@dimen/padding_12dp"
+                android:paddingBottom="@dimen/padding_12dp">
 
     <ImageView
         android:id="@+id/imageView6"

@@ -54,8 +54,8 @@ public class DialoglistCarModels extends Dialoglist {
         adapter = new DialogRecyclerViewAdapter(list);
         recyclerView.setAdapter(adapter);
 
-        getSpiceManager().execute(carsJsonRequest, "cars", DurationInMillis.ONE_HOUR, new CarsRequestListener());
-        toolbar.setTitle(getActivity().getString(R.string.select_car_brand));
+        getSpiceManager().execute(carsJsonRequest, "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+        toolbar.setTitle(getActivity().getString(R.string.select_car_model));
 
         adapter.setOnSelectedItem(new DialogRecyclerViewAdapter.IOnSelectedItem() {
             @Override

@@ -1,17 +1,23 @@
 package wash.rocket.xor.rocketwash.adapters;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.DialogItem;
+import wash.rocket.xor.rocketwash.widgets.ButtonWithState;
 
 public class DialogRecyclerViewAdapter extends RecyclerView.Adapter<DialogRecyclerViewAdapter.ViewHolder> {
 
@@ -70,7 +76,7 @@ public class DialogRecyclerViewAdapter extends RecyclerView.Adapter<DialogRecycl
 
     @Override
     public int getItemViewType(int position) {
-       // return list.get(position).type;
+        // return list.get(position).type;
         return 0;
     }
 
@@ -89,6 +95,8 @@ public class DialogRecyclerViewAdapter extends RecyclerView.Adapter<DialogRecycl
             this.linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout);
             this.type = type;
 
+            overrideFonts(inflater.getContext(), itemView);
+
             switch (type) {
                 case TYPE_ITEM:
 
@@ -97,7 +105,7 @@ public class DialogRecyclerViewAdapter extends RecyclerView.Adapter<DialogRecycl
                         public void onClick(View v) {
                             mSelectedId = (Integer) v.getTag();
                             if (mOldSelectedId > -1) {
-                              //  notifyItemChanged(mOldSelectedId);
+                                //  notifyItemChanged(mOldSelectedId);
                             }
 
                             mOldSelectedId = mSelectedId;
@@ -137,11 +145,11 @@ public class DialogRecyclerViewAdapter extends RecyclerView.Adapter<DialogRecycl
     }
 
     public interface IOnSelectedItem {
-         void onSelecredItem(DialogItem item, int position);
+        void onSelecredItem(DialogItem item, int position);
     }
 
     public interface IOnRequestNextPage {
-         void onRequestNextPage();
+        void onRequestNextPage();
     }
 
     public void setOnSelectedItem(IOnSelectedItem onSelectedItem) {
@@ -164,6 +172,33 @@ public class DialogRecyclerViewAdapter extends RecyclerView.Adapter<DialogRecycl
 
     public int getSelectedPosition() {
         return mSelectedId;
+    }
+
+    //XXX move to utils
+    public static void overrideFonts(final Context context, final View v) {
+        try {
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(context, child);
+                }
+            } else {
+                if (v instanceof TextView)
+                    ((TextView) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof Button)
+                    ((Button) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof ButtonWithState)
+                    ((ButtonWithState) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof CheckBox)
+                    ((CheckBox) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof RadioButton)
+                    ((RadioButton) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+            }
+
+        } catch (Exception e) {
+            // do not show;
+        }
     }
 
 

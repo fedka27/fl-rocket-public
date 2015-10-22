@@ -55,7 +55,9 @@
                 android:text="name sdfsdf sdfs dfsd fsdf s"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_16sp" />
+                android:textSize="@dimen/text_16sp"
+                android:ellipsize="end"
+                android:maxLines="1"/>
 
         </LinearLayout>
 

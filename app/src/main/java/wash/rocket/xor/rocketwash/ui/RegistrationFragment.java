@@ -40,18 +40,14 @@ public class RegistrationFragment extends BaseFragment {
     private EditText edModelCar;
     private EditText edNumberCar;
 
-    //private CarsJsonRequest carsJsonRequest;
-
     private int mCarBrandId = 0;
     private int mCarMoldelId = 0;
 
     private DialoglistCarBrands dlgCarBrand;
     private DialoglistCarModels dlgModels;
 
-
     public RegistrationFragment() {
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -154,6 +150,11 @@ public class RegistrationFragment extends BaseFragment {
                     edBrandCar.setText(data.getStringExtra("name"));
                     mCarMoldelId = 0;
                     edModelCar.setText("");
+
+                    dlgModels = DialoglistCarModels.newInstance(mCarBrandId);
+                    dlgModels.setTargetFragment(RegistrationFragment.this, DIALOG_CAR_MODEL);
+                    dlgModels.show(getFragmentManager(), DIALOG_CAR_MODEL_TAG);
+
                     break;
                 case DIALOG_CAR_MODEL:
                     mCarMoldelId = data.getIntExtra("id", 0);

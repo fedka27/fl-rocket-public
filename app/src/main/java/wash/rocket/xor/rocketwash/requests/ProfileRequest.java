@@ -2,8 +2,7 @@ package wash.rocket.xor.rocketwash.requests;
 
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -30,7 +29,7 @@ public class ProfileRequest extends GoogleHttpClientSpiceRequest<ProfileResult> 
 
     @Override
     public ProfileResult loadDataFromNetwork() throws IOException {
-        Ln.d("Call web service " + baseUrl);
+        Ln.d("ProfileRequest = " + baseUrl);
 
         HttpHeaders header = new HttpHeaders();
         header.set("X-Rocketwash-Session-Id", session_id);
@@ -45,15 +44,28 @@ public class ProfileRequest extends GoogleHttpClientSpiceRequest<ProfileResult> 
             result = out.toString("UTF-8");
         }
 
-        Log.d("loadDataFromNetwork", " res = " + result);
         //JsonNode json = new ObjectMapper().readTree(result);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-
-        ProfileResult res = mapper.readValue(result, getResultType());
-        res.getData().setString(result);
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        ///mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //ProfileResult res = mapper.readValue(result, getResultType());
+        //res.getData().setString(result);
         //return mapper.readValue(result, getResultType());
+        //return res;
+
+
+        Log.d("ProfileRequest", " res = " + result);
+        Log.w("ProfileRequest", " start parse json ");
+
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //WashServiceResult res = mapper.readValue(result, getResultType());
+
+        ProfileResult res = LoganSquare.parse(result, ProfileResult.class);
+        res.getData().setString(result);
+
+        Log.w("ProfileRequest", " end parse json ");
+
         return res;
 
     }

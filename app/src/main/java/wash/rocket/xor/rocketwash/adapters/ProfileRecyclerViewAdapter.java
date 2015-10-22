@@ -1,20 +1,26 @@
 package wash.rocket.xor.rocketwash.adapters;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.List;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.CarsAttributes;
+import wash.rocket.xor.rocketwash.widgets.ButtonWithState;
 
 public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecyclerViewAdapter.ViewHolder> {
 
@@ -97,6 +103,8 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
                 txtw = new TextWatcherEx(0);
                 edNumberCar.addTextChangedListener(txtw);
             }
+
+            overrideFonts(inflater.getContext(), itemView);
         }
 
         public void populate(CarsAttributes c, int position) {
@@ -232,6 +240,32 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
 
         public void updatePosition(int position) {
             this.mPosition = position;
+        }
+    }
+
+    public static void overrideFonts(final Context context, final View v) {
+        try {
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(context, child);
+                }
+            } else {
+                if (v instanceof TextView)
+                    ((TextView) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof Button)
+                    ((Button) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof ButtonWithState)
+                    ((ButtonWithState) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof CheckBox)
+                    ((CheckBox) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof RadioButton)
+                    ((RadioButton) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+            }
+
+        } catch (Exception e) {
+            // do not show;
         }
     }
 

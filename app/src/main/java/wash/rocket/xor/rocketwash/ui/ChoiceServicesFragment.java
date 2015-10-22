@@ -24,8 +24,8 @@ import java.util.ArrayList;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.adapters.ChoiceServicesRecyclerViewAdapter;
-import wash.rocket.xor.rocketwash.model.ChoiseService;
-import wash.rocket.xor.rocketwash.model.ChoiseServiceResult;
+import wash.rocket.xor.rocketwash.model.ChoiceService;
+import wash.rocket.xor.rocketwash.model.ChoiceServiceResult;
 import wash.rocket.xor.rocketwash.requests.ChoiseServiceRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.widgets.DividerItemDecoration;
@@ -40,8 +40,8 @@ public class ChoiceServicesFragment extends BaseFragment {
     private static final String ID_SERVICE = "id_service";
     private static final String ID_CAR_MODEL = "id_car_model";
 
-    private ArrayList<ChoiseService> list;
-    private ArrayList<ChoiseService> list_in;
+    private ArrayList<ChoiceService> list;
+    private ArrayList<ChoiceService> list_in;
 
     protected RecyclerView recyclerView;
     protected ProgressBar progressBar;
@@ -65,7 +65,7 @@ public class ChoiceServicesFragment extends BaseFragment {
     public ChoiceServicesFragment() {
     }
 
-    public static ChoiceServicesFragment newInstance(int id_service, int id_car_model, ArrayList<ChoiseService> list) {
+    public static ChoiceServicesFragment newInstance(int id_service, int id_car_model, ArrayList<ChoiceService> list) {
         ChoiceServicesFragment fragment = new ChoiceServicesFragment();
         Bundle args = new Bundle();
         args.putInt(ID_SERVICE, id_service);
@@ -122,16 +122,9 @@ public class ChoiceServicesFragment extends BaseFragment {
         //String session = "kC2EJtXFUfYAab5WSzuc4bkUJAy38lgC6l84bFSmYyjRFmIjSDptLThreL0Q6mVg5rKQ/C2fDAIOanZ77buL77sEewWZYJOrsRc3Taivtt9NC8+h5o1GOjQhDJodEMjdUd/ePw==";
         String session = pref.getSessionID();
         if (savedInstanceState == null)
-            getSpiceManager().execute(new ChoiseServiceRequest(mIdService, mIdCarModel, session), "wash", DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+            getSpiceManager().execute(new ChoiseServiceRequest(mIdService, mIdCarModel, session), "wash", DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
 
         toolbar = setToolbar(getView());
-
-        /*
-        toolbar = (Toolbar) getView().findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }*/
 
         progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
@@ -144,28 +137,26 @@ public class ChoiceServicesFragment extends BaseFragment {
         outState.putParcelableArrayList(LIST, list);
     }
 
-    public final class ChoiseServiceRequestListener implements RequestListener<ChoiseServiceResult> {
+    public final class ChoiceServiceRequestListener implements RequestListener<ChoiceServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             showToastError(getActivity().getString(R.string.error_loading_data));
-
             progressBar.setVisibility(View.GONE);
-            // mSwipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
-        public void onRequestSuccess(final ChoiseServiceResult result) {
+        public void onRequestSuccess(final ChoiceServiceResult result) {
 
             if (result != null && Constants.SUCCESS.equals(result.getStatus())) {
                 Log.d("onRequestSuccess", "res = " + result.getStatus());
                 list.clear();
                 if (result.getData() != null) {
                     for (int i = 0; i < result.getData().size(); i++) {
-                        ChoiseService b = result.getData().get(i).getClone();
+                        ChoiceService b = result.getData().get(i).getClone();
 
                         if (list_in != null && list_in.size() > 0) {
                             for (int k = 0; k < list_in.size(); k++) {
-                                ChoiseService c = list_in.get(k);
+                                ChoiceService c = list_in.get(k);
                                 if (c.getId() == b.getId() && c.isCheck())
                                     b.setCheck(1);
                             }
@@ -198,8 +189,6 @@ public class ChoiceServicesFragment extends BaseFragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private boolean manual = false;
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -207,7 +196,6 @@ public class ChoiceServicesFragment extends BaseFragment {
                 getActivity().getSupportFragmentManager().popBackStack();
                 return true;
             case R.id.action_done:
-                manual = true;
                 Intent intent = new Intent();
                 intent.putExtra("list", list);
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
@@ -218,9 +206,8 @@ public class ChoiceServicesFragment extends BaseFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        if (!manual)
+    public void onBackPress() {
+        if (getTargetFragment() != null)
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
     }
 }

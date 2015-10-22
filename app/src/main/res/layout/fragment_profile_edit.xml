@@ -15,7 +15,7 @@
         android:background="?attr/colorPrimary"
         android:elevation="2dp"
         app:theme="@style/AppTheme"
-        app:title="@string/profile"/>
+        app:title="@string/profile_change"/>
 
 
     <include

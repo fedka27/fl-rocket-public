@@ -19,8 +19,7 @@ public class MapFragmentWrapper extends SupportMapFragment {
         View layout = super.onCreateView(layoutInflater, viewGroup, savedInstance);
         TouchableWrapper frameLayout = new TouchableWrapper(getActivity());
         frameLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        ((ViewGroup) layout).addView(frameLayout,
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        ((ViewGroup) layout).addView(frameLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         return layout;
     }
 
@@ -29,7 +28,7 @@ public class MapFragmentWrapper extends SupportMapFragment {
     }
 
     public interface OnTouchListener {
-         void onTouch();
+        void onTouch();
     }
 
     public class TouchableWrapper extends FrameLayout {

@@ -49,7 +49,7 @@ import java.util.List;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.CarsMakes;
-import wash.rocket.xor.rocketwash.model.ChoiseService;
+import wash.rocket.xor.rocketwash.model.ChoiceService;
 import wash.rocket.xor.rocketwash.model.MapRouteResult;
 import wash.rocket.xor.rocketwash.model.Point;
 import wash.rocket.xor.rocketwash.model.ReverseGeocoding;
@@ -97,7 +97,7 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
 
     private LayoutInflater mInflater;
     private List<CarsMakes> list_cars;
-    private ArrayList<ChoiseService> list;
+    private ArrayList<ChoiceService> list;
     private CalendarScrollWidget mCalendar;
     private WashService mService;
     private Typeface mFont;
@@ -558,7 +558,7 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
             mLongitude = location.getLongitude();
 
 
-            if (mPositionMarker == null) {
+            if (mPositionMarker == null && mMap != null) {
                 mPositionMarker = mMap.addMarker(new MarkerOptions()
                         .flat(true)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_position))
@@ -578,6 +578,10 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
     }
 
     public void animateMarker(final Marker marker, final Location location) {
+
+        if (mMap == null || marker == null)
+            return;
+
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         final LatLng startLatLng = marker.getPosition();

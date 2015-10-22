@@ -62,7 +62,8 @@
                         android:layout_alignParentStart="false"
                         android:layout_alignParentTop="false"
                         android:layout_marginTop="45dp"
-                        android:src="@drawable/back_wash"/>
+                        android:src="@drawable/back_wash"
+                        android:layout_centerHorizontal="true"/>
 
                     <ImageView
                         android:id="@+id/imgLogo"

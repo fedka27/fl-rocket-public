@@ -169,6 +169,11 @@ public class WithoutRegistrationFragment extends BaseFragment {
                     edBrandCar.setText(data.getStringExtra("name"));
                     mCarMoldelId = 0;
                     edModelCar.setText("");
+
+                    dlgModels = DialoglistCarModels.newInstance(mCarBrandId);
+                    dlgModels.setTargetFragment(WithoutRegistrationFragment.this, DIALOG_CAR_MODEL);
+                    dlgModels.show(getFragmentManager(), DIALOG_CAR_MODEL_TAG);
+
                     break;
                 case DIALOG_CAR_MODEL:
                     mCarMoldelId = data.getIntExtra("id", 0);

@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -44,6 +43,7 @@ import wash.rocket.xor.rocketwash.model.ProfileResult;
 import wash.rocket.xor.rocketwash.requests.CarsMakesRequest;
 import wash.rocket.xor.rocketwash.requests.ProfileSaveRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
+import wash.rocket.xor.rocketwash.widgets.DividerItemDecoration;
 
 @SuppressLint("LongLogTag")
 public class ProfileEditFragment extends BaseFragment {
@@ -94,17 +94,14 @@ public class ProfileEditFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setHasOptionsMenu(true);
         //carsJsonRequest  = new CarsJsonRequest("");
         mProfile = getArguments().getParcelable(PROFILE);
         cars = getArguments().getInt("cars") == 1;
-
         list = new ArrayList<>();
 
         if (cars) {
             if (mProfile != null && mProfile.getCars_attributes() != null) {
                 for (int i = 0; i < mProfile.getCars_attributes().size(); i++) {
-                    Log.w("onCreate", "????");
                     CarsAttributes p = mProfile.getCars_attributes().get(i).copy();
                     p.setType(0);
                     list.add(p);
@@ -114,7 +111,7 @@ public class ProfileEditFragment extends BaseFragment {
                 list.add(c);
             }
         } else
-            getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ALWAYS_EXPIRED, new CarsRequestListener());
+            getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
     }
 
     @Override
@@ -141,7 +138,7 @@ public class ProfileEditFragment extends BaseFragment {
         adapter = new ProfileRecyclerViewAdapter(list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        recyclerView.addItemDecoration(new SpacesItemDecoration(1));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         //recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -202,16 +199,18 @@ public class ProfileEditFragment extends BaseFragment {
             }
         });
 
-        /*
-        toolbar = (Toolbar) getView().findViewById(R.id.toolbar);
-        AppCompatActivity a = (AppCompatActivity) getActivity();
-        if (a != null) {
-            a.setSupportActionBar(toolbar);
-            if (a.getSupportActionBar() != null)
-                a.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }*/
+        setHasOptionsMenu(true);
 
         toolbar = setToolbar(getView());
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                Log.w(TAG, "onMenuItemClick");
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -255,6 +254,11 @@ public class ProfileEditFragment extends BaseFragment {
 
                     adapter.notifyDataSetChanged();
 
+                    int m = list.get(mPosition).getCar_make_id();
+                    dlgModels = DialoglistCarModels.newInstance(m);
+                    dlgModels.setTargetFragment(ProfileEditFragment.this, DIALOG_CAR_MODEL);
+                    dlgModels.show(getFragmentManager(), DIALOG_CAR_MODEL_TAG);
+
                     break;
                 case DIALOG_CAR_MODEL:
                     //mCarMoldelId = data.getIntExtra("id", 0);
@@ -268,42 +272,23 @@ public class ProfileEditFragment extends BaseFragment {
         }
     }
 
-    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int space;
-
-        public SpacesItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            outRect.left = space;
-            outRect.right = space;
-            outRect.bottom = space;
-
-            if (parent.getChildPosition(view) == 0)
-                outRect.top = space;
-        }
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.done_with_text, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.done, menu);
     }
-
-    private boolean manual = false;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        Log.d(TAG, "onOptionsItemSelected");
+
         switch (item.getItemId()) {
             case android.R.id.home:
-
-                manual = true;
+                Log.d(TAG, "onOptionsItemSelected");
                 if (getTargetFragment() != null)
                     getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
-
-                getActivity().getSupportFragmentManager().popBackStack();
+                getFragmentManager().popBackStack();
                 return true;
             case R.id.action_done:
 
@@ -326,31 +311,21 @@ public class ProfileEditFragment extends BaseFragment {
             progressBar.setVisibility(View.GONE);
         }
 
-
         @Override
         public void onRequestSuccess(final ProfileResult result) {
             progressBar.setVisibility(View.GONE);
             if (Constants.SUCCESS.equals(result.getStatus())) {
                 showToastOk(R.string.data_save_success);
-
                 Log.d("SaveProfileRequestListener", result.getData().getString());
                 pref.setProfile(result.getData());
-
+                getApp().setProfile(result.getData());
                 if (getTargetFragment() != null)
                     getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null);
-
-                getActivity().getSupportFragmentManager().popBackStack();
+                getFragmentManager().popBackStack();
             } else {
                 showToastError(R.string.error_save_profile_data);
             }
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (!manual && getTargetFragment() != null)
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
     }
 
     //private List<CarsMakes> list_cars;
@@ -404,5 +379,11 @@ public class ProfileEditFragment extends BaseFragment {
                 adapter.notifyDataSetChanged();
             }
         }
+    }
+
+    @Override
+    public void onBackPress() {
+        if (getTargetFragment() != null)
+            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
     }
 }

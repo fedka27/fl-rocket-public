@@ -2,7 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+                android:clickable="true">
 
     <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/toolbar"
@@ -90,7 +91,7 @@
 
                 <fragment
                     android:id="@+id/map"
-                    android:name="wash.rocket.xor.rocketwash.ui.MapFragmentWrapper"
+                    android:name="wash.rocket.xor.rocketwash.widgets.NiceSupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="300dp" />
 

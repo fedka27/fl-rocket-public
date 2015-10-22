@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import wash.rocket.xor.rocketwash.model.ChoiseService;
+import wash.rocket.xor.rocketwash.model.ChoiceService;
 import wash.rocket.xor.rocketwash.model.ReservationResult;
 
 public class ReservationRequest extends GoogleHttpClientSpiceRequest<ReservationResult> {
@@ -25,12 +25,12 @@ public class ReservationRequest extends GoogleHttpClientSpiceRequest<Reservation
     private String session_id;
     private int carwash_id;
     private int car_id;
-    private ArrayList<ChoiseService> list;
+    private ArrayList<ChoiceService> list;
     private String url;
     private String time_from;
 
 
-    public ReservationRequest(String session_id, int carwash_id, int car_id, ArrayList<ChoiseService> list, String time_from  ) {
+    public ReservationRequest(String session_id, int carwash_id, int car_id, ArrayList<ChoiceService> list, String time_from  ) {
         super(ReservationResult.class);
         this.url = "http://test.rocketwash.me/v2/reservations";
 

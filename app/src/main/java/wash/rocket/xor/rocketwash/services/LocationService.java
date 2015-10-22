@@ -1,6 +1,5 @@
 package wash.rocket.xor.rocketwash.services;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -266,7 +265,7 @@ public class LocationService extends Service implements LocationListener, GpsSta
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged =  " + location + "; provider = " + (location == null ? "null" : location.getProvider()));
+        // Log.d(TAG, "onLocationChanged =  " + location + "; provider = " + (location == null ? "null" : location.getProvider()));
 
         if (location == null)
             return;
@@ -287,9 +286,6 @@ public class LocationService extends Service implements LocationListener, GpsSta
         }*/
 
         mLastLocation = location;
-
-
-        Log.d(TAG, "fuck");
 
         Bundle data = new Bundle();
         data.putParcelable(LOCATION, location);
@@ -403,8 +399,6 @@ public class LocationService extends Service implements LocationListener, GpsSta
             if (isGooglePlayServicesAvailable)
                 return;
 
-            Log.d(TAG, "fuck1");
-
             if (location == null)
                 return;
 
@@ -415,7 +409,7 @@ public class LocationService extends Service implements LocationListener, GpsSta
 
             // если меньше х секунд, то игнорим.
             if ((currentTimeStamp - last_time) < DELAY_CHANGE_LOCATION) {
-                Log.d(TAG, "GpsLoggingService.OnLocationChanged skip - time");
+                //Log.d(TAG, "GpsLoggingService.OnLocationChanged skip - time");
                 // return;
             }
 
@@ -484,12 +478,8 @@ public class LocationService extends Service implements LocationListener, GpsSta
     };
 
     private void sendMessageToClients(int message, int a, int b, Bundle data) {
-        if (mClients == null) {
-            Log.e(TAG, "sendMessageToClients mClients == null");
+        if (mClients == null)
             return;
-        } else {
-            Log.i(TAG, "sendMessageToClients mClients == " + mClients.size());
-        }
 
         for (int i = mClients.size() - 1; i >= 0; i--) {
             try {

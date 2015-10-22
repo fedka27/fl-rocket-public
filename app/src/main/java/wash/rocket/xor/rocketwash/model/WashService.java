@@ -3,6 +3,8 @@ package wash.rocket.xor.rocketwash.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -14,82 +16,107 @@ import java.util.List;
 
 import wash.rocket.xor.rocketwash.model.deserilazers.DoubleDeserializer;
 
+@JsonObject
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class WashService implements Parcelable {
     @JsonProperty("id")
+    @JsonField
     private int id;
 
     @JsonProperty("organization_id")
+    @JsonField
     private int organization_id;
 
     @JsonProperty("address")
+    @JsonField
     private String address;
 
     @JsonProperty("phone")
+    @JsonField
     private String phone;
 
     @JsonProperty("email")
+    @JsonField
     private String email;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("active")
+    @JsonField
     private boolean active;
 
     @JsonProperty("created_at")
+    @JsonField
     private String created_at;
 
     @JsonProperty("updated_at")
+    @JsonField
     private String updated_at;
 
     @JsonDeserialize(using = DoubleDeserializer.class)
     @JsonProperty("latitude")
+    @JsonField
     private double latitude;
 
     @JsonDeserialize(using = DoubleDeserializer.class)
     @JsonProperty("longitude")
+    @JsonField
     private double longitude;
 
     @JsonProperty("name")
+    @JsonField
     private String name;
 
     @JsonProperty("time_zone")
+    @JsonField
     private String time_zone;
 
     @JsonProperty("plan_id")
+    @JsonField
     private int plan_id;
 
     @JsonProperty("agreement_number")
+    @JsonField
     private String agreement_number;
 
     @JsonProperty("deleted_at")
+    @JsonField
     private String deleted_at;
 
     @JsonProperty("top_order")
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonField
     private boolean top_order;
 
     @JsonProperty("mobile_stub_text")
+    @JsonField
     private String mobile_stub_text;
 
     @JsonProperty("sms_price")
+    @JsonField
     private String sms_price;
 
     @JsonProperty("online_reservation_price")
+    @JsonField
     private String online_reservation_price;
 
     @JsonProperty("distance")
+    @JsonField
     private float distance;
 
     @JsonProperty("bearing")
+    @JsonField
     private int bearing;
 
     @JsonProperty("service_name")
+    @JsonField
     private String service_name;
 
     @JsonProperty("time_periods")
+    @JsonField
     private List<TimePeriods> time_periods;
 
     @JsonProperty("favorite_id")
+    @JsonField
     private int favorite_id;
 
     private int type;

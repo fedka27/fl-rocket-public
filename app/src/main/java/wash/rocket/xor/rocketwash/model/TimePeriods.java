@@ -3,6 +3,8 @@ package wash.rocket.xor.rocketwash.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Calendar;
@@ -10,12 +12,15 @@ import java.util.Date;
 
 import wash.rocket.xor.rocketwash.util.util;
 
+@JsonObject
 public class TimePeriods implements Parcelable {
 
     @JsonProperty("time_from")
+    @JsonField
     private String time_from;
 
     @JsonProperty("price")
+    @JsonField
     private int price;
 
     public String getTime_from() {

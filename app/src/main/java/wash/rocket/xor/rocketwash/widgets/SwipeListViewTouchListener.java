@@ -381,16 +381,18 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 
     protected void closeAll() {
         if (swipeListView != null) {
-            int firstVisibleChildPosition = mLayoutManager.findFirstVisibleItemPosition();
 
+            int firstVisibleChildPosition = mLayoutManager.findFirstVisibleItemPosition();
             int lastVisibleChildPosition = mLayoutManager.findLastVisibleItemPosition();
 
             for (int i = firstVisibleChildPosition; i <= lastVisibleChildPosition; i++) {
-                final View childContainer = swipeListView.getChildAt(i - firstVisibleChildPosition);
-                if (childContainer != null) {
-                    final View child = childContainer.findViewById(swipeFrontView);
-                    if (child != null) {
-                        closeAnimate(child, i);
+                if (i - firstVisibleChildPosition < swipeListView.getChildCount()) {
+                    final View childContainer = swipeListView.getChildAt(i - firstVisibleChildPosition);
+                    if (childContainer != null) {
+                        final View child = childContainer.findViewById(swipeFrontView);
+                        if (child != null) {
+                            closeAnimate(child, i);
+                        }
                     }
                 }
             }

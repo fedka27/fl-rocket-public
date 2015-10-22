@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -29,20 +30,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import wash.rocket.xor.rocketwash.R;
+import wash.rocket.xor.rocketwash.services.JacksonGoogleHttpClientSpiceServiceEx;
 import wash.rocket.xor.rocketwash.services.LocationService;
+import wash.rocket.xor.rocketwash.util.App;
 import wash.rocket.xor.rocketwash.util.Country;
 import wash.rocket.xor.rocketwash.util.CountryMaster;
 import wash.rocket.xor.rocketwash.util.Preferences;
+import wash.rocket.xor.rocketwash.widgets.ButtonWithState;
 import wash.rocket.xor.rocketwash.widgets.SoftKeyboard;
 
 /**
@@ -50,10 +56,10 @@ import wash.rocket.xor.rocketwash.widgets.SoftKeyboard;
  */
 public class BaseFragment extends Fragment {
     protected static final String TAG = BaseFragment.class.getSimpleName();
-    private static final int DIALOG_SHARE = 1;
+    private static final int DIALOG_SHARE = 100;
     private static final String DIALOG_SHARE_TAG = "DIALOG_SHARE";
     //private SpiceManager spiceManager = new SpiceManager(RobospiceService.class);
-    private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
+    private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceServiceEx.class);
     protected SoftKeyboard softKeyboard;
     protected Preferences pref;
     protected IFragmentCallbacksInterface mCallback;
@@ -65,6 +71,7 @@ public class BaseFragment extends Fragment {
     private Intent mServiceIntent;
     private LayoutInflater mInflater;
 
+    private App app;
 
     public BaseFragment() {
     }
@@ -73,6 +80,8 @@ public class BaseFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         pref = new Preferences(getActivity());
+
+        overrideFonts(getActivity(), getView());
 
         if (getView() == null)
             return;
@@ -125,14 +134,14 @@ public class BaseFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        spiceManager.start(getActivity());
+        getSpiceManager().start(getActivity());
     }
 
     @Override
     public void onStop() {
 
-        if (spiceManager.isStarted()) {
-            spiceManager.shouldStop();
+        if (getSpiceManager().isStarted()) {
+            getSpiceManager().shouldStop();
         }
 
         super.onStop();
@@ -226,9 +235,7 @@ public class BaseFragment extends Fragment {
                 break;
 
             case LocationService.MSG_LOCATION_CHANGE:
-
-                Log.d(TAG, "MSG_LOCATION_CHANGE");
-
+                //Log.d(TAG, "MSG_LOCATION_CHANGE");
                 Bundle data = msg.getData();
                 if (data != null) {
                     Location last_location = data.getParcelable(LocationService.LOCATION);
@@ -512,10 +519,45 @@ public class BaseFragment extends Fragment {
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_TEXT, url);
                     startActivity(Intent.createChooser(intent, getString(R.string.share_with)));
-
                     break;
             }
         }
+
+    }
+
+    public App getApp() {
+        return (App) getActivity().getApplicationContext();
+    }
+
+    public void overrideFonts(final Context context, final View v) {
+        try {
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(context, child);
+                }
+            } else {
+                if (v instanceof TextView)
+                    ((TextView) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof Button)
+                    ((Button) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof ButtonWithState)
+                    ((ButtonWithState) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof CheckBox)
+                    ((CheckBox) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+                if (v instanceof RadioButton)
+                    ((RadioButton) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "roboto_light.ttf"));
+            }
+
+        } catch (Exception e) {
+            // do not show;
+        }
+    }
+
+
+    public void onBackPress()
+    {
 
     }
 }

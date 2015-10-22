@@ -18,11 +18,12 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import wash.rocket.xor.rocketwash.R;
 
 
-public class ExpandableView extends LinearLayout implements View.OnClickListener {
+public class ExpandableView extends LinearLayout implements View.OnClickListener, View.OnTouchListener {
 
     private static final String TAG = ExpandableView.class.getSimpleName();
 
@@ -142,6 +143,25 @@ public class ExpandableView extends LinearLayout implements View.OnClickListener
 
         clearAnimation();
         startAnimation(animation);
+
+        //requestDisallowParentInterceptTouchEvent(this, false);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+
+    private void requestDisallowParentInterceptTouchEvent(View __v, Boolean __disallowIntercept) {
+
+        while (__v.getParent() != null && __v.getParent() instanceof View) {
+            if (__v.getParent() instanceof ScrollView) {
+                __v.getParent().requestDisallowInterceptTouchEvent(__disallowIntercept);
+            } else if (__v.getParent() instanceof NestedScrollView) {
+                __v.getParent().requestDisallowInterceptTouchEvent(__disallowIntercept);
+            }
+            __v = (View) __v.getParent();
+        }
     }
 
     @Override
@@ -240,8 +260,11 @@ public class ExpandableView extends LinearLayout implements View.OnClickListener
 
         mCaption = findViewById(mIdResCaption);
 
-        if (mCaption != null)
+        if (mCaption != null) {
             mCaption.setOnClickListener(this);
+
+            mCaption.setOnTouchListener(this);
+        }
 
         mIcon = (ImageView) findViewById(mIdResIcon);
         if (mIcon != null) {
@@ -283,6 +306,38 @@ public class ExpandableView extends LinearLayout implements View.OnClickListener
         } else {
             return resources.getDrawable(resId);
         }
+    }
+
+    boolean b = false;
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                // Disallow ScrollView to intercept touch events.
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                b = true;
+                break;
+
+            case MotionEvent.ACTION_UP:
+                // Allow ScrollView to intercept touch events.
+                v.getParent().requestDisallowInterceptTouchEvent(false);
+                b = true;
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+                b = false;
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                b = false;
+                break;
+        }
+
+        requestDisallowParentInterceptTouchEvent(v, true);
+
+        v.onTouchEvent(event);
+        return b;
     }
 
     /*

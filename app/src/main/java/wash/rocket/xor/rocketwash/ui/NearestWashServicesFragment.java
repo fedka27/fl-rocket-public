@@ -1,5 +1,6 @@
 package wash.rocket.xor.rocketwash.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -27,7 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -38,10 +38,6 @@ import java.util.List;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.adapters.MenuCursorAdapter;
 import wash.rocket.xor.rocketwash.adapters.WashServicesAdapter;
-import wash.rocket.xor.rocketwash.model.CarMake;
-import wash.rocket.xor.rocketwash.model.CarsAttributes;
-import wash.rocket.xor.rocketwash.model.CarsMakes;
-import wash.rocket.xor.rocketwash.model.CarsMakesResult;
 import wash.rocket.xor.rocketwash.model.Profile;
 import wash.rocket.xor.rocketwash.model.ProfileResult;
 import wash.rocket.xor.rocketwash.model.Reservation;
@@ -51,12 +47,9 @@ import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.model.WashServiceResult;
 import wash.rocket.xor.rocketwash.provider.NavigationMenuContent;
 import wash.rocket.xor.rocketwash.requests.AddToFavoriteRequest;
-import wash.rocket.xor.rocketwash.requests.CarsMakesRequest;
 import wash.rocket.xor.rocketwash.requests.NearestWashServiceRequest;
-import wash.rocket.xor.rocketwash.requests.ProfileRequest;
 import wash.rocket.xor.rocketwash.requests.ReserveCancelRequest;
 import wash.rocket.xor.rocketwash.requests.ReservedRequest;
-import wash.rocket.xor.rocketwash.services.GSonRocketWashApiService;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.util;
 import wash.rocket.xor.rocketwash.widgets.BaseSwipeListViewListener;
@@ -64,9 +57,7 @@ import wash.rocket.xor.rocketwash.widgets.DividerItemDecoration;
 import wash.rocket.xor.rocketwash.widgets.SlideInDownAnimator;
 import wash.rocket.xor.rocketwash.widgets.SwipeListView;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+@SuppressLint("LongLogTag")
 public class NearestWashServicesFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = "NearestWashServices";
@@ -75,6 +66,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     private static final String LIST = "LIST";
     private static final int FRAGMENT_PROFILE = 2;
     private static final String NEAREST_WASH_KEY_CASH = "nearest_wash";
+    private static final String RESERVED_WASH_KEY_CASH = "reserved_wash";
+
     private static final int FRAGMENT_RESERVED = 3;
     private static final int FRAGMENT_QUICK = 4;
 
@@ -108,9 +101,11 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
     private LinearLayout layoutWarn;
 
-    private SpiceManager spiceManager = new SpiceManager(GSonRocketWashApiService.class);
+    // private SpiceManager spiceManager = new SpiceManager(RobospiceService.class);
     private Reservation mReserved;
     private int mPosition;
+
+    private int mLoaderCount = 0;
 
     public NearestWashServicesFragment() {
     }
@@ -321,9 +316,14 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mLoaderCount = 0;
+                swipeListView.closeAnimateAll();
                 String session = pref.getSessionID();
                 mPage = 1;
-                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), "wash", DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
+                nearest_Loaded = false;
+                reserved_Loaded = false;
+                getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), RESERVED_WASH_KEY_CASH, 3000, new ReservedRequestListener());
+                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), NEAREST_WASH_KEY_CASH, DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
                 list.clear();
                 layoutWarn.setVisibility(View.GONE);
             }
@@ -346,13 +346,24 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         layoutWarn.setVisibility(View.GONE);
 
         if (mLatitude != 0 && mLongitude != 0) {
-            getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
-            });
+
+            if (list.size() == 0) {
+
+                Log.w(TAG, "first_load");
+
+                getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
+                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
+
+                //spiceManager.execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
+                //spiceManager.execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
+
+                mSwipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
+            }
         } else {
             showShowGPSWarn();
         }
@@ -370,7 +381,9 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
 
-                Profile profile = pref.getProfile();
+                swipeListView.closeAnimateAll();
+
+                Profile profile = getApp().getProfile();
 
                 if (profile != null) {
                     txtFIO.setText(profile.getName());
@@ -380,8 +393,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     txtFIO.setText("");
                     txtCar.setText("");
                     txtCarNumber.setText("");
-
-                    getSpiceManager().execute(new CarsMakesRequest(""), "cars", DurationInMillis.ONE_HOUR, new CarsRequestListener());
                 }
             }
 
@@ -423,11 +434,12 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     case 1:
                         ProfileFragment p = new ProfileFragment();
                         p.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_PROFILE);
-                        getActivity().getSupportFragmentManager()
+                        getFragmentManager()
                                 .beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                                 .add(R.id.container, p, ProfileFragment.TAG)
-                                .addToBackStack(TAG).commit();
+                                .addToBackStack(TAG)
+                                .commit();
                         mDrawerLayout.closeDrawers();
                         break;
 
@@ -436,7 +448,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                                 .beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                                 .add(R.id.container, new FavoritesWashServicesFragment(), FavoritesWashServicesFragment.TAG)
-                                .addToBackStack(TAG).commit();
+                                .addToBackStack(TAG)
+                                .commit();
                         mDrawerLayout.closeDrawers();
                         break;
 
@@ -477,7 +490,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         txtCarNumber = (TextView) getView().findViewById(R.id.txtCarNumber);
         progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
 
-        Profile profile = pref.getProfile();
+        Profile profile = getApp().getProfile();
 
         if (profile != null) {
             progressBar.setVisibility(View.GONE);
@@ -535,67 +548,26 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         Log.d(TAG, "onLoaderReset");
     }
 
-    public final class NearestWashServiceRequestListener implements RequestListener<WashServiceResult> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showError();
-            stopRefrash();
-        }
-
-        @Override
-        public void onRequestSuccess(final WashServiceResult result) {
-            layoutWarn.setVisibility(View.GONE);
-            Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
-
-            if (Constants.SUCCESS.equals(result.getStatus())) {
-                adapter.remove_by_type(WashServicesAdapter.TYPE_LOADER, true); //XXX
-
-                if (result.getData() != null) {
-                    for (int i = 0; i < result.getData().size(); i++) {
-                        list.add(result.getData().get(i).getClone());
-                    }
-
-                    if (result.getData().size() >= 10) {
-                        WashService loader = new WashService();
-                        loader.setType(WashServicesAdapter.TYPE_LOADER); //XXX
-                        list.add(loader);
-                    }
-                }
-
-                if (mPage <= 1)
-                    getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
-                else {
-                    adapter.notifyDataSetChanged();
-                    stopRefrash();
-                }
-
-                Log.d("onRequestSuccess", "fill data");
-            } else {
-                showError();
-                stopRefrash();
-            }
-        }
-    }
 
     @Override
     public void onStart() {
         super.onStart();
-        spiceManager.start(getActivity());
+        //spiceManager.start(getActivity());
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (spiceManager.isStarted()) {
-            spiceManager.shouldStop();
-        }
+        // if (spiceManager.isStarted()) {
+        //     spiceManager.shouldStop();
+        // }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Profile profile = pref.getProfile();
+        Profile profile = getApp().getProfile();
         if (profile != null) {
             txtFIO.setText(profile.getName());
             txtCar.setText("");
@@ -625,19 +597,17 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     break;
 
                 case DIALOG_FAVORITE:
-                    swipeListView.closeAnimate(mPosition);
+                    swipeListView.closeAnimateAll();
                     getSpiceManager().execute(new AddToFavoriteRequest(pref.getSessionID(), list.get(mPosition).getId()), NEAREST_WASH_KEY_CASH, 3000, new AddFavoriteRequestListener());
                     break;
 
                 case DIALOG_HIDE:
-
-                    swipeListView.closeAnimate(mPosition);
+                    swipeListView.closeAnimateAll();
                     adapter.remove(mPosition);
-
                     break;
 
                 case DIALOG_CANCEL_RESERVED:
-                    swipeListView.closeAnimate(mPosition);
+                    swipeListView.closeAnimateAll();
                     mSwipeRefreshLayout.setRefreshing(true);
                     getSpiceManager().execute(new ReserveCancelRequest(pref.getSessionID(), mReserved.getId()), "cancel", DurationInMillis.ALWAYS_EXPIRED, new CancelRequestListener());
                     break;
@@ -645,149 +615,22 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         }
     }
 
-    private List<CarsMakes> list_cars;
-
-    public final class ProfileRequestListener implements RequestListener<ProfileResult> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showToastError(R.string.error_loading_profile_data);
-            progressBar.setVisibility(View.GONE);
-        }
-
-        @Override
-        public void onRequestSuccess(final ProfileResult result) {
-            Log.d("onRequestSuccess", result.getStatus() == null ? "null" : result.getStatus());
-            if (Constants.SUCCESS.equals(result.getStatus())) {
-
-                if (result.getData() != null) {
-                    List<CarsAttributes> c = result.getData().getCars_attributes();
-
-                    int i = pref.getUseCar();
-
-                    if (c != null) {
-
-                        if (i > c.size())
-                            i = 0;
-
-                        CarsAttributes r = c.get(i);
-
-                        String a = "", b = "";
-
-                        for (int j = 0; j < list_cars.size(); j++) {
-                            if (list_cars.get(j).getId() == r.getCar_make_id()) {
-                                a = list_cars.get(j).getName();
-                                CarMake m;
-                                for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
-                                    m = list_cars.get(j).getCar_models().get(k);
-                                    if (m.getId() == r.getCar_model_id())
-                                        b = m.getName();
-                                }
-                                break;
-                            }
-                        }
-
-                        txtCar.setText(String.format("%s %s", a, b));
-                        pref.setCarName(String.format("%s %s", a, b));
-                    }
-
-                    txtFIO.setText(result.getData().getName());
-
-                    pref.setProfile(result.getData());
-                    progressBar.setVisibility(View.GONE);
-                    Log.d("onRequestSuccess", "fill data");
-                } else {
-                    showToastError(R.string.error_loading_profile_data);
-                }
-            }
-        }
-    }
-
-    public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            progressBar.setVisibility(View.GONE);
-        }
-
-        @Override
-        public void onRequestSuccess(final CarsMakesResult result) {
-            //progressBar.setVisibility(View.GONE);
-            if (result != null) {
-                list_cars = result.getData();
-                getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "wash", 30, new ProfileRequestListener());
-            }
-        }
-    }
-
-    public final class ReservedRequestListener implements RequestListener<ReservedResult> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            adapter.notifyDataSetChanged();
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-            });
-        }
-
-        @Override
-        public void onRequestSuccess(final ReservedResult result) {
-            //progressBar.setVisibility(View.GONE);
-            if (result != null) {
-
-                if (result.getData() != null && result.getData().size() > 0) {
-                    WashService w = new WashService();
-                    w.setType(WashServicesAdapter.TYPE_GROUP);
-                    w.setName(getActivity().getString(R.string.group_name_reserved));
-                    list.add(0, w);
-
-                    Reservation cw = result.getData().get(0);
-
-                    mReserved = cw;
-
-                    w = new WashService();
-                    w.setType(WashServicesAdapter.TYPE_RESERVED);
-                    w.setName(cw.getCarwash().getName());
-                    w.setAddress(cw.getCarwash().getAddress());
-                    w.setrDate(util.getDate(cw.getTime_from()));
-                    list.add(1, w);
-
-                    w = new WashService();
-                    w.setType(WashServicesAdapter.TYPE_GROUP);
-                    w.setName(getActivity().getString(R.string.group_name_near));
-                    list.add(2, w);
-                }
-            }
-
-            adapter.notifyDataSetChanged();
-
-            if (list.size() <= 0)
-                showNoDataWarn();
-
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-            });
-        }
-    }
-
-    long last_time = 0;
+    private long last_time = 0;
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged");
+        //Log.d(TAG, "onLocationChanged");
 
         if (location != null) {
-
-            Log.d(TAG, "onLocationChanged != null");
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
+            // mLatitude = 56.138654;
+            // mLongitude = 47.239894;
 
             if (list.size() <= 0 && !mSwipeRefreshLayout.isRefreshing() && last_time == 0) {
                 String session = pref.getSessionID();
                 mPage = 1;
+                getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
                 getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), "wash", 3000, new NearestWashServiceRequestListener());
                 list.clear();
                 layoutWarn.setVisibility(View.GONE);
@@ -815,19 +658,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         f.show(getFragmentManager(), tag);
     }
 
-    private class AddFavoriteRequestListener implements RequestListener<ProfileResult> {
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showToastError(R.string.favorite_add_fail);
-        }
-
-        @Override
-        public void onRequestSuccess(ProfileResult profileResult) {
-            showToastOk(R.string.favorite_add_success);
-        }
-    }
-
     private void showShowGPSWarn() {
         layoutWarn.setVisibility(View.VISIBLE);
         TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
@@ -850,6 +680,16 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
         t.setText(R.string.network_error);
         i.setImageResource(R.drawable.location_error1);
+    }
+
+    private void stopRefrash() {
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                swipeListView.closeAnimateAll();
+            }
+        });
     }
 
     private class CancelRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.ReserveCancelResult> {
@@ -876,13 +716,132 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         }
     }
 
+    private class AddFavoriteRequestListener implements RequestListener<ProfileResult> {
 
-    private void stopRefrash() {
-        mSwipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            showToastError(R.string.favorite_add_fail);
+        }
+
+        @Override
+        public void onRequestSuccess(ProfileResult profileResult) {
+            showToastOk(R.string.favorite_add_success);
+        }
     }
+
+    private boolean nearest_Loaded = false;
+    private boolean reserved_Loaded = false;
+
+    public final class NearestWashServiceRequestListener implements RequestListener<WashServiceResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            showError();
+            stopRefrash();
+            nearest_Loaded = true;
+        }
+
+        @Override
+        public void onRequestSuccess(final WashServiceResult result) {
+            layoutWarn.setVisibility(View.GONE);
+            Log.d("NearestWashServiceRequestListener", "res");
+
+            nearest_Loaded = true;
+            if (mPage <= 1 && !reserved_Loaded) {
+                list.clear();
+            }
+
+            if (Constants.SUCCESS.equals(result.getStatus())) {
+                adapter.remove_by_type(WashServicesAdapter.TYPE_LOADER, true); //XXX
+
+                if (result.getData() != null) {
+                    for (int i = 0; i < result.getData().size(); i++) {
+                        list.add(result.getData().get(i).getClone());
+                    }
+
+                    if (result.getData().size() >= 10) {
+                        WashService loader = new WashService();
+                        loader.setType(WashServicesAdapter.TYPE_LOADER); //XXX
+                        list.add(loader);
+                    }
+                }
+
+                if (mPage <= 1) {
+                    if (reserved_Loaded) {
+                        adapter.notifyDataSetChanged();
+                        stopRefrash();
+                    }
+
+                    if (reserved_Loaded && list.size() <= 0)
+                        showNoDataWarn();
+
+                } else {
+                    adapter.notifyDataSetChanged();
+                    stopRefrash();
+                }
+
+                Log.d("NearestWashServiceRequestListener", "fill data");
+
+
+            } else {
+                showError();
+                stopRefrash();
+            }
+
+        }
+    }
+
+    public final class ReservedRequestListener implements RequestListener<ReservedResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            adapter.notifyDataSetChanged();
+            stopRefrash();
+            reserved_Loaded = true;
+        }
+
+        @Override
+        public void onRequestSuccess(final ReservedResult result) {
+
+            reserved_Loaded = true;
+
+            if (result != null) {
+
+                if (mPage <= 1 && !nearest_Loaded) {
+                    list.clear();
+                }
+
+                if (result.getData() != null && result.getData().size() > 0) {
+                    WashService w = new WashService();
+                    w.setType(WashServicesAdapter.TYPE_GROUP);
+                    w.setName(getActivity().getString(R.string.group_name_reserved));
+                    list.add(0, w);
+
+                    Reservation cw = result.getData().get(0);
+                    mReserved = cw;
+
+                    w = new WashService();
+                    w.setType(WashServicesAdapter.TYPE_RESERVED);
+                    w.setName(cw.getCarwash().getName());
+                    w.setAddress(cw.getCarwash().getAddress());
+                    w.setrDate(util.getDate(cw.getTime_from()));
+                    list.add(1, w);
+
+                    w = new WashService();
+                    w.setType(WashServicesAdapter.TYPE_GROUP);
+                    w.setName(getActivity().getString(R.string.group_name_near));
+                    list.add(2, w);
+                }
+            }
+
+            if (nearest_Loaded) {
+                adapter.notifyDataSetChanged();
+                stopRefrash();
+            }
+
+            if (nearest_Loaded && list.size() <= 0)
+                showNoDataWarn();
+
+            Log.d("ReservedRequestListener", "fill data");
+        }
+    }
+
 }

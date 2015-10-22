@@ -1,14 +1,21 @@
 package wash.rocket.xor.rocketwash.model;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.google.api.client.util.Key;
 
 import java.util.List;
 
-public class ChoiseServiceResult {
+@JsonObject
+public class ChoiceServiceResult {
+
+    @JsonField
     @Key
     private String status;
+
+    @JsonField
     @Key
-    private List<ChoiseService> data;
+    private List<ChoiceService> data;
 
     public String getStatus() {
         return status;
@@ -18,11 +25,11 @@ public class ChoiseServiceResult {
         this.status = status;
     }
 
-    public List<ChoiseService> getData() {
+    public List<ChoiceService> getData() {
         return data;
     }
 
-    public void setData(List<ChoiseService> data) {
+    public void setData(List<ChoiceService> data) {
         this.data = data;
     }
 }

@@ -45,8 +45,8 @@ import java.util.TimeZone;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.AvailableTimesResult;
 import wash.rocket.xor.rocketwash.model.CarsMakes;
-import wash.rocket.xor.rocketwash.model.ChoiseService;
-import wash.rocket.xor.rocketwash.model.ChoiseServiceResult;
+import wash.rocket.xor.rocketwash.model.ChoiceService;
+import wash.rocket.xor.rocketwash.model.ChoiceServiceResult;
 import wash.rocket.xor.rocketwash.model.Profile;
 import wash.rocket.xor.rocketwash.model.ReservationResult;
 import wash.rocket.xor.rocketwash.model.TimePeriods;
@@ -104,7 +104,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     private LayoutInflater mInflater;
     private List<CarsMakes> list_cars;
     private SlidingTabLayout mSlidingTabLayout = null;
-    private ArrayList<ChoiseService> list;
+    private ArrayList<ChoiceService> list;
     private CalendarScrollWidget mCalendar;
     private WashService mService;
     private Typeface mFont;
@@ -293,7 +293,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
         int id_model = pref.getCarModelId();
         if (id_model == 0)
-            id_model = pref.getProfile().getCars_attributes().get(0).getCar_model_id();
+            id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
 
         getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
 
@@ -375,15 +375,17 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 ArrayList<View> pages = new ArrayList<>();
 
                 int k = 0;
+                int k1 = 0;
                 ViewGroup cnt = null;
                 Button b1 = null;
                 Button b2 = null;
 
                 first_time = time_periods.get(0).getTime_from();
 
-                for (int i = 0; i < time_periods.size(); i++) {
-                    TimePeriods d = time_periods.get(i);
-
+                TimePeriods d;
+                int count = time_periods.size();
+                for (int i = 0; i < count; i++) {
+                     d = time_periods.get(i);
                     if (d.isToday()) {
                         if (k % 2 != 0) {
 
@@ -423,6 +425,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                     mSlidingTabLayout.addTab("Сегодня", "", true);
                     //mSlidingTabLayout.addTab("Завтра", "", false);
                     pages.add(cnt);
+                    overrideFonts(getActivity(), cnt);
                 }
 
                 k = 0;
@@ -430,8 +433,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 b1 = null;
                 b2 = null;
                 for (int i = 0; i < time_periods.size(); i++) {
-                    TimePeriods d = time_periods.get(i);
-
+                    d = time_periods.get(i);
                     if (d.isTomorrow()) {
                         if (k % 2 != 0) {
                             if (cnt == null)
@@ -465,6 +467,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                     //mSlidingTabLayout.addTab("Сегодня", "", true);
                     mSlidingTabLayout.addTab("Завтра", "", false);
                     pages.add(cnt);
+                    overrideFonts(getActivity(), cnt);
                 }
 
                 mCalendar.setPages(pages);
@@ -472,6 +475,8 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 mSlidingTabLayout.setVisibility(View.GONE);
                 mNoTime.setVisibility(View.VISIBLE);
             }
+
+            overrideFonts(getActivity(), mSlidingTabLayout);
         }
     }
 
@@ -528,7 +533,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
     private void reservation(String time) {
 
-        Profile prof = pref.getProfile();
+        Profile prof = getApp().getProfile();
         if (prof != null && prof.isPhone_verified()) {
 
             if (TextUtils.isEmpty(selected_time)) {
@@ -597,7 +602,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         }
     }
 
-    public final class ChoiseServiceRequestListener implements RequestListener<ChoiseServiceResult> {
+    public final class ChoiseServiceRequestListener implements RequestListener<ChoiceServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             //Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
@@ -605,7 +610,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         }
 
         @Override
-        public void onRequestSuccess(final ChoiseServiceResult result) {
+        public void onRequestSuccess(final ChoiceServiceResult result) {
             Log.d("ChoiseServiceRequestListener", "onRequestSuccess = " + result.getStatus() == null ? "null" : result.getStatus());
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
@@ -618,7 +623,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
                 if (result.getData() != null) {
                     for (int i = 0; i < result.getData().size(); i++) {
-                        ChoiseService b = result.getData().get(i).getClone();
+                        ChoiceService b = result.getData().get(i).getClone();
                         if (mService != null && !TextUtils.isEmpty(mService.getService_name()) && mService.getService_name().toLowerCase().trim().equals(b.getName() == null ? "xcv" : b.getName().toLowerCase().trim())) {
                             b.setCheck(1);
                             Log.e("fghfgh", b.getName() == null ? "" : b.getName() + " " + b.getPrice());
@@ -635,7 +640,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         }
     }
 
-    private void fillChoiseServises(ArrayList<ChoiseService> in) {
+    private void fillChoiseServises(ArrayList<ChoiceService> in) {
         /*
         for (int i = 0; i < tableServicesContent.getChildCount(); i++) {
             View v = tableServicesContent.getChildAt(i);
@@ -674,6 +679,8 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
             txtDiscountSrv.setText(String.format("%d %s", discount, getActivity().getString(R.string.rubleSymbolJava)));
             txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
         }
+
+        overrideFonts(getActivity(), tableServicesContent);
     }
 
 

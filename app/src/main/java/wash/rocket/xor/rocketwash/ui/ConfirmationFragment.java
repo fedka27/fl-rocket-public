@@ -249,8 +249,8 @@ public class ConfirmationFragment extends BaseFragment {
             progressBar.setVisibility(View.GONE);
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
-
                 pref.setProfile(result.getData());
+                getApp().setProfile(result.getData());
                 mCallback.onLogged();
 
             } else {

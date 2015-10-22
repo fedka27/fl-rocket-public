@@ -3,8 +3,7 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -15,9 +14,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import wash.rocket.xor.rocketwash.model.ChoiseServiceResult;
+import wash.rocket.xor.rocketwash.model.ChoiceServiceResult;
 
-public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiseServiceResult> {
+public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiceServiceResult> {
 
     private String baseUrl;
 
@@ -26,7 +25,7 @@ public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiseSer
     private int car_model_id;
 
     public ChoiseServiceRequest(int id_service, int car_model_id, String id_session) {
-        super(ChoiseServiceResult.class);
+        super(ChoiceServiceResult.class);
         this.baseUrl = "http://test.rocketwash.me/v2/services";
         this.id_service = id_service;
         this.car_model_id = car_model_id;
@@ -34,7 +33,7 @@ public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiseSer
     }
 
     @Override
-    public ChoiseServiceResult loadDataFromNetwork() throws IOException {
+    public ChoiceServiceResult loadDataFromNetwork() throws IOException {
 
         String uri = Uri.parse(baseUrl)
                 .buildUpon()
@@ -42,7 +41,7 @@ public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiseSer
                 .appendQueryParameter("car_model_id", "" + car_model_id)
                 .build().toString();
 
-        Log.d("loadDataFromNetwork", "uri = " + uri);
+        Log.d("ChoiceServiceResult", "uri = " + uri);
 
         HttpHeaders header = new HttpHeaders();
         header.set("X-Rocketwash-Session-Id", id_session);
@@ -58,12 +57,23 @@ public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiseSer
             result = out.toString("UTF-8");
         }
 
-        Log.d("loadDataFromNetwork", " res = " + result);
-
+        //Log.d("loadDataFromNetwork", " res = " + result);
         //JsonNode json = new ObjectMapper().readTree(result);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper.readValue(result, getResultType());
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //return mapper.readValue(result, getResultType());
+
+        Log.d("ChoiceServiceResult", " res = " + result);
+        Log.w("ChoiceServiceResult", " start parse json ");
+
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //WashServiceResult res = mapper.readValue(result, getResultType());
+
+        ChoiceServiceResult res = LoganSquare.parse(result, ChoiceServiceResult.class);
+        Log.w("ChoiceServiceResult", " end parse json ");
+
+        return res;
     }
 
 

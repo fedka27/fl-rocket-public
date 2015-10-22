@@ -80,7 +80,6 @@ public class LoginQuickFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        // loginRequest = new LoginRequest("");
     }
 
     @Override
@@ -180,7 +179,7 @@ public class LoginQuickFragment extends BaseFragment {
         imm.hideSoftInputFromWindow(edPhone.getWindowToken(), 0);
         imm.hideSoftInputFromWindow(edPinCode.getWindowToken(), 0);
 
-        RelativeLayout rl = (RelativeLayout) getView().findViewById(R.id.main);
+        RelativeLayout rl = (RelativeLayout) getView().findViewById(R.id.main_quick);
         rl.requestFocus();
     }
 

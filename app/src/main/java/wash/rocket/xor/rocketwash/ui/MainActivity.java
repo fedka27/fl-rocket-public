@@ -2,6 +2,7 @@ package wash.rocket.xor.rocketwash.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -10,9 +11,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+
 import io.fabric.sdk.android.Fabric;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.services.LocationService;
@@ -26,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     private static final String FRAGMENT_NETWORK_TAG = "network";
     private static final String FRAGMENT_GPS_TAG = "gps";
     private static final String FRAGMENT_LOADER_TAG = "login";
-
     private static final int FRAGMENT_GPS = 1;
     private static final int FRAGMENT_NETWORK = 2;
 
@@ -38,6 +38,11 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+
+        if (findViewById(R.id.container_two) == null) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
         pref = new Preferences(this);
 
         if (savedInstanceState == null) {
@@ -62,20 +67,19 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         }
     }
 
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+
         if (id == R.id.action_settings) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public void onLogged() {
@@ -215,35 +219,42 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         getApplicationContext().stopService(mServiceIntent);
     }
 
-    private void removePrevFragments()
-    {
-        Fragment f = getSupportFragmentManager().findFragmentByTag( LoginFragment.TAG );
+    private void removePrevFragments() {
+        Fragment f = getSupportFragmentManager().findFragmentByTag(LoginFragment.TAG);
         if (f != null)
             getSupportFragmentManager().beginTransaction().remove(f).commit();
 
-        f = getSupportFragmentManager().findFragmentByTag( NearestWashServicesFragment.TAG );
+        f = getSupportFragmentManager().findFragmentByTag(NearestWashServicesFragment.TAG);
         if (f != null)
             getSupportFragmentManager().beginTransaction().remove(f).commit();
 
-        f = getSupportFragmentManager().findFragmentByTag( SendSmsFragment.TAG );
+        f = getSupportFragmentManager().findFragmentByTag(SendSmsFragment.TAG);
         if (f != null)
             getSupportFragmentManager().beginTransaction().remove(f).commit();
 
-        f = getSupportFragmentManager().findFragmentByTag( ConfirmationFragment.TAG );
+        f = getSupportFragmentManager().findFragmentByTag(ConfirmationFragment.TAG);
         if (f != null)
             getSupportFragmentManager().beginTransaction().remove(f).commit();
 
-        f = getSupportFragmentManager().findFragmentByTag( WashServiceInfoFragment.TAG );
+        f = getSupportFragmentManager().findFragmentByTag(WashServiceInfoFragment.TAG);
         if (f != null)
             getSupportFragmentManager().beginTransaction().remove(f).commit();
 
-        f = getSupportFragmentManager().findFragmentByTag( WashServiceInfoFragmentCall.TAG );
+        f = getSupportFragmentManager().findFragmentByTag(WashServiceInfoFragmentCall.TAG);
         if (f != null)
             getSupportFragmentManager().beginTransaction().remove(f).commit();
 
-        f = getSupportFragmentManager().findFragmentByTag( WashServiceInfoFragmentQuick.TAG );
+        f = getSupportFragmentManager().findFragmentByTag(WashServiceInfoFragmentQuick.TAG);
         if (f != null)
             getSupportFragmentManager().beginTransaction().remove(f).commit();
-
     }
+
+    @Override
+    public void onBackPressed() {
+        BaseFragment f = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+        if (f != null)
+            f.onBackPress();
+        super.onBackPressed();
+    }
+
 }

@@ -1,10 +1,10 @@
 package wash.rocket.xor.rocketwash.requests;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.WashServiceResult;
 
+@SuppressLint("LongLogTag")
 public class NearestWashServiceRequest extends GoogleHttpClientSpiceRequest<WashServiceResult> {
 
     private String baseUrl;
@@ -36,6 +37,7 @@ public class NearestWashServiceRequest extends GoogleHttpClientSpiceRequest<Wash
         this.id_session = id_session;
     }
 
+
     @Override
     public WashServiceResult loadDataFromNetwork() throws IOException {
 
@@ -47,7 +49,7 @@ public class NearestWashServiceRequest extends GoogleHttpClientSpiceRequest<Wash
                 .appendQueryParameter("page", "" + page)
                 .build().toString();
 
-        Log.d("loadDataFromNetwork", "uri = " + uri);
+        Log.d("NearestWashServiceRequest", "uri = " + uri);
 
         HttpHeaders header = new HttpHeaders();
         header.set("X-Rocketwash-Session-Id", id_session);
@@ -63,17 +65,18 @@ public class NearestWashServiceRequest extends GoogleHttpClientSpiceRequest<Wash
             result = out.toString("UTF-8");
         }
 
-        Log.d("loadDataFromNetwork", " res = " + result);
+        Log.d("NearestWashServiceRequest", " res = " + result);
+        Log.w("NearestWashServiceRequest", " start parse json ");
 
-        //JsonNode json = new ObjectMapper().readTree(result);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper.readValue(result, getResultType());
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //WashServiceResult res = mapper.readValue(result, getResultType());
 
-        //request.setParser( new JacksonFactory().createJsonObjectParser() );
-        //request.setParser( new GsonFactory().createJsonObjectParser());
-        //request.setParser(  );
-        //return request.execute().parseAs(getResultType());
+        WashServiceResult res = LoganSquare.parse(result, WashServiceResult.class);
+
+        Log.w("NearestWashServiceRequest", " end parse json ");
+
+        return res;
     }
 
 
