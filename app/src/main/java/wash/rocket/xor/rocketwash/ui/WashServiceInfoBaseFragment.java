@@ -2,30 +2,21 @@ package wash.rocket.xor.rocketwash.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -51,19 +42,16 @@ import java.util.List;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.MapRouteResult;
 import wash.rocket.xor.rocketwash.model.Point;
-import wash.rocket.xor.rocketwash.model.Reservation;
-import wash.rocket.xor.rocketwash.model.ReserveCancelResult;
 import wash.rocket.xor.rocketwash.model.ReverseGeocoding;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.requests.MapDirectionRequest;
 import wash.rocket.xor.rocketwash.requests.MapReverceGeocodingRequest;
-import wash.rocket.xor.rocketwash.requests.ReserveCancelRequest;
-import wash.rocket.xor.rocketwash.util.util;
+import wash.rocket.xor.rocketwash.widgets.NiceSupportMapFragment;
 
 @SuppressLint("LongLogTag")
-public class WashServiceInfoFragmentReserved extends BaseFragment {
+public class WashServiceInfoBaseFragment extends BaseFragment {
 
-    public static final String TAG = "WashServiceInfoFragmentReserved";
+    public static final String TAG = "WashServiceInfoBaseFragment";
 
     private static final String POINTS = "points";
     private static final String ID_SERVICE = "id_service";
@@ -71,68 +59,43 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     private static final String LONGITUDE = "lon";
     private static final String TITLE = "title";
     private static final String SERVICE = "service";
-    private static final String RESERVED = "resrv";
+    private static final int MAX_MARKERS = 50;
 
-    private static final int FRAGMENT_SERVCES = 1;
-    private static final int FRAGMENT_PROFILE_EDIT = 2;
-    private final int MAX_MARKERS = 50;
 
     private GoogleMap mMap;
-    private NestedScrollView mScrollView1;
-    private ScrollView mScrollView;
-
+    //private Button mDisconnect;
+    //private Intent mServiceIntent;
     // private LockedScrollView mContent;
-    private LinearLayout mContent;
-    private RelativeLayout actionCall;
-    private LinearLayout mNoTime;
-
     private ArrayList<Point> mPoints;
     private ArrayList<Marker> mMarkers;
 
-    private ActionButton fab;
-    private Toolbar toolbar;
-
     private int mIdService;
-    private double mLatitude;
-    private double mLongitude;
-    private String mTitle;
-
-    private LayoutInflater mInflater;
+    private double mLatitude = 0;
+    private double mLongitude = 0;
     private WashService mService;
-    private Typeface mFont;
-
-    private TextView txtTime;
-    private TextView txtSumm;
-    private TextView txtDuration;
-
     private TextView txtInfoTitile;
     private TextView txtInfoDistance;
     private ProgressBar infoProgressBar;
-    private ProgressBar progressBar;
-    private ProgressBar mProgressBar3; // times
-
     private Button infoBtnPath;
     private GoogleMap.InfoWindowAdapter infoBaloon;
     private Marker mMarker;
 
-    private Button share;
-    private Button btnCancel;
-
     private int heightMap = 0;
+    private int mDiscount = 0;
 
+    protected ActionButton fab1;
     private Polyline mPolyLines;
-    private Reservation mReserved;
     private Marker mPositionMarker;
+    private boolean loading = false;
 
-    public static WashServiceInfoFragmentReserved newInstance(int id_service, double lat, double lon, String title, WashService service, Reservation reserv) {
-        WashServiceInfoFragmentReserved fragment = new WashServiceInfoFragmentReserved();
+    public static WashServiceInfoBaseFragment newInstance(int id_service, double lat, double lon, String title, WashService service) {
+        WashServiceInfoBaseFragment fragment = new WashServiceInfoBaseFragment();
         Bundle args = new Bundle();
         args.putInt(ID_SERVICE, id_service);
         args.putDouble(LATITUDE, lat);
         args.putDouble(LONGITUDE, lon);
         args.putString(TITLE, title);
         args.putParcelable(SERVICE, service);
-        args.putParcelable(RESERVED, reserv);
         fragment.setArguments(args);
         return fragment;
     }
@@ -152,11 +115,9 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.w(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
-        Log.w(TAG, "onCreate");
-
-        doStartLocationService();
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
@@ -170,23 +131,31 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
         mMarkers = new ArrayList<Marker>();
         mIdService = getArguments().getInt(ID_SERVICE);
-        mLatitude = getArguments().getDouble(LATITUDE);
-        mLongitude = getArguments().getDouble(LONGITUDE);
-        mTitle = getArguments().getString(TITLE);
+        //mTitle = getArguments().getString(TITLE);
         mService = getArguments().getParcelable(SERVICE);
-        mReserved = getArguments().getParcelable(RESERVED);
+
+        Location l = getLastLocation();
+        if (l != null) {
+            mLatitude = l.getLatitude();
+            mLongitude = l.getLongitude();
+        }
+
+        Log.d(TAG, "mLatitude = " + mLatitude);
+        Log.d(TAG, "mLongitude = " + mLongitude);
+        //ghj
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         Log.w(TAG, "onCreateView");
-        View rootView = inflater.inflate(R.layout.fragment_wash_service_info_reserved, container, false);
-        mInflater = inflater;
-        mMap = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
 
+        View rootView = inflater.inflate(R.layout.fragment_wash_service_info, container, false);
+
+        NiceSupportMapFragment mapFragment = (NiceSupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mMap = mapFragment.getMap();
         if (mMap != null) {
             mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
             int mp = (int) getActivity().getResources().getDimension(R.dimen.map_padding);
             mMap.setPadding(mp, mp, mp, mp);
@@ -203,16 +172,8 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
                     if (mMarker != null) {
                         s = txtInfoTitile.getText().toString();
                         d = txtInfoDistance.getText().toString();
-                    } else {
-
-                        LatLng loc = null;
-                        if (mReserved.getCarwash() != null) {
-                            loc = new LatLng(mReserved.getCarwash().getLatitude(), mReserved.getCarwash().getLongitude());
-                        } else
-                            loc = new LatLng(mService.getLatitude(), mService.getLongitude());
-
-                        getSpiceManager().execute(new MapReverceGeocodingRequest(loc.latitude, loc.longitude), "direction", DurationInMillis.ALWAYS_EXPIRED, new MapReverceGeocodingListener());
-                    }
+                    } else
+                        getSpiceManager().execute(new MapReverceGeocodingRequest(mService.getLatitude(), mService.getLongitude()), "direction", DurationInMillis.ALWAYS_EXPIRED, new MapReverceGeocodingListener());
 
                     mMarker = marker;
 
@@ -241,7 +202,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
                     }
 
                     infoBtnPath.setVisibility(View.GONE);
-
                     infoBtnPath.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -255,9 +215,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
                 @Override
                 public View getInfoContents(Marker marker) {
-
-                    //View v = getActivity().getLayoutInflater().inflate(R.layout.info_windows, null);
-                    //return v;
                     return null;
                 }
             };
@@ -265,63 +222,13 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
             mMap.setInfoWindowAdapter(infoBaloon);
         }
 
-        fab = (ActionButton) rootView.findViewById(R.id.fab);
-        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        mContent = (LinearLayout) rootView.findViewById(R.id.content_info);
-
-        ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).setListener(new MapFragmentWrapper.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                mScrollView1.requestDisallowInterceptTouchEvent(true);
-            }
-        });
-
         setUpMapIfNeeded();
-
-        mContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @SuppressLint("NewApi")
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onGlobalLayout() {
-                int d = (int) getActivity().getResources().getDimension(R.dimen.fab_right);
-                RelativeLayout.LayoutParams rl = (RelativeLayout.LayoutParams) fab.getLayoutParams();
-                rl.setMargins(0, 0, d, -(fab.getMeasuredHeight() / 2));
-                fab.setLayoutParams(rl);
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    mContent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    mContent.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-
-                heightMap = fab.getTop() + toolbar.getMeasuredHeight() * 2;
-            }
-        });
-
-        toolbar = setToolbar(rootView);
-        toolbar.setTitle(mTitle);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mReserved.getCarwash() != null)
-                    call(mReserved.getCarwash().getPhone());
-                else
-                    call(mService.getPhone());
-            }
-        });
 
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                LatLng loc = null;
-                if (mReserved.getCarwash() != null) {
-                    loc = new LatLng(mReserved.getCarwash().getLatitude(), mReserved.getCarwash().getLongitude());
-                } else
-                    loc = new LatLng(mService.getLatitude(), mService.getLongitude());
-
+                LatLng loc = new LatLng(mService.getLatitude(), mService.getLongitude());
                 if (mMap != null) {
                     mMap.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 15f), 1000, null);
@@ -329,59 +236,13 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
             }
         }, 200);
 
-        initControls(rootView);
-
         return rootView;
     }
 
-    private void initControls(View rootView) {
-
-        txtTime = (TextView) mContent.findViewById(R.id.txtTime);
-        txtDuration = (TextView) mContent.findViewById(R.id.txtDuration);
-        txtSumm = (TextView) mContent.findViewById(R.id.txtSumm);
-        share = (Button) mContent.findViewById(R.id.btnShare);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                share();
-            }
-        });
-
-        btnCancel = (Button) mContent.findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                getSpiceManager().execute(new ReserveCancelRequest(pref.getSessionID(), mReserved.getId()), "cancel", DurationInMillis.ALWAYS_EXPIRED, new CancelRequestListener());
-            }
-        });
-
-        ActionButton fab1 = (ActionButton) rootView.findViewById(R.id.fab1);
-        fab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LatLng loc = null;
-                if (mReserved.getCarwash() != null) {
-                    loc = new LatLng(mReserved.getCarwash().getLatitude(), mReserved.getCarwash().getLongitude());
-                } else
-                    loc = new LatLng(mService.getLatitude(), mService.getLongitude());
-
-                getSpiceManager().execute(new MapDirectionRequest(new LatLng(mLatitude, mLongitude), loc), "direction", DurationInMillis.ONE_SECOND, new MapDirectionRouteListener());
-            }
-        });
-
-        mFont = Typeface.createFromAsset(getActivity().getAssets(), "roboto_light.ttf");
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        if (mReserved != null) {
-            txtTime.setText(String.format(getActivity().getString(R.string.reserved_on), mReserved.getTime_start_format()));
-            txtDuration.setText(String.format(getActivity().getString(R.string.duration), util.minutesToText(mReserved.getFull_duration())));
-            txtSumm.setText(String.format(getActivity().getString(R.string.reserved_cost), mReserved.getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
-        }
     }
 
     private void setUpMapIfNeeded() {
@@ -409,6 +270,28 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         }
     }
 
+
+    private void addMarkers(ArrayList<Point> points) {
+
+        if (points.size() + mPoints.size() > MAX_MARKERS) {
+            int i = points.size();
+            while (i >= 0) {
+                mPoints.remove(0);
+                Marker marker = mMarkers.get(0);
+                mMarkers.remove(0);
+                marker.remove();
+                i--;
+            }
+        }
+
+        for (int i = 0; i < points.size(); i++) {
+            Point p = points.get(i);
+            mPoints.add(p);
+            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(p.lat, p.lon)).icon(BitmapDescriptorFactory.defaultMarker()));
+            mMarkers.add(marker);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -418,37 +301,29 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        stopTracking();
+
+        //stopTracking();
         doUnbindLocationService();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        setTargetFragment(null, -1);
         outState.putParcelableArrayList(POINTS, mPoints);
         super.onSaveInstanceState(outState);
-    }
-
-    private void collapseMap() {
-
-        if (mMap != null && mContent != null) {
-            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, 11f), 1000, null);
-        }
-    }
-
-    private void expandMap() {
-        if (mMap != null) {
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(14f), 1000, null);
-        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        BaseFragment f = (BaseFragment) getFragmentManager().findFragmentById(R.id.container);
+        if (f != null && !f.equals(this))
+            return false;
 
+        Log.d(TAG, "onOptionsItemSelected");
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null);
                 getActivity().getSupportFragmentManager().popBackStack();
                 return true;
         }
@@ -458,29 +333,17 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        MapFragmentWrapper f = (MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map);
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
         if (f != null)
-            // getFragmentManager().beginTransaction().remove(f).commit();
             getChildFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult");
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //XXX check rest toolbar
-        ((AppCompatActivity) getActivity()).invalidateOptionsMenu();
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-    }
 
     public final class MapReverceGeocodingListener implements RequestListener<ReverseGeocoding> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            showToastError("Ошибка получения данных");
-
+            showToastError("Ошибка получения гео данных");
             txtInfoTitile.setVisibility(View.VISIBLE);
             txtInfoTitile.setText("Не удалось уточнить адрес");
             txtInfoDistance.setVisibility(View.GONE);
@@ -498,15 +361,8 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
                     txtInfoDistance.setVisibility(View.VISIBLE);
                     infoProgressBar.setVisibility(View.GONE);
                     infoBtnPath.setVisibility(View.VISIBLE);
-                    txtInfoTitile.setText(result.getStreet() + ", " + result.getHouse());
-
-                    float d;
-                    if (mReserved.getCarwash() != null) {
-                        d = mReserved.getCarwash().getDistance();
-                    } else
-                        d = mService.getDistance();
-
-                    txtInfoDistance.setText(String.format(getActivity().getString(R.string.wash_distance), d));
+                    txtInfoTitile.setText(String.format("%s, %s", result.getStreet(), result.getHouse()));
+                    txtInfoDistance.setText(String.format(getActivity().getString(R.string.wash_distance), mService.getDistance()));
 
                     if (mMarker != null && mMarker.isInfoWindowShown()) {
                         mMarker.hideInfoWindow();
@@ -517,14 +373,15 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         }
     }
 
+
     public final class MapDirectionRouteListener implements RequestListener<MapRouteResult> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            showToastError("Не удалось проложить маршрут");
+            showToastError(R.string.error_direction);
 
             txtInfoTitile.setVisibility(View.VISIBLE);
-            txtInfoTitile.setText("Не удалось уточнить адрес");
+            txtInfoTitile.setText(R.string.error_find_address);
             txtInfoDistance.setVisibility(View.GONE);
             infoBtnPath.setVisibility(View.GONE);
             infoProgressBar.setVisibility(View.GONE);
@@ -534,11 +391,13 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         public void onRequestSuccess(final MapRouteResult result) {
 
             if (result != null) {
-                showToastOk("Маршрут проложен");
+
+                showToastOk(R.string.success_direction);
 
                 ArrayList<LatLng> points = null;
                 PolylineOptions lineOptions = null;
                 MarkerOptions markerOptions = new MarkerOptions();
+
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
                 // Traversing through all the routes
@@ -588,7 +447,7 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     @Override
     public void onLocationChanged(Location location) {
 
-        Log.d(TAG, "onLocationChanged");
+        //Log.d(TAG, "onLocationChanged");
 
         if (location != null) {
             mLatitude = location.getLatitude();
@@ -653,40 +512,4 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         });
     }
 
-    private class CancelRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.ReserveCancelResult> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showToastError("Не удалось отменить запись !");
-            progressBar.setVisibility(View.GONE);
-        }
-
-        @Override
-        public void onRequestSuccess(ReserveCancelResult reserveCancelResult) {
-
-            if (reserveCancelResult.isData()) {
-                showToastOk("Запись отменена");
-                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, new Intent());
-                getFragmentManager().popBackStack();
-            } else
-                showToastError("Не удалось отменить запись !");
-
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onBackPress() {
-        super.onBackPress();
-        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null);
-    }
-
-
-    @Override
-    public void restoreTargets() {
-
-        Fragment f = getFragmentManager().findFragmentByTag(NearestWashServicesFragment.TAG);
-        if (f != null)
-            setTargetFragment(f, NearestWashServicesFragment.FRAGMENT_RESERVED);
-
-    }
 }

@@ -1,0 +1,14 @@
+<wash.rocket.xor.rocketwash.widgets.ButtonWithState
+    android:id="@+id/button"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/button_height"
+    android:layout_weight="1"
+    android:background="@drawable/button_blue_selector"
+    android:text="12:50"
+    android:textColor="@color/white"/>
+
+
+
+
+

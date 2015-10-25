@@ -14,6 +14,8 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 
+import java.util.List;
+
 import io.fabric.sdk.android.Fabric;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.services.LocationService;
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
                 //getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), FRAGMENT_LOGIN_TAG).commit();
             }
         }
+
+        //  restoreTargets();
     }
 
     /*
@@ -123,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     @Override
     protected void onResume() {
         super.onResume();
+        restoreTargets();
     }
 
     @Override
@@ -247,6 +252,21 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         f = getSupportFragmentManager().findFragmentByTag(WashServiceInfoFragmentQuick.TAG);
         if (f != null)
             getSupportFragmentManager().beginTransaction().remove(f).commit();
+    }
+
+
+    private void restoreTargets() {
+        Log.d(TAG, "restoreTargets");
+        List<Fragment> flist = getSupportFragmentManager().getFragments();
+        if (flist != null) {
+            for (int i = 0; i < flist.size(); i++) {
+                BaseFragment f = (BaseFragment) flist.get(i);
+                if (f != null) {
+                    Log.d(TAG, f.getClass().getName());
+                    f.restoreTargets();
+                }
+            }
+        }
     }
 
     @Override

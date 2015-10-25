@@ -113,7 +113,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
                             notifyItemChanged(mSelectedId);
 
                             if (mOnSelectedItem != null) {
-                                mOnSelectedItem.onSelecredItem(list.get(mSelectedId), mSelectedId);
+                                mOnSelectedItem.onSelectedItem(list.get(mSelectedId), mSelectedId);
                             }
 
                             CheckBox c = (CheckBox) v.findViewById(R.id.check);
@@ -165,7 +165,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
     }
 
     public interface IOnSelectedItem {
-        void onSelecredItem(ChoiceService item, int position);
+        void onSelectedItem(ChoiceService item, int position);
     }
 
     public interface IOnRequestNextPage {

@@ -1,12 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/divider_profile_20dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:paddingTop="@dimen/divider_profile_20dp">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/divider_profile_20dp"
+              android:paddingLeft="20dp"
+              android:paddingRight="20dp"
+              android:paddingTop="@dimen/divider_profile_20dp">
 
     <LinearLayout
         android:id="@+id/caption_time"
@@ -19,7 +19,7 @@
             android:id="@+id/imageView4"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:src="@drawable/ic_action_time_black" />
+            android:src="@drawable/ic_action_time_black"/>
 
         <TextView
             android:id="@+id/textView6"
@@ -31,70 +31,60 @@
             android:singleLine="true"
             android:text="@string/time_service"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_20sp" />
+            android:textSize="@dimen/text_20sp"/>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
-
-        <wash.rocket.xor.rocketwash.widgets.SlidingTabLayout
-            android:id="@+id/sliding_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:fillViewport="true" />
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/time_content"
+    <wash.rocket.xor.rocketwash.widgets.SlidingTabLayout
+        android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
-    </FrameLayout>
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:fillViewport="true"/>
+
+    <wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget
+        android:id="@+id/time_content"
+        android:layout_width="match_parent"
+        android:layout_height="180dp">
+    </wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget>
 
     <LinearLayout
         android:id="@+id/notime"
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="clip_horizontal|clip_vertical"
         android:layout_gravity="center_horizontal"
+        android:gravity="clip_horizontal|clip_vertical"
+        android:orientation="horizontal"
         android:visibility="gone">
 
         <ImageView
+            android:id="@+id/imageView11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView11"
-            android:src="@drawable/ic_action_info_outline_blue"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_action_info_outline_blue"/>
 
         <TextView
+            android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_gravity="center_vertical"
             android:text="@string/no_time"
-            android:id="@+id/textView5"
-            android:textSize="@dimen/text_16sp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/black"
-            android:layout_gravity="center_vertical" />
+            android:textSize="@dimen/text_16sp"/>
     </LinearLayout>
 
     <ProgressBar
-        style="@style/CustomProgressBar"
         android:id="@+id/progressBar3"
+        style="@style/CustomProgressBar"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
-        android:indeterminate="false" />
+        android:indeterminate="false"/>
 
 </LinearLayout>
 

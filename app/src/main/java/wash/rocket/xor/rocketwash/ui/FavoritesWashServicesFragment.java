@@ -147,10 +147,12 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                 Log.d("lon", "" + s.getLongitude());
 
                 if (s.isActive()) {
+                    WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s);
+                    f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .add(R.id.container, WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragment.TAG)
+                            .add(R.id.container, f, WashServiceInfoFragment.TAG)
                             .addToBackStack(TAG).commit();
 
                 } else {
@@ -174,8 +176,8 @@ public class FavoritesWashServicesFragment extends BaseFragment {
 
         adapter.setOnSelectedItem(new WashServicesAdapter.IOnSelectedItem() {
             @Override
-            public void onSelecredItem(WashService item, int position, int button) {
-                Log.d("onSelecredItem", String.format("button %d", button));
+            public void onSelectedItem(WashService item, int position, int button) {
+                Log.d("onSelectedItem", String.format("button %d", button));
 
                 WashService s = list.get(position);
 
@@ -185,11 +187,21 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                         break;
                     // rec apply
                     case 2:
+                        /*
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                                 .add(R.id.container, WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragmentQuick.TAG)
                                 .addToBackStack(TAG)
-                                .commit();
+                                .commit();*/
+
+                        WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s);
+                        f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                                .add(R.id.container, f, WashServiceInfoFragment.TAG)
+                                .addToBackStack(TAG).commit();
+
                         break;
 
                     // hide
@@ -315,7 +327,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
             switch (requestCode) {
                 case DIALOG_REMOVE:
                     swipeListView.closeAnimate(mPosition);
-                    getSpiceManager().execute(new RemoveFavoriteRequest(pref.getSessionID(), list.get(mPosition).getFavorite_id()), "remove", DurationInMillis.ALWAYS_EXPIRED, new RemoveFavoiteListener());
+                    getSpiceManager().execute(new RemoveFavoriteRequest(pref.getSessionID(), list.get(mPosition).getFavorite_id()), "remove", DurationInMillis.ALWAYS_EXPIRED, new RemoveFavoriteListener());
                     adapter.remove(mPosition);
                     break;
             }
@@ -324,6 +336,11 @@ public class FavoritesWashServicesFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        BaseFragment f = (BaseFragment) getFragmentManager().findFragmentById(R.id.container);
+        if (f != null && !f.equals(this))
+            return false;
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().getSupportFragmentManager().popBackStack();
@@ -337,7 +354,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         f.show(getFragmentManager(), tag);
     }
 
-    private class RemoveFavoiteListener implements RequestListener<RemoveFavoriteResult> {
+    private class RemoveFavoriteListener implements RequestListener<RemoveFavoriteResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
 
@@ -371,5 +388,10 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
         t.setText(R.string.network_error);
         i.setImageResource(R.drawable.location_error1);
+    }
+
+    @Override
+    public void onBackPress() {
+       // getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null);
     }
 }

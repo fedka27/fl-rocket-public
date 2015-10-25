@@ -60,6 +60,7 @@
     <dimen name="list_item_button_width">84dp</dimen>
     <dimen name="coutry_selector_width">60dp</dimen>
     <dimen name="country_selector_height">45dp</dimen>
+    <dimen name="item_margin">5dp</dimen>
 
 
 </resources>

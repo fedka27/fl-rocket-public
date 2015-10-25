@@ -10,7 +10,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -59,6 +60,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import wash.rocket.xor.rocketwash.R;
+import wash.rocket.xor.rocketwash.adapters.TimeRecyclerViewAdapter;
 import wash.rocket.xor.rocketwash.model.AvailableTimesResult;
 import wash.rocket.xor.rocketwash.model.CarMake;
 import wash.rocket.xor.rocketwash.model.CarsAttributes;
@@ -82,8 +84,8 @@ import wash.rocket.xor.rocketwash.requests.MapReverceGeocodingRequest;
 import wash.rocket.xor.rocketwash.requests.ReservationRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.util;
-import wash.rocket.xor.rocketwash.widgets.ButtonWithState;
 import wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget;
+import wash.rocket.xor.rocketwash.widgets.MarginDecoration;
 import wash.rocket.xor.rocketwash.widgets.NestedScrollView;
 import wash.rocket.xor.rocketwash.widgets.NiceSupportMapFragment;
 import wash.rocket.xor.rocketwash.widgets.SlidingTabLayout;
@@ -494,7 +496,6 @@ public class WashServiceInfoFragment extends BaseFragment {
 
                 ProfileEditFragment f = ProfileEditFragment.newInstance(getApp().getProfile(), false);
                 f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_PROFILE_EDIT);
-
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
@@ -535,16 +536,16 @@ public class WashServiceInfoFragment extends BaseFragment {
             }
         });
 
-        CalendarScrollWidget.LayoutParams lp = new CalendarScrollWidget.LayoutParams();
+        //CalendarScrollWidget.LayoutParams lp = new CalendarScrollWidget.LayoutParams();
+        //mCalendar = new CalendarScrollWidget(getActivity(), null);
+        //mCalendar.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        //time_content = (FrameLayout) rootView.findViewById(R.id.time_content);
+        //time_content.addView(mCalendar);
 
-        mCalendar = new CalendarScrollWidget(getActivity(), null);
-        mCalendar.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-
-        time_content = (FrameLayout) rootView.findViewById(R.id.time_content);
-        time_content.addView(mCalendar);
-
+        mCalendar = (CalendarScrollWidget) rootView.findViewById(R.id.time_content);
         mSlidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_time, R.id.title);
+        mCalendar.setVisibility(View.GONE);
 
         Resources res = getResources();
         mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.green_rocket));
@@ -552,7 +553,7 @@ public class WashServiceInfoFragment extends BaseFragment {
 
         mSlidingTabLayout.setOnTabSelected(new SlidingTabLayout.OnTabSelected() {
             @Override
-            public void onTabSlected(int item) {
+            public void onTabSelected(int item) {
                 mCalendar.selected(item);
             }
         });
@@ -578,11 +579,6 @@ public class WashServiceInfoFragment extends BaseFragment {
         mProgressBar1.setVisibility(View.VISIBLE);
         mProgressBar2.setVisibility(View.VISIBLE);
         mProgressBar3.setVisibility(View.VISIBLE);
-
-        /*
-        if (mService != null) {
-            fillCalendar(mService.getTime_periods());
-        }*/
 
         tableServicesContent = (TableLayout) rootView.findViewById(R.id.tableServicesContent);
         tableServicesContent.removeAllViews();
@@ -651,6 +647,8 @@ public class WashServiceInfoFragment extends BaseFragment {
         c.set(Calendar.MINUTE, 59);
         String b = util.dateToZZ(c.getTime());
         getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "times", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
+
+        restoreTargets();
     }
 
     private void setUpMapIfNeeded() {
@@ -717,7 +715,6 @@ public class WashServiceInfoFragment extends BaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         setTargetFragment(null, -1);
-
         outState.putParcelableArrayList(POINTS, mPoints);
         super.onSaveInstanceState(outState);
     }
@@ -742,6 +739,8 @@ public class WashServiceInfoFragment extends BaseFragment {
         if (f != null && !f.equals(this))
             return false;
 
+        Log.d(TAG, "onOptionsItemSelected");
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().getSupportFragmentManager().popBackStack();
@@ -755,7 +754,6 @@ public class WashServiceInfoFragment extends BaseFragment {
         super.onDestroyView();
         Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
         if (f != null)
-            // getFragmentManager().beginTransaction().remove(f).commit();
             getChildFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
     }
 
@@ -868,7 +866,6 @@ public class WashServiceInfoFragment extends BaseFragment {
 
                     loading = true;
                     try {
-
                         int selected = pref.getUseCar();
 
                         if (selected > (result.getData().size() - 1))
@@ -937,15 +934,17 @@ public class WashServiceInfoFragment extends BaseFragment {
         Log.d(TAG, "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
 
-        ((AppCompatActivity) getActivity()).invalidateOptionsMenu();
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (getActivity() == null)
+            return;
+
+        toolbar = setToolbar(getView(), mTitle);
 
         if (resultCode == Activity.RESULT_OK) {
 
             switch (requestCode) {
                 case FRAGMENT_SERVCES:
                     ArrayList<ChoiceService> l = data.getParcelableArrayListExtra("list");
-                    fillChoiseServises(l);
+                    fillChoiceServises(l);
                     break;
                 case FRAGMENT_PROFILE_EDIT:
                     mProgressBar1.setVisibility(View.VISIBLE);
@@ -964,132 +963,111 @@ public class WashServiceInfoFragment extends BaseFragment {
         } else {
             switch (requestCode) {
                 case DIALOG_WASH1:
-                    if (old_b != null)
-                        old_b.setSelected(false);
+                    clearListSelectors();
                     break;
                 case DIALOG_WASH2:
-                    //old_b.setSelected(false);
+                    clearListSelectors();
                     break;
             }
         }
+    }
+
+    //XXX move to base fragment
+    private ArrayList<TimePeriods> list_today = new ArrayList<>();
+    private ArrayList<TimePeriods> list_tomorrow = new ArrayList<>();
+    private TimeRecyclerViewAdapter ad1;
+    private TimeRecyclerViewAdapter ad2;
+
+    private void clearListSelectors() {
+        selected_time = "";
+        Handler h = new Handler();
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+
+                ad1.setSelectionItemId(-1);
+                ad2.setSelectionItemId(-1);
+            }
+        });
     }
 
     private void fillCalendar(List<TimePeriods> time_periods) {
-        Log.d("fillCalendar", "start");
+
+        boolean today = false;
+        boolean tomorrow = false;
+        ArrayList<View> pages = new ArrayList<>();
+
+        list_today.clear();
+        list_tomorrow.clear();
+
         if (time_periods != null) {
             Log.d("fillCalendar", "time_periods.size() = " + time_periods.size());
             if (time_periods.size() > 0) {
-
-                mNoTime.setVisibility(View.GONE);
-                mSlidingTabLayout.setVisibility(View.VISIBLE);
-
-                ArrayList<View> pages = new ArrayList<>();
-
-                int k = 0;
-                ViewGroup cnt = null;
-                Button b1 = null;
-                Button b2 = null;
+                first_time = time_periods.get(0).getTime_from();
 
                 for (int i = 0; i < time_periods.size(); i++) {
-
                     TimePeriods d = time_periods.get(i);
-
                     if (d.isToday()) {
-                        if (k % 2 == 0) {
-
-                            if (cnt == null)
-                                cnt = (ViewGroup) (mInflater.inflate(R.layout.calendar_content, null));
-
-                            ViewGroup gcnt = (ViewGroup) cnt.findViewById(R.id.content_calendar);
-                            View b = mInflater.inflate(R.layout.calendar_row_buttons, null);
-
-                            b1 = (ButtonWithState) b.findViewById(R.id.left);
-                            b2 = (ButtonWithState) b.findViewById(R.id.right);
-
-                            b1.setOnClickListener(mOnTime);
-                            b2.setOnClickListener(mOnTime);
-
-                            b2.setVisibility(View.INVISIBLE);
-                            b1.setText(util.dateToHM(d.getDate()));
-                            b1.setTag(d.getTime_from());
-                            gcnt.addView(b);
-                        } else {
-                            if (b2 != null) {
-                                b2.setVisibility(View.VISIBLE);
-                                b2.setText(util.dateToHM(d.getDate()));
-                                b2.setTag(d.getTime_from());
-                            }
-                        }
-                        Log.d("fillCalendar", "date = " + util.dateToHM(d.getDate()));
-                        k++;
+                        today = true;
+                        list_today.add(d);
+                        //Log.d("fillCalendar", util.dateToHM(d.getDate()));
                     }
-
-                    Log.d("fillCalendar", "i%2 = " + i % 2);
-                    Log.d("fillCalendar", "date = " + util.dateToHM(d.getDate()));
-                    Log.d("fillCalendar", "date = " + d.getDate().toString());
-                }
-
-                if (cnt != null) {
-                    mSlidingTabLayout.addTab("Сегодня", "", true);
-                    //mSlidingTabLayout.addTab("Завтра", "", false);
-                    pages.add(cnt);
-                    overrideFonts(getActivity(), cnt);
-                }
-
-                k = 0;
-                cnt = null;
-                b1 = null;
-                b2 = null;
-                for (int i = 0; i < time_periods.size(); i++) {
-                    TimePeriods d = time_periods.get(i);
-
                     if (d.isTomorrow()) {
-                        if (k % 2 == 0) {
-                            if (cnt == null)
-                                cnt = (ViewGroup) mInflater.inflate(R.layout.calendar_content, null);
-
-                            ViewGroup gcnt = (ViewGroup) cnt.findViewById(R.id.content_calendar);
-                            View b = mInflater.inflate(R.layout.calendar_row_buttons, null);
-
-                            b1 = (ButtonWithState) b.findViewById(R.id.left);
-                            b2 = (ButtonWithState) b.findViewById(R.id.right);
-
-                            b1.setOnClickListener(mOnTime);
-                            b2.setOnClickListener(mOnTime);
-
-                            b2.setVisibility(View.INVISIBLE);
-                            b1.setText(util.dateToHM(d.getDate()));
-                            b1.setTag(d.getTime_from());
-                            gcnt.addView(b);
-                        } else {
-                            if (b2 != null) {
-                                b2.setVisibility(View.VISIBLE);
-                                b2.setText(util.dateToHM(d.getDate()));
-                                b2.setTag(d.getTime_from());
-                            }
-                        }
-                        k++;
+                        tomorrow = true;
+                        list_tomorrow.add(d);
                     }
                 }
 
-                if (cnt != null) {
-                    //mSlidingTabLayout.addTab("Сегодня", "", true);
-                    mSlidingTabLayout.addTab("Завтра", "", false);
-                    pages.add(cnt);
-
-                    overrideFonts(getActivity(), cnt);
+                if (today) {
+                    mSlidingTabLayout.addTab(getActivity().getString(R.string.today), "", true);
+                    ad1 = new TimeRecyclerViewAdapter(list_today);
+                    RecyclerView rv1 = new RecyclerView(getActivity());
+                    rv1.setHasFixedSize(true);
+                    rv1.setAdapter(ad1);
+                    rv1.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    rv1.addItemDecoration(new MarginDecoration(getActivity()));
+                    pages.add(rv1);
+                    ad1.notifyDataSetChanged();
+                    ad1.setOnSelectedItem(onsel);
                 }
 
+                if (tomorrow) {
+                    mSlidingTabLayout.addTab(getActivity().getString(R.string.tomorrow), "", !today);
+                    ad2 = new TimeRecyclerViewAdapter(list_tomorrow);
+                    RecyclerView rv1 = new RecyclerView(getActivity());
+                    rv1.setHasFixedSize(true);
+                    rv1.setAdapter(ad2);
+                    rv1.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    rv1.addItemDecoration(new MarginDecoration(getActivity()));
+                    pages.add(rv1);
+                    ad2.notifyDataSetChanged();
+                    ad2.setOnSelectedItem(onsel);
+                }
+
+                mCalendar.setVisibility(View.VISIBLE);
                 mCalendar.setPages(pages);
+                overrideFonts(getActivity(), mSlidingTabLayout);
+
             } else {
                 mSlidingTabLayout.setVisibility(View.GONE);
                 mNoTime.setVisibility(View.VISIBLE);
+                mCalendar.setVisibility(View.GONE);
             }
-
-            overrideFonts(getActivity(), mSlidingTabLayout);
-
         }
     }
+
+    TimeRecyclerViewAdapter.IOnSelectedItem onsel = new TimeRecyclerViewAdapter.IOnSelectedItem() {
+        @Override
+        public void onSelectedItem(TimePeriods item, int position) {
+            selected_time = item.getTime_from();
+
+            String s = "Время мойки: " + util.dateToHM(item.getDate()) + "\n";
+            s = s + "\n";
+            s = s + "Выбранные услуги:" + "\n";
+            s = s + getTextServices();
+            showDialog(R.string.rec_on_carwash, s, DIALOG_WASH1, DIALOG_WASH1_TAG);
+        }
+    };
 
     public final class MapReverceGeocodingListener implements RequestListener<ReverseGeocoding> {
 
@@ -1227,7 +1205,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                     }
                 }
 
-                fillChoiseServises(list);
+                fillChoiceServises(list);
             } else {
 
             }
@@ -1239,17 +1217,9 @@ public class WashServiceInfoFragment extends BaseFragment {
     }
 
     //XXX
-    private void fillChoiseServises(ArrayList<ChoiceService> in) {
-        /*
-        for (int i = 0; i < tableServicesContent.getChildCount(); i++) {
-            View v = tableServicesContent.getChildAt(i);
-            if (v.getTag() == null)
-                tableServicesContent.removeViewAt(i);
-        }*/
-
+    private void fillChoiceServises(ArrayList<ChoiceService> in) {
         tableServicesContent.removeAllViews();
         list = in;
-
 
         Log.d(TAG, "list = " + (list == null ? "null" : "data"));
         if (list != null) {
@@ -1324,73 +1294,10 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
     };
 
-    ButtonWithState old_b = null;
-
-    private View.OnClickListener mOnTime = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            Log.d("mOnTime", "click");
-
-
-            selected_time = (String) v.getTag();
-
-            if (old_b != null && v != old_b)
-                old_b.setSelected(false);
-
-            ((ButtonWithState) v).setSelected(!((ButtonWithState) v).isSelected());
-            old_b = (ButtonWithState) v;
-
-            String s = "Время мойки: " + old_b.getText().toString() + "\n";
-            s = s + "\n";
-            s = s + "Выбранные услуги:" + "\n";
-            s = s + getTextServices();
-            showDialog(R.string.rec_on_carwash, s, DIALOG_WASH1, DIALOG_WASH1_TAG);
-        }
-    };
-
-    private void setReservedTip() {
-
-        List<View> p = mCalendar.getPages();
-        for (int i = 0; i < p.size(); i++) {
-            ViewGroup page = (ViewGroup) p.get(i).findViewById(R.id.content_calendar);
-            FrameLayout root = (FrameLayout) p.get(i).findViewById(R.id.content_calendar_root);
-
-
-            for (int j = 0; j < page.getChildCount(); j++) {
-
-                View l = page.getChildAt(j);
-                if (l instanceof LinearLayout) {
-
-                    for (int k = 0; k < ((LinearLayout) l).getChildCount(); k++) {
-                        ButtonWithState b = (ButtonWithState) ((LinearLayout) l).getChildAt(k);
-                        if (((ButtonWithState) b).isSelected()) {
-
-                            View v = mInflater.inflate(R.layout.calendar_reserved_tip, null);
-
-                            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            lp.setMargins(b.getLeft() + (b.getLeft() / 2), b.getTop() - 20, 0, 0);
-                            v.setLayoutParams(lp);
-
-                            root.addView(v);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private void reservation(String time) {
 
         Profile prof = getApp().getProfile();
         if (prof != null && prof.isPhone_verified()) {
-
-            /*
-            if (TextUtils.isEmpty(selected_time)) {
-                Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_info_wash_service_no_tme_select), Toast.LENGTH_SHORT).show();
-                return;
-            }*/
-
             if (list == null || list.size() <= 0) {
                 showToastWarn(R.string.fragment_info_wash_service_no_services_select);
                 return;
@@ -1441,9 +1348,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                 getActivity().getSupportFragmentManager().popBackStack();
 
                 WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService, mLatitude, mLongitude, mTitle, mService, result.getData());
-                //getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null);
                 f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
-
                 getActivity()
                         .getSupportFragmentManager()
                         .beginTransaction()
@@ -1461,7 +1366,7 @@ public class WashServiceInfoFragment extends BaseFragment {
     @Override
     public void onLocationChanged(Location location) {
 
-        Log.d(TAG, "onLocationChanged");
+        //Log.d(TAG, "onLocationChanged");
 
         if (location != null) {
             mLatitude = location.getLatitude();
@@ -1561,5 +1466,14 @@ public class WashServiceInfoFragment extends BaseFragment {
     private void showDialog(int title, String message, int id, String tag) {
         AlertDialogFragment f = AlertDialogFragment.newInstance(title, message, id, this);
         f.show(getFragmentManager(), tag);
+    }
+
+    // change to interface
+    @Override
+    public void restoreTargets() {
+        Fragment f;
+        f = getFragmentManager().findFragmentByTag(ChoiceServicesFragment.TAG);
+        if (f != null)
+            f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_SERVCES);
     }
 }

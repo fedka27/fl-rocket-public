@@ -164,7 +164,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
                         public void onClick(View v) {
                             final int sel = (Integer) v.getTag();
                             if (mOnSelectedItem != null) {
-                                mOnSelectedItem.onSelecredItem(list.get(sel), sel, 0);
+                                mOnSelectedItem.onSelectedItem(list.get(sel), sel, 0);
                             }
                         }
                     });
@@ -268,7 +268,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
     }
 
     public interface IOnSelectedItem {
-        void onSelecredItem(WashService item, int position, int button);
+        void onSelectedItem(WashService item, int position, int button);
     }
 
     public interface IOnRequestNextPage {
@@ -290,7 +290,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
 
             final int sel = (Integer) v.getTag();
             if (mOnSelectedItem != null) {
-                mOnSelectedItem.onSelecredItem(list.get(sel), sel, 1);
+                mOnSelectedItem.onSelectedItem(list.get(sel), sel, 1);
             }
         }
     };
@@ -301,7 +301,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
 
             final int sel = (Integer) v.getTag();
             if (mOnSelectedItem != null) {
-                mOnSelectedItem.onSelecredItem(list.get(sel), sel, 2);
+                mOnSelectedItem.onSelectedItem(list.get(sel), sel, 2);
             }
         }
     };
@@ -312,7 +312,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
 
             final int sel = (Integer) v.getTag();
             if (mOnSelectedItem != null) {
-                mOnSelectedItem.onSelecredItem(list.get(sel), sel, 3);
+                mOnSelectedItem.onSelectedItem(list.get(sel), sel, 3);
             }
         }
     };
@@ -323,7 +323,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
 
             final int sel = (Integer) v.getTag();
             if (mOnSelectedItem != null) {
-                mOnSelectedItem.onSelecredItem(list.get(sel), sel, 4);
+                mOnSelectedItem.onSelectedItem(list.get(sel), sel, 4);
             }
         }
     };
@@ -334,7 +334,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
 
             final int sel = (Integer) v.getTag();
             if (mOnSelectedItem != null) {
-                mOnSelectedItem.onSelecredItem(list.get(sel), sel, 5);
+                mOnSelectedItem.onSelectedItem(list.get(sel), sel, 5);
             }
         }
     };

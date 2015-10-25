@@ -11,7 +11,8 @@
         android:id="@+id/caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="1">
+        android:stretchColumns="1"
+        android:shrinkColumns="1">
 
         <TableRow
             android:layout_width="match_parent"
@@ -34,10 +35,11 @@
                 android:layout_marginLeft="20dp"
                 android:foregroundGravity="center_vertical"
                 android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="@string/include_wash_service_info"
+                android:singleLine="false"
+                android:text="sdfasdfa asdfa sdf asdfadsfasdf asdfasdfasdf"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_20sp" />
+                android:textSize="@dimen/text_20sp"
+                />
 
         </TableRow>
     </TableLayout>
@@ -54,7 +56,7 @@
             android:id="@+id/txtStub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="49dp"
+            android:layout_marginLeft="50dp"
             android:layout_marginRight="20dp"
             android:text="Режим рботы с 08;00-22:00\nЗапись по телефону\nWi-Fi"
             android:textAppearance="?android:attr/textAppearanceMedium"

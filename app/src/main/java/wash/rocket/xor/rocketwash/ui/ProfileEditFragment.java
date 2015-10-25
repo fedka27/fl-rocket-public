@@ -202,6 +202,7 @@ public class ProfileEditFragment extends BaseFragment {
         setHasOptionsMenu(true);
 
         toolbar = setToolbar(getView());
+        /*
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -210,7 +211,7 @@ public class ProfileEditFragment extends BaseFragment {
 
                 return false;
             }
-        });
+        });*/
     }
 
     @Override

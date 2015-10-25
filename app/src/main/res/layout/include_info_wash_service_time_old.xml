@@ -1,15 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="@dimen/divider_profile_20dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-    android:id="@+id/content_car1"
     android:paddingTop="@dimen/divider_profile_20dp">
 
     <LinearLayout
-        android:id="@+id/lcar"
+        android:id="@+id/caption_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -19,7 +19,7 @@
             android:id="@+id/imageView4"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:src="@drawable/ic_action_car1" />
+            android:src="@drawable/ic_action_time_black" />
 
         <TextView
             android:id="@+id/textView6"
@@ -29,50 +29,62 @@
             android:foregroundGravity="center_vertical"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:text="@string/car"
+            android:text="@string/time_service"
             android:textColor="@color/black"
             android:textSize="@dimen/text_20sp" />
 
-        <ImageView
-            android:id="@+id/imgAddCars"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:clickable="true"
-            android:src="@drawable/ic_action_content_add_circle_outline_blue" />
     </LinearLayout>
 
-
-    <RadioGroup
-        android:id="@+id/radioGroupCars"
+    <wash.rocket.xor.rocketwash.widgets.SlidingTabLayout
+        android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/divider_profile_20dp">
+        android:background="@color/white"
+        android:fillViewport="true" />
 
-        <RadioButton
-            android:id="@+id/radioButton"
+    <FrameLayout
+        android:id="@+id/time_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/notime"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="clip_horizontal|clip_vertical"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone">
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New RadioButton"
-            android:textSize="@dimen/text_14sp" />
+            android:id="@+id/imageView11"
+            android:src="@drawable/ic_action_info_outline_blue"
+            android:layout_gravity="center_vertical" />
 
-        <RadioButton
-            android:id="@+id/radioButton2"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="New RadioButton"
-            android:textSize="@dimen/text_14sp" />
-    </RadioGroup>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/no_time"
+            android:id="@+id/textView5"
+            android:textSize="@dimen/text_16sp"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 
     <ProgressBar
         style="@style/CustomProgressBar"
-        android:id="@+id/progressBar"
+        android:id="@+id/progressBar3"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_centerInParent="true"
-        android:layout_gravity="center_horizontal" />
-
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="false" />
 
 </LinearLayout>
+
 

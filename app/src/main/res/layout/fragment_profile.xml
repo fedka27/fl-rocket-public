@@ -82,7 +82,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_below="@+id/delimeter1"
-                android:src="@drawable/ic_car_black" />
+                android:src="@drawable/ic_action_car1" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -138,7 +138,8 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_below="@+id/delimeter2"
-                android:src="@drawable/ic_promo_black" />
+                android:src="@drawable/ic_promo_black"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/textView"
@@ -152,7 +153,8 @@
                 android:text="@string/promo"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_20sp" />
+                android:textSize="@dimen/text_20sp"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/txtPromo"
@@ -164,7 +166,8 @@
                 android:text="A5769AH"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_30sp" />
+                android:textSize="@dimen/text_30sp"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/btnShare"
@@ -177,7 +180,8 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:text="@string/share_friends"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="gone"/>
 
             <FrameLayout
                 android:id="@+id/delimeter3"
@@ -186,14 +190,16 @@
                 android:layout_below="@+id/btnShare"
                 android:layout_marginBottom="@dimen/divider_profile_20dp"
                 android:layout_marginTop="@dimen/divider_profile_20dp"
-                android:background="@color/delimeter" />
+                android:background="@color/delimeter"
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_below="@+id/delimeter3"
-                android:src="@drawable/ic_acievments_black" />
+                android:src="@drawable/ic_acievments_black"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/textView3"
@@ -207,7 +213,8 @@
                 android:text="@string/fragment_profile_achievments"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_20sp" />
+                android:textSize="@dimen/text_20sp"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 

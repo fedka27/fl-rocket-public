@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -68,7 +69,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     private static final String NEAREST_WASH_KEY_CASH = "nearest_wash";
     private static final String RESERVED_WASH_KEY_CASH = "reserved_wash";
 
-    private static final int FRAGMENT_RESERVED = 3;
+    public static final int FRAGMENT_RESERVED = 3;
     private static final int FRAGMENT_QUICK = 4;
 
     private static final int DIALOG_FAVORITE = 5;
@@ -225,7 +226,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                     WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s);
                     f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
-
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
@@ -256,8 +256,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
         adapter.setOnSelectedItem(new WashServicesAdapter.IOnSelectedItem() {
             @Override
-            public void onSelecredItem(WashService item, int position, int button) {
-                Log.d("onSelecredItem", String.format("button %d", button));
+            public void onSelectedItem(WashService item, int position, int button) {
+                Log.d("onSelectedItem", String.format("button %d", button));
 
                 WashService s = list.get(position);
 
@@ -274,10 +274,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                         break;
                     // rec apply
                     case 2:
-
                         WashServiceInfoFragmentQuick f = WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s);
                         f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_QUICK);
-
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                                 .add(R.id.container, f, WashServiceInfoFragmentQuick.TAG)
@@ -367,6 +365,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         } else {
             showShowGPSWarn();
         }
+
+        restoreTargets();
     }
 
     private void initNavigationMenu() {
@@ -444,10 +444,13 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                         break;
 
                     case 2:
+
+                        FavoritesWashServicesFragment f = new FavoritesWashServicesFragment();
+                        f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                                .add(R.id.container, new FavoritesWashServicesFragment(), FavoritesWashServicesFragment.TAG)
+                                .add(R.id.container, f, FavoritesWashServicesFragment.TAG)
                                 .addToBackStack(TAG)
                                 .commit();
                         mDrawerLayout.closeDrawers();
@@ -502,6 +505,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        setTargetFragment(null, -1);
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(LIST, (ArrayList<? extends Parcelable>) list);
     }
@@ -844,4 +848,30 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         }
     }
 
+
+
+    @Override
+    public void restoreTargets()
+    {
+        Log.d(TAG, "restoreTargets");
+
+        Fragment f;
+        f = getFragmentManager().findFragmentByTag(WashServiceInfoFragment.TAG);
+        if (f != null)
+            f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
+
+        f = getFragmentManager().findFragmentByTag(ProfileFragment.TAG);
+        if (f != null)
+            f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_PROFILE);
+
+
+        f = getFragmentManager().findFragmentByTag(WashServiceInfoFragmentReserved.TAG);
+        if (f != null)
+            f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_PROFILE);
+
+
+        f = getFragmentManager().findFragmentByTag(WashServiceInfoFragmentQuick.TAG);
+        if (f != null)
+            f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_QUICK);
+    }
 }

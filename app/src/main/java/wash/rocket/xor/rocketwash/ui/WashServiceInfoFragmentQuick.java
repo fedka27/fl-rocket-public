@@ -7,8 +7,11 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -43,6 +46,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import wash.rocket.xor.rocketwash.R;
+import wash.rocket.xor.rocketwash.adapters.TimeRecyclerViewAdapter;
 import wash.rocket.xor.rocketwash.model.AvailableTimesResult;
 import wash.rocket.xor.rocketwash.model.CarsMakes;
 import wash.rocket.xor.rocketwash.model.ChoiceService;
@@ -56,8 +60,8 @@ import wash.rocket.xor.rocketwash.requests.ChoiseServiceRequest;
 import wash.rocket.xor.rocketwash.requests.ReservationRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.util;
-import wash.rocket.xor.rocketwash.widgets.ButtonWithState;
 import wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget;
+import wash.rocket.xor.rocketwash.widgets.MarginDecoration;
 import wash.rocket.xor.rocketwash.widgets.SlidingTabLayout;
 
 
@@ -208,13 +212,11 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMain);
         progressBar.setVisibility(View.GONE);
 
-        CalendarScrollWidget.LayoutParams lp = new CalendarScrollWidget.LayoutParams();
-
-        mCalendar = new CalendarScrollWidget(getActivity(), null);
-        mCalendar.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-
-        time_content = (FrameLayout) rootView.findViewById(R.id.time_content);
-        time_content.addView(mCalendar);
+        //CalendarScrollWidget.LayoutParams lp = new CalendarScrollWidget.LayoutParams();
+        //mCalendar = new CalendarScrollWidget(getActivity(), null);
+        //mCalendar.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        //time_content = (FrameLayout) rootView.findViewById(R.id.time_content);
+        //time_content.addView(mCalendar);
 
         View v = rootView.findViewById(R.id.time_content_root);
         mNoTime = (LinearLayout) v.findViewById(R.id.notime);
@@ -225,17 +227,18 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
         mSlidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_time, R.id.title);
-
         Resources res = getResources();
         mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.green_rocket));
         mSlidingTabLayout.setDistributeEvenly(true);
-
         mSlidingTabLayout.setOnTabSelected(new SlidingTabLayout.OnTabSelected() {
             @Override
-            public void onTabSlected(int item) {
+            public void onTabSelected(int item) {
                 mCalendar.selected(item);
             }
         });
+
+        mCalendar = (CalendarScrollWidget) rootView.findViewById(R.id.time_content);
+        mCalendar.setVisibility(View.GONE);
 
         mCalendar.setOnPagetChange(new CalendarScrollWidget.IOnPageChanged() {
             @Override
@@ -252,7 +255,6 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         tableServicesContent.removeAllViews();
 
         mFont = Typeface.createFromAsset(getActivity().getAssets(), "roboto.ttf");
-
 
         txtPrice = (TextView) rootView.findViewById(R.id.txtPrice);
         // txtDiscount = (TextView) rootView.findViewById(R.id.txtDiscount);
@@ -295,7 +297,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         if (id_model == 0)
             id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
 
-        getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+        getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
 
         TimeZone utc = TimeZone.getTimeZone("UTC");
         Calendar c = Calendar.getInstance(utc);
@@ -325,6 +327,9 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+
+
+
         super.onSaveInstanceState(outState);
     }
 
@@ -352,146 +357,105 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         } else {
             switch (requestCode) {
                 case DIALOG_WASH1:
-                    if (old_b != null)
-                        old_b.setSelected(false);
+                    clearListSelectors();
                     break;
                 case DIALOG_WASH2:
-                    //old_b.setSelected(false);
+                    clearListSelectors();
                     break;
             }
         }
+    }
+
+    //XXX move to base fragment
+    private ArrayList<TimePeriods> list_today = new ArrayList<>();
+    private ArrayList<TimePeriods> list_tomorrow = new ArrayList<>();
+    private TimeRecyclerViewAdapter ad1;
+    private TimeRecyclerViewAdapter ad2;
+
+    private void clearListSelectors() {
+        Handler h = new Handler();
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+
+                ad1.setSelectionItemId(-1);
+                ad2.setSelectionItemId(-1);
+            }
+        });
+        selected_time = "";
     }
 
     private void fillCalendar(List<TimePeriods> time_periods) {
 
-        Log.d("fillCalendar", "start");
+        boolean today = false;
+        boolean tomorrow = false;
+        ArrayList<View> pages = new ArrayList<>();
+
+        list_today.clear();
+        list_tomorrow.clear();
+
         if (time_periods != null) {
             Log.d("fillCalendar", "time_periods.size() = " + time_periods.size());
             if (time_periods.size() > 0) {
-
-                mNoTime.setVisibility(View.GONE);
-                mSlidingTabLayout.setVisibility(View.VISIBLE);
-
-                ArrayList<View> pages = new ArrayList<>();
-
-                int k = 0;
-                int k1 = 0;
-                ViewGroup cnt = null;
-                Button b1 = null;
-                Button b2 = null;
-
-                first_time = time_periods.get(0).getTime_from();
-
-                TimePeriods d;
-                int count = time_periods.size();
-                for (int i = 0; i < count; i++) {
-                     d = time_periods.get(i);
-                    if (d.isToday()) {
-                        if (k % 2 != 0) {
-
-                            if (cnt == null)
-                                cnt = (ViewGroup) (mInflater.inflate(R.layout.calendar_content, null));
-
-                            ViewGroup gcnt = (ViewGroup) cnt.findViewById(R.id.content_calendar);
-                            View b = mInflater.inflate(R.layout.calendar_row_buttons, null);
-
-                            b1 = (ButtonWithState) b.findViewById(R.id.left);
-                            b2 = (ButtonWithState) b.findViewById(R.id.right);
-
-                            b1.setOnClickListener(mOnTime);
-                            b2.setOnClickListener(mOnTime);
-
-                            b2.setVisibility(View.INVISIBLE);
-                            b1.setText(util.dateToHM(d.getDate()));
-                            b1.setTag(d.getTime_from());
-                            gcnt.addView(b);
-                        } else {
-                            if (b2 != null) {
-                                b2.setVisibility(View.VISIBLE);
-                                b2.setText(util.dateToHM(d.getDate()));
-                                b2.setTag(d.getTime_from());
-                            }
-                        }
-                        Log.d("fillCalendar", "date = " + util.dateToHM(d.getDate()));
-                        k++;
-                    }
-
-                    Log.d("fillCalendar", "i%2 = " + i % 2);
-                    Log.d("fillCalendar", "date = " + util.dateToHM(d.getDate()));
-                    Log.d("fillCalendar", "date = " + d.getDate().toString());
-                }
-
-                if (cnt != null) {
-                    mSlidingTabLayout.addTab("Сегодня", "", true);
-                    //mSlidingTabLayout.addTab("Завтра", "", false);
-                    pages.add(cnt);
-                    overrideFonts(getActivity(), cnt);
-                }
-
-                k = 0;
-                cnt = null;
-                b1 = null;
-                b2 = null;
                 for (int i = 0; i < time_periods.size(); i++) {
-                    d = time_periods.get(i);
+                    TimePeriods d = time_periods.get(i);
+                    if (d.isToday()) {
+                        today = true;
+                        list_today.add(d);
+                        //Log.d("fillCalendarEx", util.dateToHM(d.getDate()));
+                    }
+
                     if (d.isTomorrow()) {
-                        if (k % 2 != 0) {
-                            if (cnt == null)
-                                cnt = (ViewGroup) mInflater.inflate(R.layout.calendar_content, null);
-
-                            ViewGroup gcnt = (ViewGroup) cnt.findViewById(R.id.content_calendar);
-                            View b = mInflater.inflate(R.layout.calendar_row_buttons, null);
-
-                            b1 = (ButtonWithState) b.findViewById(R.id.left);
-                            b2 = (ButtonWithState) b.findViewById(R.id.right);
-
-                            b1.setOnClickListener(mOnTime);
-                            b2.setOnClickListener(mOnTime);
-
-                            b2.setVisibility(View.INVISIBLE);
-                            b1.setText(util.dateToHM(d.getDate()));
-                            b1.setTag(d.getTime_from());
-                            gcnt.addView(b);
-                        } else {
-                            if (b2 != null) {
-                                b2.setVisibility(View.VISIBLE);
-                                b2.setText(util.dateToHM(d.getDate()));
-                                b2.setTag(d.getTime_from());
-                            }
-                        }
-                        k++;
+                        tomorrow = true;
+                        list_tomorrow.add(d);
                     }
                 }
 
-                if (cnt != null) {
-                    //mSlidingTabLayout.addTab("Сегодня", "", true);
-                    mSlidingTabLayout.addTab("Завтра", "", false);
-                    pages.add(cnt);
-                    overrideFonts(getActivity(), cnt);
+                if (today) {
+                    mSlidingTabLayout.addTab(getActivity().getString(R.string.today), "", true);
+                    ad1 = new TimeRecyclerViewAdapter(list_today);
+                    RecyclerView rv1 = new RecyclerView(getActivity());
+                    rv1.setHasFixedSize(true);
+                    rv1.setAdapter(ad1);
+                    rv1.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    rv1.addItemDecoration(new MarginDecoration(getActivity()));
+                    pages.add(rv1);
+                    ad1.notifyDataSetChanged();
+                    ad1.setOnSelectedItem(onsel);
                 }
 
+                if (tomorrow) {
+                    mSlidingTabLayout.addTab(getActivity().getString(R.string.tomorrow), "", !today);
+                    ad2 = new TimeRecyclerViewAdapter(list_tomorrow);
+                    RecyclerView rv1 = new RecyclerView(getActivity());
+                    rv1.setHasFixedSize(true);
+                    rv1.setAdapter(ad2);
+                    rv1.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    rv1.addItemDecoration(new MarginDecoration(getActivity()));
+                    pages.add(rv1);
+                    ad2.notifyDataSetChanged();
+                    ad2.setOnSelectedItem(onsel);
+                }
+
+                mCalendar.setVisibility(View.VISIBLE);
                 mCalendar.setPages(pages);
+                overrideFonts(getActivity(), mSlidingTabLayout);
+
             } else {
                 mSlidingTabLayout.setVisibility(View.GONE);
                 mNoTime.setVisibility(View.VISIBLE);
+                mCalendar.setVisibility(View.GONE);
             }
 
-            overrideFonts(getActivity(), mSlidingTabLayout);
         }
     }
 
-    ButtonWithState old_b = null;
-
-    private View.OnClickListener mOnTime = new View.OnClickListener() {
+    TimeRecyclerViewAdapter.IOnSelectedItem onsel = new TimeRecyclerViewAdapter.IOnSelectedItem() {
         @Override
-        public void onClick(View v) {
-            selected_time = (String) v.getTag();
-            if (old_b != null && v != old_b)
-                old_b.setSelected(false);
-            ((ButtonWithState) v).setSelected(!((ButtonWithState) v).isSelected());
-            old_b = (ButtonWithState) v;
+        public void onSelectedItem(TimePeriods item, int position) {
+            selected_time = item.getTime_from();
 
-            String s = "Время мойки: " + old_b.getText().toString() + "\n";
+            String s = "Время мойки: " + util.dateToHM(item.getDate()) + "\n";
             s = s + "\n";
             s = s + "Выбранные услуги:" + "\n";
             s = s + getTextServices();
@@ -499,12 +463,6 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         }
     };
 
-    /*
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.done_with_text, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -602,7 +560,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         }
     }
 
-    public final class ChoiseServiceRequestListener implements RequestListener<ChoiceServiceResult> {
+    public final class ChoiceServiceRequestListener implements RequestListener<ChoiceServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             //Toast.makeText(getActivity(), "Ошибка получения данных", Toast.LENGTH_SHORT).show();
@@ -641,16 +599,8 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     }
 
     private void fillChoiseServises(ArrayList<ChoiceService> in) {
-        /*
-        for (int i = 0; i < tableServicesContent.getChildCount(); i++) {
-            View v = tableServicesContent.getChildAt(i);
-            if (v.getTag() == null)
-                tableServicesContent.removeViewAt(i);
-        }*/
-
         tableServicesContent.removeAllViews();
         list = in;
-
 
         Log.d(TAG, "list = " + (list == null ? "null" : "data"));
         if (list != null) {

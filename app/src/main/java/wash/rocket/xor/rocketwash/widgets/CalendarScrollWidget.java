@@ -61,8 +61,8 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     public static final int SCROLL_STATE_SETTLING_VERTICAL = 4;
 
     public static final int OVERSCROLL_SIZE = 30;
-    private final NestedScrollingParentHelper mParentHelper;
-    private final NestedScrollingChildHelper mChildHelper;
+    private NestedScrollingParentHelper mParentHelper;
+    private NestedScrollingChildHelper mChildHelper;
 
     private boolean mIsBeingDragged = false;
     private boolean mIsBeingDraggedVertical = false;
@@ -141,16 +141,28 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     private IOnRefreshButtons mIOnRefreshButtons;
     private List<View> mPages;
 
-    public CalendarScrollWidget(Context context, List<View> pages) {
+    private boolean changed = false;
+
+    public CalendarScrollWidget(Context context) {
         super(context);
+        init(context);
+    }
+
+    public CalendarScrollWidget(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public CalendarScrollWidget(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
+    }
+
+    private void init(Context context) {
         mcontext = context;
-
         mScroller = new Scroller(context, sInterpolator);
-
         final ViewConfiguration configuration = ViewConfiguration.get(context);
-
         mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration) * 2;
-
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
@@ -171,55 +183,30 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
 
         setNestedScrollingEnabled(true);
 
-        mPages = pages;
-        if (mPages != null)
-            populatePages();
+        changed = true;
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
         if (mPages != null && mPages.size() > 0) {
-            int childWidthSpec = 0;
-            int childHeightSpec = 0;
-
             for (int i = 0; i < mPages.size(); i++) {
                 View page = mPages.get(i);
-                //page.layout(l, t, r, b);
-                //final int p = i;
-                page.layout(i * getWidth(), 0, (i + 1) * getWidth(), b);
+                page.layout(i * getWidth(), 0, (i + 1) * getWidth(), b - t);
             }
         }
-
-		/*
-
-		for (int i = 0; i < getChildCount(); i++)
-		{
-			View child = getChildAt(i);
-			LayoutParams params = (LayoutParams) child.getLayoutParams();
-
-			// XXX самая высокая страница
-
-			if (params.getLayoutType() == LayoutParams.INTERNAL_LAYOUT_BUTTONS)
-			{
-				final int p = params.getPageIndex();
-				child.layout(p * getWidth(), params.getTop(), (p + 1) * getWidth(), params.getTop() + (int) (mRowDayHeight + mRowDivider) * mRowCount);
-			}
-
-		}*/
-
-        //checkVisiblePages();
-        //setBounceWeekDayColor();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.e(TAG, "onMeasure");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        if (!changed)
+            return;
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int width = 0;
         int height = 0;
-
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         if (widthMode == MeasureSpec.AT_MOST || widthMode == MeasureSpec.EXACTLY) {
@@ -232,20 +219,8 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
             //height = 200;
         }
 
-        //width = 300;
-        //height = 200;
-        //Log.e("onMeasure", "mPages.size() = " + mPages.size());
-        //Log.e("onMeasure", "heightSize = " + heightSize);
-
-        /*
-        if (widthMode == MeasureSpec.AT_MOST)
-            Log.e("onMeasure", "MeasureSpec.AT_MOST");
-        else if (widthMode == MeasureSpec.EXACTLY)
-            Log.e("onMeasure", "MeasureSpec.EXACTLY");
-        else
-            Log.e("onMeasure", "MeasureSpec.UNSPECIFIED");*/
-
-        int mheight = 0;
+        int mheight = 300;
+        //int childHeightSpec1 = MeasureSpec.makeMeasureSpec(mheight, MeasureSpec.EXACTLY);
 
         if (mPages != null && mPages.size() > 0) {
             int childWidthSpec = 0;
@@ -253,58 +228,16 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
 
             for (int i = 0; i < mPages.size(); i++) {
                 View page = mPages.get(i);
-
                 childWidthSpec = MeasureSpec.makeMeasureSpec(widthMode, MeasureSpec.EXACTLY);
-                childHeightSpec = MeasureSpec.makeMeasureSpec(heightSize / 2, MeasureSpec.EXACTLY);
-
-
+                childHeightSpec = MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.EXACTLY);
                 page.measure(widthMeasureSpec, heightMeasureSpec);
+                mheight = page.getMeasuredHeight();
 
-                ViewGroup vg = (ViewGroup) page.findViewById(R.id.content_calendar);
-
-                if (vg != null) {
-                    View v = vg.getChildAt(0);
-                    if (v != null) {
-                        page.measure(widthMeasureSpec, v.getMeasuredHeight() * 2);
-
-                        if (mheight <= 0)
-                            mheight = v.getMeasuredHeight() * 4;
-                    }
-                }
-
-
-                // Log.e("onMeasure", "page.getMeasuredHeight() = " + page.getMeasuredHeight());
-
-                // if (page.getMeasuredHeight() > mheight)
-                //     mheight = page.getMeasuredHeight();
-
-
-                // Log.e("onMeasure", "mheight = " + mheight);
+                changed = false;
             }
         }
 
-
-		/*
-        for (int i = 0; i < getChildCount(); i++)
-		{
-			View child = getChildAt(i);
-			LayoutParams params = (LayoutParams) child.getLayoutParams();
-			int childWidthSpec = 0;
-			int childHeightSpec = 0;
-			height = MeasureSpec.getSize(heightMeasureSpec);
-			if (params.getLayoutType() == LayoutParams.INTERNAL_LAYOUT_BUTTONS)
-			{
-				childWidthSpec = MeasureSpec.makeMeasureSpec(widthMode, MeasureSpec.EXACTLY);
-				childHeightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-			}
-			child.measure(childWidthSpec, childHeightSpec);
-		}*/
-
-        /**
-         *  наш обязательный метод.
-         */
-        //setMeasuredDimension(width, mheight);
-        setMeasuredDimension(width, mheight);
+        setMeasuredDimension(width, heightSize);
     }
 
     private void setScrollState(int newState) {
@@ -1048,7 +981,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public void onClick(View v) {
         /*
-		if (v instanceof StateButton)
+        if (v instanceof StateButton)
 		{
 			if (mOnClickStateButtonListenner != null)
 			{
@@ -1317,6 +1250,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
         mPages = pages;
         if (mPages != null)
             populatePages();
+        changed = true;
     }
 
     public List<View> getPages() {

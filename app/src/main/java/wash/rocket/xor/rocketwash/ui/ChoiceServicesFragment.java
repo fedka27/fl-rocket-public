@@ -78,7 +78,7 @@ public class ChoiceServicesFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_services_choise, container, false);
+        return inflater.inflate(R.layout.fragment_services_choice, container, false);
     }
 
     @Override
@@ -133,6 +133,8 @@ public class ChoiceServicesFragment extends BaseFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        setTargetFragment(null, -1);
+
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(LIST, list);
     }
@@ -191,8 +193,12 @@ public class ChoiceServicesFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        Log.d(TAG, "onOptionsItemSelected");
+
         switch (item.getItemId()) {
             case android.R.id.home:
+                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
                 getActivity().getSupportFragmentManager().popBackStack();
                 return true;
             case R.id.action_done:

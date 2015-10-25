@@ -428,7 +428,12 @@ public class BaseFragment extends Fragment {
     }
 
     protected void call(String phone) {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "Your Phone_number"));
+        phone = phone == null ? "" : phone.replace("(", "").replace(")", "").replace(" ", "").replace("-","");
+
+        Log.d(TAG, "cal " + phone);
+
+        //Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
         startActivity(intent);
     }
 
@@ -556,8 +561,11 @@ public class BaseFragment extends Fragment {
     }
 
 
-    public void onBackPress()
-    {
+    public void onBackPress() {
+
+    }
+
+    public void restoreTargets() {
 
     }
 }

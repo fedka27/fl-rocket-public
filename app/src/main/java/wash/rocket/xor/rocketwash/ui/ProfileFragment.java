@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -150,6 +151,7 @@ public class ProfileFragment extends BaseFragment {
         btnShare = (Button) getView().findViewById(R.id.btnShare);
 
         getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+        restoreTargets();
     }
 
     @Override
@@ -307,5 +309,19 @@ public class ProfileFragment extends BaseFragment {
                 getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "wash", 30, new ProfileRequestListener());
             }
         }
+    }
+
+    @Override
+    public void restoreTargets() {
+        Fragment f;
+        f = getFragmentManager().findFragmentByTag(ProfileEditFragment.TAG);
+        if (f != null)
+            f.setTargetFragment(ProfileFragment.this, FRAGMENT_EDIT_PROFILE);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        setTargetFragment(null, -1);
+        super.onSaveInstanceState(outState);
     }
 }

@@ -364,7 +364,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                         mViewPager.setCurrentItem(i);
                     } else {
                         if (mOnTabSelected != null)
-                            mOnTabSelected.onTabSlected(i);
+                            mOnTabSelected.onTabSelected(i);
 
                         mTabStrip.onViewPagerPageChanged(i, 0f);
                         scrollToTab(i, 0);
@@ -415,7 +415,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private OnTabSelected mOnTabSelected;
 
     public interface OnTabSelected {
-        void onTabSlected(int item);
+        void onTabSelected(int item);
 
     }
 

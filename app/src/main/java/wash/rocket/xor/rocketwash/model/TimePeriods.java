@@ -23,6 +23,8 @@ public class TimePeriods implements Parcelable {
     @JsonField
     private int price;
 
+    private int selected = 0;
+
     public String getTime_from() {
         return time_from;
     }
@@ -97,4 +99,13 @@ public class TimePeriods implements Parcelable {
             return new TimePeriods[size];
         }
     };
+
+    public int getSelected() {
+        return selected;
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
+    }
+
 }

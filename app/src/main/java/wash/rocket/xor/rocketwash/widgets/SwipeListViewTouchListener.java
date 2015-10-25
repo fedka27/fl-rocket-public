@@ -876,7 +876,7 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 
                     boolean allowSwipe = true;
 
-                    if (allowSwipe && rect.contains(x, y)) {
+                    if (allowSwipe && rect.contains(x, y) && childPosition >= 0) {
                         setParentView(child);
                         setFrontView(child.findViewById(swipeFrontView), childPosition);
 
@@ -1083,6 +1083,10 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
      * @param deltaX delta
      */
     public void move(float deltaX) {
+
+        if (frontView == null)
+            return;
+
         swipeListView.onMove(downPosition, deltaX);
         float posX = ViewHelper.getX(frontView);
         if (opened.get(downPosition)) {
