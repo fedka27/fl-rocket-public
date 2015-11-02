@@ -76,6 +76,10 @@ public class Reservation implements Parcelable {
     String time_from;
     @JsonField
     WashService carwash;
+    @JsonField
+    String time_from_no_time_zone;
+    @JsonField
+    String time_to_no_time_zone;
 
     public int getId() {
         return id;
@@ -362,6 +366,9 @@ public class Reservation implements Parcelable {
         discounted_price = in.readString();
         rounded_price = in.readString();
         result = in.readString();
+        time_from_no_time_zone = in.readString();
+        time_to_no_time_zone = in.readString();
+
     }
 
     @Override
@@ -393,6 +400,8 @@ public class Reservation implements Parcelable {
         dest.writeString(discounted_price);
         dest.writeString(rounded_price);
         dest.writeString(result);
+        dest.writeString(time_from_no_time_zone);
+        dest.writeString(time_to_no_time_zone);
     }
 
     public static final Creator<Reservation> CREATOR = new Creator<Reservation>() {
@@ -404,4 +413,20 @@ public class Reservation implements Parcelable {
             return new Reservation[size];
         }
     };
+
+    public String getTime_to_no_time_zone() {
+        return time_to_no_time_zone;
+    }
+
+    public void setTime_to_no_time_zone(String time_to_no_time_zone) {
+        this.time_to_no_time_zone = time_to_no_time_zone;
+    }
+
+    public String getTime_from_no_time_zone() {
+        return time_from_no_time_zone;
+    }
+
+    public void setTime_from_no_time_zone(String time_from_no_time_zone) {
+        this.time_from_no_time_zone = time_from_no_time_zone;
+    }
 }

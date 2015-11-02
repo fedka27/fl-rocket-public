@@ -347,6 +347,7 @@ public class WashService implements Parcelable {
                 TimePeriods t = new TimePeriods();
                 t.setPrice(time_periods.get(i).getPrice());
                 t.setTime_from(time_periods.get(i).getTime_from());
+                t.setTime_from_no_time_zone(time_periods.get(i).getTime_from_no_time_zone());
                 a.time_periods.add(t);
             }
         }

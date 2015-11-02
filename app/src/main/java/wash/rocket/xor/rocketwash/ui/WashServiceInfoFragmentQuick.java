@@ -179,7 +179,6 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         if (mService != null)
             mService.var_dump();
 
-
         Location l = getLastLocation();
         if (l != null) {
             mLatitude = l.getLatitude();
@@ -198,12 +197,9 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_wash_service_quick_apply, container, false);
 
         mInflater = inflater;
-
         mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
         toolbar = setToolbar(rootView, mTitle);
-
         initControls(rootView);
-
 
         return rootView;
     }
@@ -329,7 +325,6 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     public void onSaveInstanceState(Bundle outState) {
 
 
-
         super.onSaveInstanceState(outState);
     }
 
@@ -446,7 +441,6 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 mNoTime.setVisibility(View.VISIBLE);
                 mCalendar.setVisibility(View.GONE);
             }
-
         }
     }
 
@@ -496,11 +490,13 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
             if (TextUtils.isEmpty(selected_time)) {
                 Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_info_wash_service_no_tme_select), Toast.LENGTH_SHORT).show();
+                clearListSelectors();
                 return;
             }
 
             if (list == null || list.size() <= 0) {
                 Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_info_wash_service_no_services_select), Toast.LENGTH_SHORT).show();
+                clearListSelectors();
                 return;
             } else {
                 int s = 0;
@@ -510,6 +506,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 }
                 if (s == 0) {
                     Toast.makeText(getActivity(), getActivity().getString(R.string.fragment_info_wash_service_no_services_select), Toast.LENGTH_SHORT).show();
+                    clearListSelectors();
                     return;
                 }
             }
@@ -542,6 +539,8 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
             if (Constants.SUCCESS.equals(result.getStatus())) {
                 showToastOk(R.string.fragment_info_wash_service_reserved_succes);
                 getActivity().getSupportFragmentManager().popBackStack();
+
+                reservationAction(mService.getId(), mService.getName());
 
                 WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService, mLatitude, mLongitude, mTitle, mService, result.getData());
                 f.setTargetFragment(getTargetFragment(), getTargetRequestCode());

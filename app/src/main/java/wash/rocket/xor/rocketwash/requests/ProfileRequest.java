@@ -44,22 +44,8 @@ public class ProfileRequest extends GoogleHttpClientSpiceRequest<ProfileResult> 
             result = out.toString("UTF-8");
         }
 
-        //JsonNode json = new ObjectMapper().readTree(result);
-        //ObjectMapper mapper = new ObjectMapper();
-        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        ///mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-        //ProfileResult res = mapper.readValue(result, getResultType());
-        //res.getData().setString(result);
-        //return mapper.readValue(result, getResultType());
-        //return res;
-
-
         Log.d("ProfileRequest", " res = " + result);
         Log.w("ProfileRequest", " start parse json ");
-
-        //ObjectMapper mapper = new ObjectMapper();
-        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        //WashServiceResult res = mapper.readValue(result, getResultType());
 
         ProfileResult res = LoganSquare.parse(result, ProfileResult.class);
         res.getData().setString(result);

@@ -28,7 +28,9 @@ public class AvailableTimesRequest extends GoogleHttpClientSpiceRequest<Availabl
 
     public AvailableTimesRequest(String session_id, int id, String time_range_start, String time_range_end, int services_duration) {
         super(AvailableTimesResult.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/service_locations/%d/available_times";
+        //GET /v2/service_locations/{id}/available_times_no_time_zone
+        //this.baseUrl = "http://test.rocketwash.me/v2/service_locations/%d/available_times";
+        this.baseUrl = "http://test.rocketwash.me/v2/service_locations/%d/available_times_no_time_zone";
         this.session_id = session_id;
         this.id = id;
         this.time_range_start = time_range_start;

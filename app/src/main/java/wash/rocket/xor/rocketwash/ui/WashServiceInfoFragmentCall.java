@@ -27,6 +27,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -107,6 +110,7 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
     private TextView txtStub;
     private ProgressBar infoProgressBar;
     private Button infoBtnPath;
+    private Button btnReport;
     private GoogleMap.InfoWindowAdapter infoBaloon;
     private Marker mMarker;
     private ActionButton fab1;
@@ -335,7 +339,7 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                call(mService.getPhone());
+                call(mService.getPhone(), mService.getId(), mService.getName());
             }
         });
 
@@ -351,11 +355,25 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
             }
         });
 
+        btnReport = (Button) rootView.findViewById(R.id.btnReport);
+
+        btnReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                report(mIdService, mTitle, TAG);
+            }
+        });
+
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(getActivity());
+        Tracker tracker = analytics.newTracker("UA-54521987-4");
+        tracker.setScreenName(TAG);
+        tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     private void setUpMapIfNeeded() {

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.WashServiceResult;
+import wash.rocket.xor.rocketwash.util.util;
 
 @SuppressLint("LongLogTag")
 public class NearestWashServiceRequest extends GoogleHttpClientSpiceRequest<WashServiceResult> {
@@ -65,13 +66,9 @@ public class NearestWashServiceRequest extends GoogleHttpClientSpiceRequest<Wash
             result = out.toString("UTF-8");
         }
 
-        Log.d("NearestWashServiceRequest", " res = " + result);
+        //Log.d("NearestWashServiceRequest", " res = " + result);
+        util.log("NearestWashServiceRequest", " res = " + result);
         Log.w("NearestWashServiceRequest", " start parse json ");
-
-        //ObjectMapper mapper = new ObjectMapper();
-        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        //WashServiceResult res = mapper.readValue(result, getResultType());
-
         WashServiceResult res = LoganSquare.parse(result, WashServiceResult.class);
 
         Log.w("NearestWashServiceRequest", " end parse json ");

@@ -1,6 +1,10 @@
 package wash.rocket.xor.rocketwash.util;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
+
+import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.ArrayList;
 
@@ -26,5 +30,20 @@ public class App extends Application {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+
+    @Override
+    public void onCreate() {
+        MultiDex.install(this);
+        super.onCreate();
+
+        JodaTimeAndroid.init(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        MultiDex.install(this);
+        super.attachBaseContext(base);
     }
 }

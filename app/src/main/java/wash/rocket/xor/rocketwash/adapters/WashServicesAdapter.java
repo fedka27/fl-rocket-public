@@ -213,7 +213,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
                         imgBusy.setVisibility(View.GONE);
                         time.setVisibility(View.VISIBLE);
 
-                        Date d = util.getDate(s.getTime_periods().get(0).getTime_from());
+                        Date d = util.getDatenoUTC(s.getTime_periods().get(0).getTime_from_no_time_zone());
                         if (d != null)
                             time.setText(util.dateToHM(d));
                         else

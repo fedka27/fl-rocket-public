@@ -112,8 +112,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_neares_wash_services, container, false);
     }
 
@@ -270,7 +269,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 switch (button) {
                     // call
                     case 1:
-                        call(s.getPhone());
+                        call(s.getPhone(), s.getId(), s.getName());
                         break;
                     // rec apply
                     case 2:
@@ -314,16 +313,28 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mLoaderCount = 0;
-                swipeListView.closeAnimateAll();
-                String session = pref.getSessionID();
-                mPage = 1;
-                nearest_Loaded = false;
-                reserved_Loaded = false;
-                getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), RESERVED_WASH_KEY_CASH, 3000, new ReservedRequestListener());
-                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), NEAREST_WASH_KEY_CASH, DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
-                list.clear();
-                layoutWarn.setVisibility(View.GONE);
+                if (mLatitude != 0 && mLongitude != 0) {
+
+                    mLoaderCount = 0;
+                    swipeListView.closeAnimateAll();
+                    String session = pref.getSessionID();
+                    mPage = 1;
+                    nearest_Loaded = false;
+                    reserved_Loaded = false;
+                    getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), RESERVED_WASH_KEY_CASH, 3000, new ReservedRequestListener());
+                    getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), NEAREST_WASH_KEY_CASH, DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
+                    list.clear();
+                    layoutWarn.setVisibility(View.GONE);
+
+                } else {
+                    showShowGPSWarn();
+                    mSwipeRefreshLayout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                }
             }
         });
 
@@ -663,6 +674,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     }
 
     private void showShowGPSWarn() {
+        Log.d(TAG, "showShowGPSWarn");
         layoutWarn.setVisibility(View.VISIBLE);
         TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
@@ -671,6 +683,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     }
 
     private void showNoDataWarn() {
+        Log.d(TAG, "showNoDataWarn");
         layoutWarn.setVisibility(View.VISIBLE);
         TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
@@ -679,6 +692,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     }
 
     private void showError() {
+        Log.d(TAG, "showError");
+
         layoutWarn.setVisibility(View.VISIBLE);
         TextView t = (TextView) layoutWarn.findViewById(R.id.txtWarn);
         ImageView i = (ImageView) layoutWarn.findViewById(R.id.imgLogo);
@@ -747,9 +762,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         @Override
         public void onRequestSuccess(final WashServiceResult result) {
             layoutWarn.setVisibility(View.GONE);
-            Log.d("NearestWashServiceRequestListener", "res");
+            Log.d(TAG, "NearestWashServiceRequestListener onRequestSuccess (nearest_Loaded = "+reserved_Loaded+")");
 
-            nearest_Loaded = true;
             if (mPage <= 1 && !reserved_Loaded) {
                 list.clear();
             }
@@ -783,8 +797,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     stopRefrash();
                 }
 
+                nearest_Loaded = true;
                 Log.d("NearestWashServiceRequestListener", "fill data");
-
 
             } else {
                 showError();
@@ -805,10 +819,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         @Override
         public void onRequestSuccess(final ReservedResult result) {
 
-            reserved_Loaded = true;
-
             if (result != null) {
-
+                Log.d(TAG, "ReservedRequestListener onRequestSuccess (nearest_Loaded = "+nearest_Loaded+")");
                 if (mPage <= 1 && !nearest_Loaded) {
                     list.clear();
                 }
@@ -826,7 +838,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     w.setType(WashServicesAdapter.TYPE_RESERVED);
                     w.setName(cw.getCarwash().getName());
                     w.setAddress(cw.getCarwash().getAddress());
-                    w.setrDate(util.getDate(cw.getTime_from()));
+                    w.setrDate(util.getDatenoUTC(cw.getTime_from_no_time_zone()));
                     list.add(1, w);
 
                     w = new WashService();
@@ -844,15 +856,15 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             if (nearest_Loaded && list.size() <= 0)
                 showNoDataWarn();
 
+            reserved_Loaded = true;
+
             Log.d("ReservedRequestListener", "fill data");
         }
     }
 
 
-
     @Override
-    public void restoreTargets()
-    {
+    public void restoreTargets() {
         Log.d(TAG, "restoreTargets");
 
         Fragment f;

@@ -1,7 +1,7 @@
 buildscript {
     repositories {
+        mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
-        jcenter()
     }
 
     dependencies {
@@ -29,14 +29,17 @@ android {
         minSdkVersion 9
         targetSdkVersion 23
         versionCode 1
-        versionName "1.6"
+        versionName "1.8"
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            multiDexEnabled true
         }
     }
+
 
     applicationVariants.all {
         variant ->
@@ -53,12 +56,16 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:multidex:1.0.1'
+
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:recyclerview-v7:+'
     compile 'com.android.support:cardview-v7:+'
@@ -79,12 +86,13 @@ dependencies {
         exclude group: 'stax'
     }
 
+    /*
     compile('com.google.http-client:google-http-client-gson:1.20.0') {
         exclude module: 'commons-io'
         exclude group: 'commons-io'
         exclude module: 'xpp3'
         exclude group: 'stax'
-    }
+    }*/
 
     compile('com.google.http-client:google-http-client-jackson:1.20.0') {
         exclude module: 'commons-io'
@@ -114,7 +122,9 @@ dependencies {
     compile('com.google.android.gms:play-services-location:+') {
         force = true
     }
-    compile 'com.google.android.gms:play-services-maps:+'
+    compile 'com.google.android.gms:play-services-analytics:8.1.0'
+    compile 'com.google.android.gms:play-services-maps:8.1.0'
+
     compile 'com.github.shell-software:fab:1.1.2'
     compile files('libs/libphonenumber-7.0.1.jar')
     compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
@@ -123,4 +133,5 @@ dependencies {
 
     apt 'com.bluelinelabs:logansquare-compiler:1.1.0'
     compile 'com.bluelinelabs:logansquare:1.1.0'
+    compile 'net.danlew:android.joda:2.9.0'
 }

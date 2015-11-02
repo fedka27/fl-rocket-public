@@ -529,7 +529,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                     pref.setCarName(r.getBrandName() + " " + r.getModelName());
 
                     mProgressBar2.setVisibility(View.VISIBLE);
-                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, pref.getCarModelId(), pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, pref.getCarModelId(), pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
 
                     radioGroupCars.setEnabled(false);
                 }
@@ -834,7 +834,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                         pref.setCarModelId(id_model);
                     }
 
-                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
                 }
             } else {
                 showToastError(R.string.error_loading_data);
@@ -921,7 +921,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                         pref.setCarModelId(id_model);
                     }
 
-                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiseServiceRequestListener());
+                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
                 }
                 mProgressBar1.setVisibility(View.GONE);
                 overrideFonts(getActivity(), radioGroupCars);
@@ -944,7 +944,7 @@ public class WashServiceInfoFragment extends BaseFragment {
             switch (requestCode) {
                 case FRAGMENT_SERVCES:
                     ArrayList<ChoiceService> l = data.getParcelableArrayListExtra("list");
-                    fillChoiceServises(l);
+                    fillChoiceServices(l);
                     break;
                 case FRAGMENT_PROFILE_EDIT:
                     mProgressBar1.setVisibility(View.VISIBLE);
@@ -1005,8 +1005,9 @@ public class WashServiceInfoFragment extends BaseFragment {
             if (time_periods.size() > 0) {
                 first_time = time_periods.get(0).getTime_from();
 
+                TimePeriods d;
                 for (int i = 0; i < time_periods.size(); i++) {
-                    TimePeriods d = time_periods.get(i);
+                    d = time_periods.get(i);
                     if (d.isToday()) {
                         today = true;
                         list_today.add(d);
@@ -1174,7 +1175,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
     }
 
-    public final class ChoiseServiceRequestListener implements RequestListener<ChoiceServiceResult> {
+    public final class ChoiceServiceRequestListener implements RequestListener<ChoiceServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             showToastError(R.string.error_loading_data);
@@ -1205,7 +1206,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                     }
                 }
 
-                fillChoiceServises(list);
+                fillChoiceServices(list);
             } else {
 
             }
@@ -1217,7 +1218,7 @@ public class WashServiceInfoFragment extends BaseFragment {
     }
 
     //XXX
-    private void fillChoiceServises(ArrayList<ChoiceService> in) {
+    private void fillChoiceServices(ArrayList<ChoiceService> in) {
         tableServicesContent.removeAllViews();
         list = in;
 
@@ -1299,6 +1300,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         Profile prof = getApp().getProfile();
         if (prof != null && prof.isPhone_verified()) {
             if (list == null || list.size() <= 0) {
+                clearListSelectors();
                 showToastWarn(R.string.fragment_info_wash_service_no_services_select);
                 return;
             } else {
@@ -1309,6 +1311,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                 }
                 if (s == 0) {
                     showToastWarn(R.string.fragment_info_wash_service_no_services_select);
+                    clearListSelectors();
                     return;
                 }
             }
@@ -1347,6 +1350,8 @@ public class WashServiceInfoFragment extends BaseFragment {
                 showToastOk(R.string.fragment_info_wash_service_reserved_succes);
                 getActivity().getSupportFragmentManager().popBackStack();
 
+                reservationAction(mService.getId(), mService.getName());
+
                 WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService, mLatitude, mLongitude, mTitle, mService, result.getData());
                 f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
                 getActivity()
@@ -1356,6 +1361,8 @@ public class WashServiceInfoFragment extends BaseFragment {
                         .add(R.id.container, f, WashServiceInfoFragmentReserved.TAG)
                         .addToBackStack(null)
                         .commit();
+
+
 
             } else {
                 showToastError(result.getData().getResult());
@@ -1444,10 +1451,10 @@ public class WashServiceInfoFragment extends BaseFragment {
 
             if (availableTimesResult != null) {
                 List<TimePeriods> times = new ArrayList<>();
-
+                TimePeriods t;
                 for (int i = 0; i < availableTimesResult.getData().size(); i++) {
                     String a = availableTimesResult.getData().get(i);
-                    TimePeriods t = new TimePeriods();
+                    t = new TimePeriods();
                     t.setTime_from(a);
                     times.add(t);
                 }

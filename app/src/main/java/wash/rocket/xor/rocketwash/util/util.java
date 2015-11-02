@@ -3,6 +3,10 @@ package wash.rocket.xor.rocketwash.util;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.TextUtils;
+import android.util.Log;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,6 +58,59 @@ public class util {
     }
 
 
+    public static Date getDateUTC(String str) {
+        //2015-10-31T03:15:00+03:00
+        //DateTime d = new DateTime(str).
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        String g = str.substring(str.length() - 6);
+        Log.e("getDateUTC", g);
+        TimeZone z = TimeZone.getTimeZone("GMT" + g);
+        Log.e("getDateUTC", z.getDisplayName());
+        sdf.setTimeZone(z);
+        //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        try {
+
+            Date d = sdf.parse(str);
+            //d.getTimezoneOffset()
+
+            Log.e("getDateUTC", d.toString());
+
+
+            return d;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+
+    public static Date getDateUTCJ(String str) {
+        //2015-10-31T03:15:00+03:00
+        //DateTime d = new DateTime(str).
+
+        String g = str.substring(str.length() - 6);
+        DateTime dt = new DateTime( str, DateTimeZone.forID(g) );
+
+
+        Log.e("getDateUTC", dt.toString());
+
+        return dt.toDate();
+
+    }
+
+
+    public static Date getDatenoUTC(String str) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            return sdf.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     //XXX to utils
     public static String SecondsToMS(long seconds) {
@@ -158,5 +215,13 @@ public class util {
             return String.format("%d мин", min);
 
         //return String.format("%02d м.", min) + " " + String.format("%02d с.", sec);
+    }
+
+    public static void log(String tag, String str) {
+        if (str.length() > 3000) {
+            Log.i(tag, str.substring(0, 3000));
+            log(tag, str.substring(3000));
+        } else
+            Log.i(tag, str);
     }
 }

@@ -306,9 +306,9 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (mReserved.getCarwash() != null)
-                    call(mReserved.getCarwash().getPhone());
+                    call(mReserved.getCarwash().getPhone(), mReserved.getCarwash().getId(), mReserved.getCarwash().getName());
                 else
-                    call(mService.getPhone());
+                    call(mService.getPhone(), mService.getId(), mService.getName());
             }
         });
 
@@ -378,7 +378,7 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         if (mReserved != null) {
-            txtTime.setText(String.format(getActivity().getString(R.string.reserved_on), mReserved.getTime_start_format()));
+            txtTime.setText(String.format(getActivity().getString(R.string.reserved_on), util.dateToDMYHM(util.getDatenoUTC(mReserved.getTime_from_no_time_zone()))));
             txtDuration.setText(String.format(getActivity().getString(R.string.duration), util.minutesToText(mReserved.getFull_duration())));
             txtSumm.setText(String.format(getActivity().getString(R.string.reserved_cost), mReserved.getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
         }
@@ -443,7 +443,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
 
 
         switch (item.getItemId()) {

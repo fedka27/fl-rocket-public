@@ -19,11 +19,16 @@ public class TimePeriods implements Parcelable {
     @JsonField
     private String time_from;
 
+    @JsonField
+    private String time_from_no_time_zone;
+
     @JsonProperty("price")
     @JsonField
     private int price;
 
     private int selected = 0;
+
+    private Date date;
 
     public String getTime_from() {
         return time_from;
@@ -42,7 +47,10 @@ public class TimePeriods implements Parcelable {
     }
 
     public Date getDate() {
-        return util.getDate(time_from);
+        if (date == null)
+            date = util.getDateS1(time_from);
+
+        return date;
     }
 
     public boolean isToday() {
@@ -108,4 +116,15 @@ public class TimePeriods implements Parcelable {
         this.selected = selected;
     }
 
+    public String getTime_from_no_time_zone() {
+        return time_from_no_time_zone;
+    }
+
+    public void setTime_from_no_time_zone(String time_from_no_time_zone) {
+        this.time_from_no_time_zone = time_from_no_time_zone;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }

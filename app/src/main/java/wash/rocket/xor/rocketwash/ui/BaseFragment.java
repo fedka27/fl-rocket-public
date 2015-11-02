@@ -36,6 +36,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.octo.android.robospice.SpiceManager;
 
 import java.lang.ref.WeakReference;
@@ -423,18 +426,25 @@ public class BaseFragment extends Fragment {
         if (toolbar != null) {
             toolbar.setTitle(title);
         }
-
         return toolbar;
     }
 
-    protected void call(String phone) {
-        phone = phone == null ? "" : phone.replace("(", "").replace(")", "").replace(" ", "").replace("-","");
-
+    protected void call(String phone, int service_id, String name) {
+        phone = phone == null ? "" : phone.replace("(", "").replace(")", "").replace(" ", "").replace("-", "");
         Log.d(TAG, "cal " + phone);
-
         //Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
         startActivity(intent);
+
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(getActivity());
+        Tracker tracker = analytics.newTracker("UA-54521987-4");
+       // tracker.setScreenName("");
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("button")
+                .setAction("call")
+                .setLabel(name)
+                .setValue(service_id)
+                .build());
     }
 
 
@@ -567,5 +577,33 @@ public class BaseFragment extends Fragment {
 
     public void restoreTargets() {
 
+    }
+
+    public void report(int service_id, String name, String screen) {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(getActivity());
+        Tracker tracker = analytics.newTracker("UA-54521987-4");
+        tracker.setScreenName(screen);
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("button")
+                .setAction("report")
+                .setLabel(name)
+                .setValue(service_id)
+                .build());
+
+        showToastOk("Благодарим за отзыв. В ближайшее время на данной мойке появиться онлайн запись.");
+    }
+
+
+    public void reservationAction(int service_id, String name)
+    {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(getActivity());
+        Tracker tracker = analytics.newTracker("UA-54521987-4");
+        tracker.setScreenName("");
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("button")
+                .setAction("reservation")
+                .setLabel(name)
+                .setValue(service_id)
+                .build());
     }
 }
