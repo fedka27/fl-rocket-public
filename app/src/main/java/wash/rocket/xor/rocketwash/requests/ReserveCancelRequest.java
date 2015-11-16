@@ -3,8 +3,7 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.ReserveCancelResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class ReserveCancelRequest extends GoogleHttpClientSpiceRequest<ReserveCancelResult> {
 
@@ -25,7 +25,7 @@ public class ReserveCancelRequest extends GoogleHttpClientSpiceRequest<ReserveCa
 
     public ReserveCancelRequest(String session_id, int id) {
         super(ReserveCancelResult.class);
-        this.url = "http://test.rocketwash.me/v2/reservations";
+        this.url = Constants.URL + "reservations";
         this.session_id = session_id;
         this.id = id;
     }
@@ -54,11 +54,12 @@ public class ReserveCancelRequest extends GoogleHttpClientSpiceRequest<ReserveCa
 
         Log.d("ReserveCancelResult", " res = " + result);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //ReserveCancelResult res = mapper.readValue(result, getResultType());
 
-        ReserveCancelResult res = mapper.readValue(result, getResultType());
+        ReserveCancelResult res = LoganSquare.parse(result, ReserveCancelResult.class);
 
         return res;
     }

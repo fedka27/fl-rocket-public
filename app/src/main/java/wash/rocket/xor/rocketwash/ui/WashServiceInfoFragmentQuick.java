@@ -303,7 +303,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         c.set(Calendar.HOUR_OF_DAY, 23);
         c.set(Calendar.MINUTE, 59);
         String b = util.dateToZZ(c.getTime());
-        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "cars", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
+        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "times", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
     }
 
     @Override
@@ -375,6 +375,9 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
                 ad1.setSelectionItemId(-1);
                 ad2.setSelectionItemId(-1);
+
+                ad1.notifyDataSetChanged();
+                ad2.notifyDataSetChanged();
             }
         });
         selected_time = "";
@@ -447,7 +450,10 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     TimeRecyclerViewAdapter.IOnSelectedItem onsel = new TimeRecyclerViewAdapter.IOnSelectedItem() {
         @Override
         public void onSelectedItem(TimePeriods item, int position) {
-            selected_time = item.getTime_from();
+
+            //XXX
+            //selected_time = item.getTime_from();
+            selected_time = item.getTime_from_no_time_zone();
 
             String s = "Время мойки: " + util.dateToHM(item.getDate()) + "\n";
             s = s + "\n";
@@ -688,11 +694,15 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                     String a = availableTimesResult.getData().get(i);
                     TimePeriods t = new TimePeriods();
                     t.setTime_from(a);
+                    t.setTime_from_no_time_zone(a);
                     times.add(t);
                 }
 
-                if (times.size() > 0)
-                    first_time = times.get(0).getTime_from();
+                if (times.size() > 0) {
+                    //XXX
+                    //first_time = times.get(0).getTime_from();
+                    first_time = times.get(0).getTime_from_no_time_zone();
+                }
 
                 fillCalendar(times);
             }

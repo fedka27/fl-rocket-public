@@ -1,17 +1,20 @@
 package wash.rocket.xor.rocketwash.model;
 
-import com.google.api.client.util.Key;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import java.util.List;
 
+@JsonObject
 public class LoginData {
-    @Key
+
+    @JsonField
     private Profile profile;
-    @Key
+    @JsonField
     private String session_id;
-    @Key
+    @JsonField
     private List<Integer> price_range;
-    @Key
+    @JsonField
     private String result;
 
     public Profile getProfile() {

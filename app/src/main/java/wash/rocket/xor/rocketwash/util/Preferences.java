@@ -8,8 +8,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -215,14 +214,17 @@ public class Preferences {
         if (TextUtils.isEmpty(p))
             return null;
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+
+        //EmptyUserResult
 
 
         ProfileResult res = null;
         try {
-            res = mapper.readValue(p, ProfileResult.class);
+            //res = mapper.readValue(p, ProfileResult.class);
+            res = LoganSquare.parse(p, ProfileResult.class);
 
             if (res != null && res.getData() != null) {
                 res.getData().setString(p);

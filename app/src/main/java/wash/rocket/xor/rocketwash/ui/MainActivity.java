@@ -260,10 +260,13 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         List<Fragment> flist = getSupportFragmentManager().getFragments();
         if (flist != null) {
             for (int i = 0; i < flist.size(); i++) {
-                BaseFragment f = (BaseFragment) flist.get(i);
-                if (f != null) {
-                    Log.d(TAG, f.getClass().getName());
-                    f.restoreTargets();
+
+                if (flist.get(i) instanceof BaseFragment) {
+                    BaseFragment f = (BaseFragment) flist.get(i);
+                    if (f != null) {
+                        Log.d(TAG, f.getClass().getName());
+                        f.restoreTargets();
+                    }
                 }
             }
         }

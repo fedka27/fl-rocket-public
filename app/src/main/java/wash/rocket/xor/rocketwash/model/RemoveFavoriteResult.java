@@ -1,16 +1,17 @@
 package wash.rocket.xor.rocketwash.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 
 //{"status":"success","data":true};
-
+@JsonObject
 public class RemoveFavoriteResult {
 
-    @JsonProperty("status")
+    @JsonField
     private String status;
 
-    @JsonProperty("data")
+    @JsonField
     private boolean data;
 
     public String getStatus() {

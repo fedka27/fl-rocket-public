@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
@@ -14,10 +13,8 @@ import wash.rocket.xor.rocketwash.util.util;
 @JsonObject
 public class Reservation implements Parcelable {
 
-    @JsonProperty("id")
     @JsonField
     int id;
-    @JsonProperty("user_id")
     @JsonField
     int user_id;
     @JsonField
@@ -66,7 +63,6 @@ public class Reservation implements Parcelable {
     String discounted_price;
     @JsonField
     String rounded_price;
-    @JsonProperty("result")
     @JsonField
     String result;
 
@@ -329,90 +325,9 @@ public class Reservation implements Parcelable {
         this.time_from = time_from;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     public Reservation() {
 
     }
-
-    public Reservation(Parcel in) {
-
-        id = in.readInt();
-        user_id = in.readInt();
-        service_location_lane_id = in.readInt();
-        time_start = in.readString();
-        rating = in.readString();
-        created_at = in.readString();
-        updated_at = in.readString();
-        status = in.readString();
-        thank_message = in.readString();
-        thank_the_client = in.readString();
-        comments = in.readString();
-        name = in.readString();
-        time_end = in.readString();
-        paid = in.readString();
-        car_id = in.readInt();
-        mobile = in.readInt() == 1;
-        full_duration = in.readInt();
-        ordinal = in.readInt();
-        admin_status = in.readString();
-        full_discount = in.readString();
-        notes = in.readString();
-        paid_at = in.readString();
-        price = in.readString();
-        discounted_price = in.readString();
-        rounded_price = in.readString();
-        result = in.readString();
-        time_from_no_time_zone = in.readString();
-        time_to_no_time_zone = in.readString();
-
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-        dest.writeInt(id);
-        dest.writeInt(user_id);
-        dest.writeInt(service_location_lane_id);
-        dest.writeString(time_start);
-        dest.writeString(rating);
-        dest.writeString(created_at);
-        dest.writeString(updated_at);
-        dest.writeString(status);
-        dest.writeString(thank_message);
-        dest.writeString(thank_the_client);
-        dest.writeString(comments);
-        dest.writeString(name);
-        dest.writeString(time_end);
-        dest.writeString(paid);
-        dest.writeInt(car_id);
-        dest.writeInt(mobile ? 1 : 0);
-        dest.writeInt(full_duration);
-        dest.writeInt(ordinal);
-        dest.writeString(admin_status);
-        dest.writeString(full_discount);
-        dest.writeString(notes);
-        dest.writeString(paid_at);
-        dest.writeString(price);
-        dest.writeString(discounted_price);
-        dest.writeString(rounded_price);
-        dest.writeString(result);
-        dest.writeString(time_from_no_time_zone);
-        dest.writeString(time_to_no_time_zone);
-    }
-
-    public static final Creator<Reservation> CREATOR = new Creator<Reservation>() {
-        public Reservation createFromParcel(Parcel in) {
-            return new Reservation(in);
-        }
-
-        public Reservation[] newArray(int size) {
-            return new Reservation[size];
-        }
-    };
 
     public String getTime_to_no_time_zone() {
         return time_to_no_time_zone;
@@ -429,4 +344,88 @@ public class Reservation implements Parcelable {
     public void setTime_from_no_time_zone(String time_from_no_time_zone) {
         this.time_from_no_time_zone = time_from_no_time_zone;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.user_id);
+        dest.writeInt(this.service_location_lane_id);
+        dest.writeString(this.time_start);
+        dest.writeString(this.rating);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.status);
+        dest.writeString(this.thank_message);
+        dest.writeString(this.thank_the_client);
+        dest.writeString(this.comments);
+        dest.writeString(this.name);
+        dest.writeString(this.time_end);
+        dest.writeString(this.paid);
+        dest.writeInt(this.car_id);
+        dest.writeByte(mobile ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.full_duration);
+        dest.writeInt(this.ordinal);
+        dest.writeString(this.admin_status);
+        dest.writeString(this.full_discount);
+        dest.writeString(this.notes);
+        dest.writeString(this.paid_at);
+        dest.writeString(this.price);
+        dest.writeString(this.discounted_price);
+        dest.writeString(this.rounded_price);
+        dest.writeString(this.result);
+        dest.writeInt(this.carwash_id);
+        dest.writeString(this.time_from);
+        dest.writeParcelable(this.carwash, 0);
+        dest.writeString(this.time_from_no_time_zone);
+        dest.writeString(this.time_to_no_time_zone);
+    }
+
+    protected Reservation(Parcel in) {
+        this.id = in.readInt();
+        this.user_id = in.readInt();
+        this.service_location_lane_id = in.readInt();
+        this.time_start = in.readString();
+        this.rating = in.readString();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.status = in.readString();
+        this.thank_message = in.readString();
+        this.thank_the_client = in.readString();
+        this.comments = in.readString();
+        this.name = in.readString();
+        this.time_end = in.readString();
+        this.paid = in.readString();
+        this.car_id = in.readInt();
+        this.mobile = in.readByte() != 0;
+        this.full_duration = in.readInt();
+        this.ordinal = in.readInt();
+        this.admin_status = in.readString();
+        this.full_discount = in.readString();
+        this.notes = in.readString();
+        this.paid_at = in.readString();
+        this.price = in.readString();
+        this.discounted_price = in.readString();
+        this.rounded_price = in.readString();
+        this.result = in.readString();
+        this.carwash_id = in.readInt();
+        this.time_from = in.readString();
+        this.carwash = in.readParcelable(WashService.class.getClassLoader());
+        this.time_from_no_time_zone = in.readString();
+        this.time_to_no_time_zone = in.readString();
+    }
+
+    public static final Creator<Reservation> CREATOR = new Creator<Reservation>() {
+        public Reservation createFromParcel(Parcel source) {
+            return new Reservation(source);
+        }
+
+        public Reservation[] newArray(int size) {
+            return new Reservation[size];
+        }
+    };
 }

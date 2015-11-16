@@ -1,11 +1,16 @@
 package wash.rocket.xor.rocketwash.model;
 
-import com.google.api.client.util.Key;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-/**
- * Created by aratj on 12.09.2015.
- */
+
+@JsonObject
 public class PostCarResult {
+    @JsonField
+    private String status;
+
+    @JsonField
+    private CarsAttributes data;
 
     public String getStatus() {
         return status;
@@ -22,12 +27,4 @@ public class PostCarResult {
     public void setData(CarsAttributes data) {
         this.data = data;
     }
-
-    @Key
-
-    private String status;
-
-    @Key
-    private CarsAttributes data;
-
 }

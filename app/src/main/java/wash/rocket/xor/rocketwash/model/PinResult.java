@@ -1,14 +1,16 @@
 package wash.rocket.xor.rocketwash.model;
 
 
-import com.google.api.client.util.Key;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 
-
+@JsonObject
 public class PinResult {
-    @Key
+
+    @JsonField
     private String status;
-    @Key
+    @JsonField
     private boolean data;
 
     public String getStatus() {

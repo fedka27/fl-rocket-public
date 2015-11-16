@@ -23,7 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ import java.util.ArrayList;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.adapters.DialogRecyclerViewAdapter;
 import wash.rocket.xor.rocketwash.model.DialogItem;
+import wash.rocket.xor.rocketwash.services.JacksonGoogleHttpClientSpiceServiceEx;
 import wash.rocket.xor.rocketwash.widgets.DividerItemDecoration;
 
 
@@ -44,7 +44,7 @@ public class Dialoglist extends DialogFragment implements OnItemClickListener {
     protected Toolbar toolbar;
     protected SearchView searchView;
 
-    private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
+    private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceServiceEx.class);
 
     public static Dialoglist newInstance() {
         Dialoglist d = new Dialoglist();

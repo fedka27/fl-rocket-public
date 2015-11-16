@@ -3,16 +3,19 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.IOUtils;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import roboguice.util.temp.Ln;
 import wash.rocket.xor.rocketwash.model.LoginResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class LoginRequest extends GoogleHttpClientSpiceRequest<LoginResult> {
 
@@ -22,7 +25,7 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest<LoginResult> {
 
     public LoginRequest(String phone, String pin) {
         super(LoginResult.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/session/sign_in";
+        this.baseUrl = Constants.URL + "session/sign_in";
         this.phone = phone;
         this.pin = pin;
     }
@@ -49,13 +52,28 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest<LoginResult> {
 
         HttpRequest request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null);
         //buildGetRequest(new GenericUrl(baseUrl));
-        request.setParser(new JacksonFactory().createJsonObjectParser());
-
-        HttpResponse f = request.execute();
-
+        //request.setParser(new JacksonFactory().createJsonObjectParser());
+        //HttpResponse f = request.execute();
         //Log.d("responce", "" + f.toString());
+        //return f.parseAs(getResultType());
 
-        return f.parseAs(getResultType());
+        InputStream content = request.execute().getContent();
+        String result = "";
+
+        if (content != null) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            IOUtils.copy(content, out);
+            result = out.toString("UTF-8");
+        }
+
+        Log.d("LoginResult", "result = " + result);
+
+        LoginResult res = LoganSquare.parse(result, LoginResult.class);
+
+        Log.w("LoginResult", " end parse json ");
+
+        return res;
+
     }
 
 }

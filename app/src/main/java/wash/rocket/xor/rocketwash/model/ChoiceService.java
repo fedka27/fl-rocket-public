@@ -14,27 +14,23 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonObject
 public class ChoiceService implements Parcelable {
-
-
-    @JsonProperty("id")
     @JsonField
     private int id;
 
     @JsonField
-    @JsonProperty("name")
     private String name;
 
     @JsonField
-    @JsonProperty("price")
     private int price;
 
     @JsonField
-    @JsonProperty("duration")
     private int duration;
+
+    @JsonField
+    private String description;
 
     private int type;
     private int check;
@@ -97,6 +93,14 @@ public class ChoiceService implements Parcelable {
         return 0;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
@@ -105,6 +109,7 @@ public class ChoiceService implements Parcelable {
         dest.writeInt(duration);
         dest.writeInt(type);
         dest.writeInt(check);
+        dest.writeString(description);
     }
 
     public ChoiceService() {
@@ -118,6 +123,7 @@ public class ChoiceService implements Parcelable {
         duration = in.readInt();
         type = in.readInt();
         check = in.readInt();
+        description = in.readString();
     }
 
     public static final Creator<ChoiceService> CREATOR = new Creator<ChoiceService>() {
@@ -138,6 +144,7 @@ public class ChoiceService implements Parcelable {
         s.duration = this.duration;
         s.type = this.type;
         s.check = this.check;
+        s.description = description;
         return s;
     }
 }

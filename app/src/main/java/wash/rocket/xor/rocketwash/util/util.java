@@ -5,9 +5,6 @@ import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -90,14 +87,12 @@ public class util {
         //2015-10-31T03:15:00+03:00
         //DateTime d = new DateTime(str).
 
-        String g = str.substring(str.length() - 6);
-        DateTime dt = new DateTime( str, DateTimeZone.forID(g) );
+        //String g = str.substring(str.length() - 6);
+        //DateTime dt = new DateTime( str, DateTimeZone.forID(g) );
+        //Log.e("getDateUTC", dt.toString());
+        //return dt.toDate();
 
-
-        Log.e("getDateUTC", dt.toString());
-
-        return dt.toDate();
-
+        return null;
     }
 
 

@@ -97,6 +97,14 @@ public class TimeRecyclerViewAdapter extends RecyclerView.Adapter<TimeRecyclerVi
     }
 
     public void setSelectionItemId(int position) {
+
+
+        if (position == -1)
+        {
+            for (int i =0; i < list.size();i++)
+                list.get(i).setSelected(0);
+        }
+
         mSelectedId = position;
         if (mOldSelectedId > -1) {
             notifyItemChanged(mOldSelectedId);

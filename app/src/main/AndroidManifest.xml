@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="wash.rocket.xor.rocketwash">
+    package="wash.rocket.xor.rocketwash" >
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -17,13 +16,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".ui.MainActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="stateUnchanged|adjustResize">
-
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,12 +38,10 @@
             android:name=".services.LocationService"
             android:enabled="true"
             android:exported="false" />
-
         <service
             android:name=".services.RobospiceService"
             android:enabled="true"
             android:exported="false" />
-
         <service
             android:name=".services.JacksonGoogleHttpClientSpiceServiceEx"
             android:exported="false" />
@@ -53,39 +49,43 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBn1X9fbJ3Gv1Z0HM7X7rNbYwwwyaVuPQE" />
-
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="479d1a65c1098c1b2a0c98e6b50e994b8f128261" />
-
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <!-- Optionally, register AnalyticsReceiver and AnalyticsService to support background
-             dispatching on non-Google Play devices -->
-        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-                  android:enabled="true">
+        <!--
+             Optionally, register AnalyticsReceiver and AnalyticsService to support background
+             dispatching on non-Google Play devices
+        -->
+        <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
             </intent-filter>
         </receiver>
-        <service android:name="com.google.android.gms.analytics.AnalyticsService"
-                 android:enabled="true"
-                 android:exported="false"/>
 
-        <!-- Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
-             installation campaign reporting -->
-        <receiver android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
-                  android:exported="true">
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!--
+             Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
+             installation campaign reporting
+        -->
+        <receiver
+            android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
-        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
 
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
     </application>
 
 </manifest>

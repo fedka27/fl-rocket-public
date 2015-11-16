@@ -15,6 +15,7 @@ import java.io.InputStream;
 
 import roboguice.util.temp.Ln;
 import wash.rocket.xor.rocketwash.model.ProfileResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class ProfileRequest extends GoogleHttpClientSpiceRequest<ProfileResult> {
 
@@ -23,7 +24,7 @@ public class ProfileRequest extends GoogleHttpClientSpiceRequest<ProfileResult> 
 
     public ProfileRequest(String session_id) {
         super(ProfileResult.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/profile";
+        this.baseUrl = Constants.URL + "profile";
         this.session_id = session_id;
     }
 

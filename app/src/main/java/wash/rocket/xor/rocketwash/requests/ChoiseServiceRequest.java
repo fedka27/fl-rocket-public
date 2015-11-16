@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.ChoiceServiceResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiceServiceResult> {
 
@@ -26,7 +27,7 @@ public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiceSer
 
     public ChoiseServiceRequest(int id_service, int car_model_id, String id_session) {
         super(ChoiceServiceResult.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/services";
+        this.baseUrl = Constants.URL + "services";
         this.id_service = id_service;
         this.car_model_id = car_model_id;
         this.id_session = id_session;

@@ -2,7 +2,6 @@ package wash.rocket.xor.rocketwash.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.google.api.client.util.Key;
 
 import java.util.List;
 
@@ -10,11 +9,9 @@ import java.util.List;
 public class ChoiceServiceResult {
 
     @JsonField
-    @Key
     private String status;
 
     @JsonField
-    @Key
     private List<ChoiceService> data;
 
     public String getStatus() {

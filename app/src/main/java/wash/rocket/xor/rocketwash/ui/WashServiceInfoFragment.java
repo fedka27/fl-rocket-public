@@ -435,7 +435,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                 if (TextUtils.isEmpty(first_time))
                     return;
 
-                Date d1 = util.getDate(first_time);
+                Date d1 = util.getDatenoUTC(first_time);
                 if (d1 == null)
                     d1 = new Date();
                 String s = "Время мойки: " + util.dateToHM(d1) + "\n";
@@ -857,7 +857,6 @@ public class WashServiceInfoFragment extends BaseFragment {
                 list_cars = result.getData();
                 //getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "cars_profile", DurationInMillis.ALWAYS_EXPIRED, new CarsProfileRequestListener());
 
-
                 res = res + 1000;
                 //if (Constants.SUCCESS.equals(result.getStatus())) {
 
@@ -961,6 +960,7 @@ public class WashServiceInfoFragment extends BaseFragment {
 
             }
         } else {
+
             switch (requestCode) {
                 case DIALOG_WASH1:
                     clearListSelectors();
@@ -979,6 +979,9 @@ public class WashServiceInfoFragment extends BaseFragment {
     private TimeRecyclerViewAdapter ad2;
 
     private void clearListSelectors() {
+
+        Log.d(TAG, "clearListSelectors");
+
         selected_time = "";
         Handler h = new Handler();
         h.post(new Runnable() {
@@ -987,6 +990,9 @@ public class WashServiceInfoFragment extends BaseFragment {
 
                 ad1.setSelectionItemId(-1);
                 ad2.setSelectionItemId(-1);
+
+                ad1.notifyDataSetChanged();
+                ad2.notifyDataSetChanged();
             }
         });
     }
@@ -1003,7 +1009,10 @@ public class WashServiceInfoFragment extends BaseFragment {
         if (time_periods != null) {
             Log.d("fillCalendar", "time_periods.size() = " + time_periods.size());
             if (time_periods.size() > 0) {
-                first_time = time_periods.get(0).getTime_from();
+
+                //XXX
+                //first_time = time_periods.get(0).getTime_from();
+                first_time = time_periods.get(0).getTime_from_no_time_zone();
 
                 TimePeriods d;
                 for (int i = 0; i < time_periods.size(); i++) {
@@ -1060,7 +1069,11 @@ public class WashServiceInfoFragment extends BaseFragment {
     TimeRecyclerViewAdapter.IOnSelectedItem onsel = new TimeRecyclerViewAdapter.IOnSelectedItem() {
         @Override
         public void onSelectedItem(TimePeriods item, int position) {
-            selected_time = item.getTime_from();
+            //XXX
+            //selected_time = item.getTime_from();
+            selected_time = item.getTime_from_no_time_zone();
+
+            Log.d(TAG, "selected_time = " + selected_time);
 
             String s = "Время мойки: " + util.dateToHM(item.getDate()) + "\n";
             s = s + "\n";
@@ -1297,6 +1310,8 @@ public class WashServiceInfoFragment extends BaseFragment {
 
     private void reservation(String time) {
 
+        Log.d(TAG, "reservation time = " + time);
+
         Profile prof = getApp().getProfile();
         if (prof != null && prof.isPhone_verified()) {
             if (list == null || list.size() <= 0) {
@@ -1456,11 +1471,15 @@ public class WashServiceInfoFragment extends BaseFragment {
                     String a = availableTimesResult.getData().get(i);
                     t = new TimePeriods();
                     t.setTime_from(a);
+                    t.setTime_from_no_time_zone(a);
                     times.add(t);
                 }
 
-                if (times.size() > 0)
-                    first_time = times.get(0).getTime_from();
+                if (times.size() > 0) {
+                    //XXX
+                    //first_time = times.get(0).getTime_from();
+                    first_time = times.get(0).getTime_from_no_time_zone();
+                }
 
                 fillCalendar(times);
             }

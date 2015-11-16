@@ -491,9 +491,7 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
         }
     }
 
-
     public final class MapDirectionRouteListener implements RequestListener<MapRouteResult> {
-
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {

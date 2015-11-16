@@ -3,8 +3,7 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -18,6 +17,7 @@ import java.io.InputStream;
 import wash.rocket.xor.rocketwash.model.CarsAttributes;
 import wash.rocket.xor.rocketwash.model.Profile;
 import wash.rocket.xor.rocketwash.model.ProfileResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class ProfileSaveRequest extends GoogleHttpClientSpiceRequest<ProfileResult> {
 
@@ -29,9 +29,9 @@ public class ProfileSaveRequest extends GoogleHttpClientSpiceRequest<ProfileResu
 
     public ProfileSaveRequest(String session_id, Profile profile) {
         super(ProfileResult.class);
-        this.profileUrl = "http://test.rocketwash.me/v2/profile";
-        this.carUrl = "http://test.rocketwash.me/v2/cars";
-        this.carUrlID = "http://test.rocketwash.me/v2/cars/id";
+        this.profileUrl = Constants.URL + "profile";
+        this.carUrl = Constants.URL + "cars";
+        this.carUrlID = Constants.URL + "cars/id";
         this.session_id = session_id;
         this.profile = profile;
     }
@@ -56,61 +56,68 @@ public class ProfileSaveRequest extends GoogleHttpClientSpiceRequest<ProfileResu
 
 
         if (profile.getCars_attributes() != null)
-        for (int i = 0; i < profile.getCars_attributes().size(); i++) {
-            CarsAttributes c = profile.getCars_attributes().get(i);
-            if (c.getId() == 0 && c.getType() == 0) {
-                uri = Uri.parse(carUrl)
-                        .buildUpon()
-                        .appendQueryParameter("car_make_id", "" + c.getCar_make_id())
-                        .appendQueryParameter("car_model_id", "" + c.getCar_model_id())
-                        .appendQueryParameter("year", "" + 0)
-                        .appendQueryParameter("tag", c.getTag())
-                        .build().toString();
+            for (int i = 0; i < profile.getCars_attributes().size(); i++) {
+                CarsAttributes c = profile.getCars_attributes().get(i);
+                if (c.getId() == 0 && c.getType() == 0) { // Add
 
-                request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null).setHeaders(header);
-                content = request.execute().getContent();
+                    if (c.getCar_make_id() > 0 && c.getCar_model_id() > 0) {
+                        uri = Uri.parse(carUrl)
+                                .buildUpon()
+                                .appendQueryParameter("car_make_id", "" + c.getCar_make_id())
+                                .appendQueryParameter("car_model_id", "" + c.getCar_model_id())
+                                .appendQueryParameter("year", "" + 0)
+                                .appendQueryParameter("tag", c.getTag())
+                                .build().toString();
+                        request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null).setHeaders(header);
+                        content = request.execute().getContent();
 
+                    /*
+                    if (content != null) {
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        IOUtils.copy(content, out);
+                        result = out.toString("UTF-8");
+                    }*/
+
+                    }
+
+                } else if (c.getId() > 0 && c.getType() == 0) { // update
+                    uri = Uri.parse(carUrlID)
+                            .buildUpon()
+                            .appendQueryParameter("id", "" + c.getId())
+                            .appendQueryParameter("car_make_id", "" + c.getCar_make_id())
+                            .appendQueryParameter("car_model_id", "" + c.getCar_model_id())
+                            .appendQueryParameter("year", "" + 0)
+                            .appendQueryParameter("tag", c.getTag())
+                            .build().toString();
+                    request = getHttpRequestFactory().buildPutRequest(new GenericUrl(uri), null).setHeaders(header);
+                    content = request.execute().getContent();
+
+                /*
                 if (content != null) {
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     IOUtils.copy(content, out);
                     result = out.toString("UTF-8");
-                }
-            } else if (c.getId() > 0 && c.getType() == 0) {
-                uri = Uri.parse(carUrlID)
-                        .buildUpon()
-                        .appendQueryParameter("id", "" + c.getId())
-                        .appendQueryParameter("car_make_id", "" + c.getCar_make_id())
-                        .appendQueryParameter("car_model_id", "" + c.getCar_model_id())
-                        .appendQueryParameter("year", "" + 0)
-                        .appendQueryParameter("tag", c.getTag())
-                        .build().toString();
-                request = getHttpRequestFactory().buildPutRequest(new GenericUrl(uri), null).setHeaders(header);
-                content = request.execute().getContent();
+                }*/
 
+                } else if (c.getId() > 0 && c.getType() == 2) { // deleted
+                    uri = Uri.parse(carUrlID)
+                            .buildUpon()
+                            .appendQueryParameter("id", "" + c.getId())
+                                    //.appendQueryParameter("car_make_id", "" + c.getCar_make_id())
+                                    //.appendQueryParameter("car_model_id", "" + c.getCar_model_id())
+                                    //.appendQueryParameter("year", "" + 0)
+                            .build().toString();
+                    request = getHttpRequestFactory().buildDeleteRequest(new GenericUrl(uri)).setHeaders(header);
+                    content = request.execute().getContent();
+
+                /*
                 if (content != null) {
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     IOUtils.copy(content, out);
                     result = out.toString("UTF-8");
-                }
-
-            } else if (c.getId() > 0 && c.getType() == 2) {
-                uri = Uri.parse(carUrlID)
-                        .buildUpon()
-                        .appendQueryParameter("id", "" + c.getId())
-                                //.appendQueryParameter("car_make_id", "" + c.getCar_make_id())
-                                //.appendQueryParameter("car_model_id", "" + c.getCar_model_id())
-                                //.appendQueryParameter("year", "" + 0)
-                        .build().toString();
-                request = getHttpRequestFactory().buildDeleteRequest(new GenericUrl(uri)).setHeaders(header);
-                content = request.execute().getContent();
-
-                if (content != null) {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    IOUtils.copy(content, out);
-                    result = out.toString("UTF-8");
+                }*/
                 }
             }
-        }
 
         uri = Uri.parse(profileUrl)
                 .buildUpon()
@@ -125,29 +132,17 @@ public class ProfileSaveRequest extends GoogleHttpClientSpiceRequest<ProfileResu
             IOUtils.copy(content, out);
             result = out.toString("UTF-8");
         }
-        Log.d("loadDataFromNetwork", " res = " + result);
+        Log.d("ProfileResult", "res = " + result);
+
         //JsonNode json = new ObjectMapper().readTree(result);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //ProfileResult res = mapper.readValue(result, getResultType());
 
-        ProfileResult res = mapper.readValue(result, getResultType());
-
+        ProfileResult res = LoganSquare.parse(result, ProfileResult.class);
+        Log.w("ProfileResult", "end parse json ");
         res.getData().setString(result);
-
-        /*
-        try {
-            JSONObject po = new JSONObject(result);
-            JSONObject data = po.optJSONObject("data");
-
-            Log.d("prof", data.toString());
-
-            if (data != null)
-                res.getData().setString(data.toString());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
 
         return res;
     }

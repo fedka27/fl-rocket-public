@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.AvailableTimesResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class AvailableTimesRequest extends GoogleHttpClientSpiceRequest<AvailableTimesResult> {
 
@@ -28,9 +29,7 @@ public class AvailableTimesRequest extends GoogleHttpClientSpiceRequest<Availabl
 
     public AvailableTimesRequest(String session_id, int id, String time_range_start, String time_range_end, int services_duration) {
         super(AvailableTimesResult.class);
-        //GET /v2/service_locations/{id}/available_times_no_time_zone
-        //this.baseUrl = "http://test.rocketwash.me/v2/service_locations/%d/available_times";
-        this.baseUrl = "http://test.rocketwash.me/v2/service_locations/%d/available_times_no_time_zone";
+        this.baseUrl = Constants.URL + "service_locations/%d/available_times";
         this.session_id = session_id;
         this.id = id;
         this.time_range_start = time_range_start;

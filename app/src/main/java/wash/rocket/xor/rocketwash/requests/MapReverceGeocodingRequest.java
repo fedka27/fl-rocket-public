@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import wash.rocket.xor.rocketwash.model.ReverseGeocoding;
+import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.util;
 
 public class MapReverceGeocodingRequest extends GoogleHttpClientSpiceRequest<ReverseGeocoding> {
@@ -37,7 +38,7 @@ public class MapReverceGeocodingRequest extends GoogleHttpClientSpiceRequest<Rev
 
     public MapReverceGeocodingRequest(double lat, double lon) {
         super(ReverseGeocoding.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/service_locations/nearest";
+        this.baseUrl = Constants.URL + "service_locations/nearest";
         this.lat = lat;
         this.lon = lon;
     }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.ReservedResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class ReservedRequest extends GoogleHttpClientSpiceRequest<ReservedResult> {
 
@@ -23,7 +24,7 @@ public class ReservedRequest extends GoogleHttpClientSpiceRequest<ReservedResult
 
     public ReservedRequest(String session_id) {
         super(ReservedResult.class);
-        this.url = "http://test.rocketwash.me/v2/reservations";
+        this.url = Constants.URL + "reservations";
         this.session_id = session_id;
     }
 

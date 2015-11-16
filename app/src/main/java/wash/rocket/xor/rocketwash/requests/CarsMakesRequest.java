@@ -14,6 +14,7 @@ import java.io.InputStream;
 
 import roboguice.util.temp.Ln;
 import wash.rocket.xor.rocketwash.model.CarsMakesResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class CarsMakesRequest extends GoogleHttpClientSpiceRequest<CarsMakesResult> {
 
@@ -21,7 +22,7 @@ public class CarsMakesRequest extends GoogleHttpClientSpiceRequest<CarsMakesResu
 
     public CarsMakesRequest(String param) {
         super(CarsMakesResult.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/car_makes";
+        this.baseUrl = Constants.URL + "car_makes";
     }
 
     @Override

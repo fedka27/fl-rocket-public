@@ -3,8 +3,7 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.util.IOUtils;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.EmptyUserResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class CreateEmptyUserRequest extends GoogleHttpClientSpiceRequest<EmptyUserResult> {
 
@@ -22,7 +22,7 @@ public class CreateEmptyUserRequest extends GoogleHttpClientSpiceRequest<EmptyUs
 
     public CreateEmptyUserRequest() {
         super(EmptyUserResult.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/user_actions/create_empty_user";
+        this.baseUrl = Constants.URL + "user_actions/create_empty_user";
     }
 
     @Override
@@ -46,9 +46,14 @@ public class CreateEmptyUserRequest extends GoogleHttpClientSpiceRequest<EmptyUs
         Log.d("CreateEmptyUserRequest", " res = " + result);
 
         //JsonNode json = new ObjectMapper().readTree(result);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper.readValue(result, getResultType());
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //return mapper.readValue(result, getResultType());
+
+
+        EmptyUserResult res = LoganSquare.parse(result, EmptyUserResult.class);
+
+        return res;
 
     }
 }

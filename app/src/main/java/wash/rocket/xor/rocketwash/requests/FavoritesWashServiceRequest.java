@@ -3,8 +3,7 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.WashServiceResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class FavoritesWashServiceRequest extends GoogleHttpClientSpiceRequest<WashServiceResult> {
 
@@ -26,7 +26,7 @@ public class FavoritesWashServiceRequest extends GoogleHttpClientSpiceRequest<Wa
 
     public FavoritesWashServiceRequest(String id_session, int pshr) {
         super(WashServiceResult.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/favourites";
+        this.baseUrl = Constants.URL + "favourites";
         this.page = page;
         this.id_session = id_session;
     }
@@ -56,9 +56,16 @@ public class FavoritesWashServiceRequest extends GoogleHttpClientSpiceRequest<Wa
 
         Log.d("loadDataFromNetwork", " res = " + result);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper.readValue(result, getResultType());
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //return mapper.readValue(result, getResultType());
+
+        WashServiceResult res = LoganSquare.parse(result, WashServiceResult.class);
+        Log.w("WashServiceResult", " end parse json ");
+
+        return res;
+
+
     }
 
 

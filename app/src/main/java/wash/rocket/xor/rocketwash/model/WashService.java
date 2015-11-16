@@ -5,117 +5,83 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import wash.rocket.xor.rocketwash.model.deserilazers.DoubleDeserializer;
-
 @JsonObject
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WashService implements Parcelable {
-    @JsonProperty("id")
     @JsonField
     private int id;
 
-    @JsonProperty("organization_id")
     @JsonField
     private int organization_id;
 
-    @JsonProperty("address")
     @JsonField
     private String address;
 
-    @JsonProperty("phone")
     @JsonField
     private String phone;
 
-    @JsonProperty("email")
     @JsonField
     private String email;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("active")
     @JsonField
     private boolean active;
 
-    @JsonProperty("created_at")
     @JsonField
     private String created_at;
 
-    @JsonProperty("updated_at")
     @JsonField
     private String updated_at;
 
-    @JsonDeserialize(using = DoubleDeserializer.class)
-    @JsonProperty("latitude")
     @JsonField
     private double latitude;
 
-    @JsonDeserialize(using = DoubleDeserializer.class)
-    @JsonProperty("longitude")
     @JsonField
     private double longitude;
 
-    @JsonProperty("name")
     @JsonField
     private String name;
 
-    @JsonProperty("time_zone")
     @JsonField
     private String time_zone;
 
-    @JsonProperty("plan_id")
     @JsonField
     private int plan_id;
 
-    @JsonProperty("agreement_number")
     @JsonField
     private String agreement_number;
 
-    @JsonProperty("deleted_at")
     @JsonField
     private String deleted_at;
 
-    @JsonProperty("top_order")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonField
     private boolean top_order;
 
-    @JsonProperty("mobile_stub_text")
     @JsonField
     private String mobile_stub_text;
 
-    @JsonProperty("sms_price")
     @JsonField
     private String sms_price;
 
-    @JsonProperty("online_reservation_price")
     @JsonField
     private String online_reservation_price;
 
-    @JsonProperty("distance")
     @JsonField
     private float distance;
 
-    @JsonProperty("bearing")
     @JsonField
     private int bearing;
 
-    @JsonProperty("service_name")
     @JsonField
     private String service_name;
 
-    @JsonProperty("time_periods")
     @JsonField
     private List<TimePeriods> time_periods;
 
-    @JsonProperty("favorite_id")
     @JsonField
     private int favorite_id;
 
@@ -355,83 +321,11 @@ public class WashService implements Parcelable {
         return a;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-        dest.writeInt(id );
-        dest.writeInt(organization_id);
-        dest.writeString(address);
-        dest.writeString(phone);
-        dest.writeString(email);
-        dest.writeInt(active ? 1 : 0);
-        dest.writeString(created_at);
-        dest.writeString(updated_at);
-        dest.writeDouble(latitude);
-        dest.writeDouble(longitude);
-        dest.writeString(name);
-        dest.writeString(time_zone);
-        dest.writeInt(plan_id);
-        dest.writeString(agreement_number);
-        dest.writeString(deleted_at);
-        dest.writeInt(top_order ? 1 : 0);
-        dest.writeString(mobile_stub_text);
-        dest.writeString(sms_price);
-        dest.writeString(online_reservation_price);
-        dest.writeFloat(distance);
-        dest.writeInt(bearing);
-        dest.writeString(service_name);
-        dest.writeList(time_periods);
-        dest.writeInt(type);
-    }
-
 
     public WashService()
     {
 
     }
-
-    public WashService(Parcel in) {
-        id = in.readInt();
-        organization_id = in.readInt();
-        address = in.readString();
-        phone = in.readString();
-        email = in.readString();
-        active = in.readInt() == 1;
-        created_at = in.readString();
-        updated_at = in.readString();
-        latitude = in.readDouble();
-        longitude = in.readDouble();
-        name = in.readString();
-        time_zone = in.readString();
-        plan_id = in.readInt();
-        agreement_number = in.readString();
-        deleted_at = in.readString();
-        top_order = in.readInt() == 1;
-        mobile_stub_text = in.readString();
-        sms_price = in.readString();
-        online_reservation_price = in.readString();
-        distance = in.readFloat();
-        bearing = in.readInt();
-        service_name = in.readString();
-        time_periods = new ArrayList<>();
-        in.readList(time_periods, TimePeriods.class.getClassLoader());
-        type = in.readInt();
-    }
-
-    public static final Creator<WashService> CREATOR = new Creator<WashService>() {
-        public WashService createFromParcel(Parcel in) {
-            return new WashService(in);
-        }
-
-        public WashService[] newArray(int size) {
-            return new WashService[size];
-        }
-    };
 
     public void var_dump()
     {
@@ -465,4 +359,79 @@ public class WashService implements Parcelable {
     public void setFavorite_id(int favorite_id) {
         this.favorite_id = favorite_id;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.organization_id);
+        dest.writeString(this.address);
+        dest.writeString(this.phone);
+        dest.writeString(this.email);
+        dest.writeByte(active ? (byte) 1 : (byte) 0);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
+        dest.writeString(this.name);
+        dest.writeString(this.time_zone);
+        dest.writeInt(this.plan_id);
+        dest.writeString(this.agreement_number);
+        dest.writeString(this.deleted_at);
+        dest.writeByte(top_order ? (byte) 1 : (byte) 0);
+        dest.writeString(this.mobile_stub_text);
+        dest.writeString(this.sms_price);
+        dest.writeString(this.online_reservation_price);
+        dest.writeFloat(this.distance);
+        dest.writeInt(this.bearing);
+        dest.writeString(this.service_name);
+        dest.writeTypedList(time_periods);
+        dest.writeInt(this.favorite_id);
+        dest.writeInt(this.type);
+        dest.writeLong(rDate != null ? rDate.getTime() : -1);
+    }
+
+    protected WashService(Parcel in) {
+        this.id = in.readInt();
+        this.organization_id = in.readInt();
+        this.address = in.readString();
+        this.phone = in.readString();
+        this.email = in.readString();
+        this.active = in.readByte() != 0;
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
+        this.name = in.readString();
+        this.time_zone = in.readString();
+        this.plan_id = in.readInt();
+        this.agreement_number = in.readString();
+        this.deleted_at = in.readString();
+        this.top_order = in.readByte() != 0;
+        this.mobile_stub_text = in.readString();
+        this.sms_price = in.readString();
+        this.online_reservation_price = in.readString();
+        this.distance = in.readFloat();
+        this.bearing = in.readInt();
+        this.service_name = in.readString();
+        this.time_periods = in.createTypedArrayList(TimePeriods.CREATOR);
+        this.favorite_id = in.readInt();
+        this.type = in.readInt();
+        long tmpRDate = in.readLong();
+        this.rDate = tmpRDate == -1 ? null : new Date(tmpRDate);
+    }
+
+    public static final Creator<WashService> CREATOR = new Creator<WashService>() {
+        public WashService createFromParcel(Parcel source) {
+            return new WashService(source);
+        }
+
+        public WashService[] newArray(int size) {
+            return new WashService[size];
+        }
+    };
 }

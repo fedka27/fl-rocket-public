@@ -163,18 +163,26 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         if (savedInstanceState != null) {
             Log.d(TAG, "savedInstanceState != null");
             mPoints = savedInstanceState.getParcelableArrayList(POINTS);
+
+            mIdService = savedInstanceState.getInt("mIdService");
+            mLatitude = savedInstanceState.getDouble("mLatitude");
+            mLongitude = savedInstanceState.getDouble("mLongitude");
+            mTitle = savedInstanceState.getString("mTitle");
+            mService = savedInstanceState.getParcelable("mService");
+            mReserved = savedInstanceState.getParcelable("mReserved");
+
         } else {
             Log.d(TAG, "savedInstanceState == null");
             mPoints = new ArrayList<Point>();
-        }
 
+            mIdService = getArguments().getInt(ID_SERVICE);
+            mLatitude = getArguments().getDouble(LATITUDE);
+            mLongitude = getArguments().getDouble(LONGITUDE);
+            mTitle = getArguments().getString(TITLE);
+            mService = getArguments().getParcelable(SERVICE);
+            mReserved = getArguments().getParcelable(RESERVED);
+        }
         mMarkers = new ArrayList<Marker>();
-        mIdService = getArguments().getInt(ID_SERVICE);
-        mLatitude = getArguments().getDouble(LATITUDE);
-        mLongitude = getArguments().getDouble(LONGITUDE);
-        mTitle = getArguments().getString(TITLE);
-        mService = getArguments().getParcelable(SERVICE);
-        mReserved = getArguments().getParcelable(RESERVED);
     }
 
     @Override
@@ -425,6 +433,13 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(POINTS, mPoints);
+        outState.putInt("mIdService", mIdService);
+        outState.putDouble("mLatitude", mLatitude);
+        outState.putDouble("mLongitude", mLongitude);
+        outState.putString("mTitle", mTitle);
+        outState.putParcelable("mService", mService);
+        outState.putParcelable("mReserved", mReserved);
+
         super.onSaveInstanceState(outState);
     }
 

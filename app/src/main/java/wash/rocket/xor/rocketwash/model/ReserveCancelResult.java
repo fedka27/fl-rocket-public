@@ -1,13 +1,15 @@
 package wash.rocket.xor.rocketwash.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+@JsonObject
 public class ReserveCancelResult {
 
-    @JsonProperty("status")
+    @JsonField
     private String status;
 
-    @JsonProperty("data")
+    @JsonField
     private boolean data;
 
     public String getStatus() {

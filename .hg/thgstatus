@@ -1,0 +1,17 @@
+m
+mapp
+mapp/src/debug
+mapp/src/main
+rapp/src/main/java/wash/rocket/xor/rocketwash/adapters
+rapp/src/main/java/wash/rocket/xor/rocketwash/model
+rapp/src/main/java/wash/rocket/xor/rocketwash/model/deserilazers
+mapp/src/main/java/wash/rocket/xor/rocketwash/provider
+mapp/src/main/java/wash/rocket/xor/rocketwash/requests
+mapp/src/main/java/wash/rocket/xor/rocketwash/services
+rapp/src/main/java/wash/rocket/xor/rocketwash/ui
+mapp/src/main/java/wash/rocket/xor/rocketwash/util
+mapp/src/main/java/wash/rocket/xor/rocketwash/widgets
+mapp/src/main/res/drawable-hdpi
+rapp/src/main/res/layout
+mapp/src/main/res/values
+mgradle/wrapper

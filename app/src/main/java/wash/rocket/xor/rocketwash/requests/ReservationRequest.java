@@ -3,8 +3,7 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 
 import wash.rocket.xor.rocketwash.model.ChoiceService;
 import wash.rocket.xor.rocketwash.model.ReservationResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class ReservationRequest extends GoogleHttpClientSpiceRequest<ReservationResult> {
 
@@ -32,7 +32,7 @@ public class ReservationRequest extends GoogleHttpClientSpiceRequest<Reservation
 
     public ReservationRequest(String session_id, int carwash_id, int car_id, ArrayList<ChoiceService> list, String time_from  ) {
         super(ReservationResult.class);
-        this.url = "http://test.rocketwash.me/v2/reservations";
+        this.url = Constants.URL + "reservations";
 
         this.session_id = session_id;
         this.carwash_id = carwash_id;
@@ -83,11 +83,11 @@ public class ReservationRequest extends GoogleHttpClientSpiceRequest<Reservation
 
         Log.d("ReservationRequest", " res = " + result);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-
-        ReservationResult res = mapper.readValue(result, getResultType());
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //ReservationResult res = mapper.readValue(result, getResultType());
+        ReservationResult res = LoganSquare.parse(result, ReservationResult.class);
 
         return res;
     }

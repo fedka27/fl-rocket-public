@@ -6,7 +6,6 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -16,150 +15,105 @@ import java.util.List;
 @JsonObject
 public class Profile implements Parcelable {
     @JsonField
-    @JsonProperty("id")
     private int id;
 
     @JsonField
-    @JsonProperty("name")
     private String name;
 
     @JsonField
-    @JsonProperty("phone")
     private String phone;
 
-    @JsonProperty("cars_attributes")
     @JsonField(name = "cars_attributes")
     private List<CarsAttributes> cars_attributes;
 
     @JsonField
-    @JsonProperty("email")
     private String email;
 
     @JsonField
-    @JsonProperty("created_at")
     private String created_at;
 
     @JsonField
-    @JsonProperty("updated_at")
     private String updated_at;
 
     @JsonField
-    @JsonProperty("good_user")
     private String good_user;
 
     @JsonField
-    @JsonProperty("session_id")
     private String session_id;
 
     @JsonField
-    @JsonProperty("service_location_id")
-    //@JsonInclude(JsonInclude.Include.NON_EMPTY)
     private int service_location_id;
 
     @JsonField
-    @JsonProperty("car_type_id")
-    //@JsonInclude(JsonInclude.Include.NON_NULL)
     private int car_type_id;
 
     @JsonField
-    @JsonProperty("sex")
-    //  @JsonInclude(JsonInclude.Include.NON_NULL)
     private String sex;
 
     @JsonField
-    @JsonProperty("date_of_birth")
     private String date_of_birth;
 
     @JsonField
-    //  @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("category")
     private String category;
 
     @JsonField
-    @JsonProperty("service_location_lane_id")
-    //  @JsonInclude(JsonInclude.Include.NON_NULL)
     private int service_location_lane_id;
 
     @JsonField
-    @JsonProperty("deleted_at")
     private String deleted_at;
 
     @JsonField
-    @JsonProperty("discount")
-    //  @JsonInclude(JsonInclude.Include.NON_NULL)
     private int discount;
 
     @JsonField
-    @JsonProperty("address")
     private String address;
 
     @JsonField
-    @JsonProperty("tin")
     private String tin;
 
     @JsonField
-    @JsonProperty("kpp")
     private String kpp;
 
     @JsonField
-    @JsonProperty("account_number")
     private String account_number;
 
     @JsonField
-    @JsonProperty("bic")
     private String bic;
 
     @JsonField
-    @JsonProperty("discount_card_number")
     private String discount_card_number;
 
     @JsonField
-    @JsonProperty("original_user_id")
-    //  @JsonInclude(JsonInclude.Include.NON_NULL)
     private int original_user_id;
 
     @JsonField
-    @JsonProperty("superuser")
-    //  @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean superuser;
 
     @JsonField
-    @JsonProperty("full_name")
     private String full_name;
 
     @JsonField
-    @JsonProperty("disable_sms")
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean disable_sms;
 
     @JsonField
-    @JsonProperty("organization_id")
-    //   @JsonInclude(JsonInclude.Include.NON_NULL)
     private int organization_id;
 
     @JsonField
-    @JsonProperty("user_category_id")
-    //   @JsonInclude(JsonInclude.Include.NON_NULL)
     private int user_category_id;
 
     @JsonField
-    @JsonProperty("user_category_updated_at")
     private String user_category_updated_at;
 
     @JsonField
-    @JsonProperty("job_id")
     private int job_id;
 
     @JsonField
-    @JsonProperty("employee_status")
     private String employee_status;
 
     @JsonField
-    @JsonProperty("latest_pin_sms_sent_at")
     private String latest_pin_sms_sent_at;
 
     @JsonField
-    @JsonProperty("phone_verified")
     private boolean phone_verified;
 
     private String string;

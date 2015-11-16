@@ -87,7 +87,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
             this.inflater = inflater;
             this.txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
             this.txtSum = (TextView) itemView.findViewById(R.id.txtSum);
-            txtSum.setTypeface(mFont);
+            //txtSum.setTypeface(mFont);
             this.txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
             this.check = (CheckBox) itemView.findViewById(R.id.check);
             this.linearLayout = (RelativeLayout) itemView.findViewById(R.id.linearLayout);
@@ -96,7 +96,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
             overrideFonts(inflater.getContext(), itemView);
 
 
-            this.txtDescription.setVisibility(View.GONE);
+            //this.txtDescription.setVisibility(View.GONE);
 
             switch (type) {
                 case TYPE_ITEM:
@@ -144,7 +144,7 @@ public class ChoiceServicesRecyclerViewAdapter extends RecyclerView.Adapter<Choi
                     txtTitle.setText(p.getName());
                     this.txtTitle.setText(p.getName());
                     this.txtSum.setText(String.format("%d %s", p.getPrice(), inflater.getContext().getString(R.string.rubleSymbolJava)));
-                    // this.txtDescription.setText(p.get);
+                    this.txtDescription.setText(p.getDescription());
                     this.check.setChecked(p.isCheck());
                     linearLayout.setTag(position);
                     check.setTag(position);

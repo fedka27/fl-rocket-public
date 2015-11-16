@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.WashServiceResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.util;
 
 @SuppressLint("LongLogTag")
@@ -30,7 +31,7 @@ public class NearestWashServiceRequest extends GoogleHttpClientSpiceRequest<Wash
 
     public NearestWashServiceRequest(double lat, double lon, int distance, int page, String id_session) {
         super(WashServiceResult.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/service_locations/nearest";
+        this.baseUrl = Constants.URL + "service_locations/nearest";
         this.lat = lat;
         this.lon = lon;
         this.distance = distance;

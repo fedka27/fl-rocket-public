@@ -142,10 +142,12 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         if (getView() == null)
             return;
 
-        if (savedInstanceState == null)
-            list = new ArrayList<>();
-        else
-            list = savedInstanceState.getParcelableArrayList(LIST);
+        list = new ArrayList<>();
+
+        //if (savedInstanceState == null)
+        //    list = new ArrayList<>();
+        //else
+        //    list = savedInstanceState.getParcelableArrayList(LIST);
 
         adapter = new WashServicesAdapter(list);
         swipeListView = (SwipeListView) getView().findViewById(R.id.recyclerView);
@@ -327,6 +329,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     layoutWarn.setVisibility(View.GONE);
 
                 } else {
+                    nearest_Loaded = false;
+                    reserved_Loaded = false;
                     showShowGPSWarn();
                     mSwipeRefreshLayout.post(new Runnable() {
                         @Override
@@ -637,6 +641,9 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         //Log.d(TAG, "onLocationChanged");
 
         if (location != null) {
+
+            Log.d(TAG, "on location change update");
+
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
             // mLatitude = 56.138654;
@@ -645,6 +652,10 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             if (list.size() <= 0 && !mSwipeRefreshLayout.isRefreshing() && last_time == 0) {
                 String session = pref.getSessionID();
                 mPage = 1;
+
+                nearest_Loaded = false;
+                reserved_Loaded = false;
+
                 getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
                 getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), "wash", 3000, new NearestWashServiceRequestListener());
                 list.clear();
@@ -751,18 +762,28 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     private boolean nearest_Loaded = false;
     private boolean reserved_Loaded = false;
 
+    private synchronized void setNearestLoaded(boolean value)
+    {
+        nearest_Loaded = value;
+    }
+
+    private synchronized void setReservedLoaded(boolean value)
+    {
+        reserved_Loaded = value;
+    }
+
     public final class NearestWashServiceRequestListener implements RequestListener<WashServiceResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             showError();
             stopRefrash();
-            nearest_Loaded = true;
+            setNearestLoaded(true);
         }
 
         @Override
         public void onRequestSuccess(final WashServiceResult result) {
             layoutWarn.setVisibility(View.GONE);
-            Log.d(TAG, "NearestWashServiceRequestListener onRequestSuccess (nearest_Loaded = "+reserved_Loaded+")");
+            Log.d(TAG, "NearestWashServiceRequestListener onRequestSuccess (reserved_Loaded = "+reserved_Loaded+")");
 
             if (mPage <= 1 && !reserved_Loaded) {
                 list.clear();
@@ -797,7 +818,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     stopRefrash();
                 }
 
-                nearest_Loaded = true;
+                setNearestLoaded(true);
+
                 Log.d("NearestWashServiceRequestListener", "fill data");
 
             } else {
@@ -813,7 +835,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         public void onRequestFailure(SpiceException spiceException) {
             adapter.notifyDataSetChanged();
             stopRefrash();
-            reserved_Loaded = true;
+            //reserved_Loaded = true;
+            setReservedLoaded(true);
         }
 
         @Override
@@ -856,7 +879,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             if (nearest_Loaded && list.size() <= 0)
                 showNoDataWarn();
 
-            reserved_Loaded = true;
+            //reserved_Loaded = true;
+            setReservedLoaded(true);
 
             Log.d("ReservedRequestListener", "fill data");
         }

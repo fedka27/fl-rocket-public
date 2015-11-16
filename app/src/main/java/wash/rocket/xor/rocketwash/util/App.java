@@ -4,8 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
 import java.util.ArrayList;
 
 import wash.rocket.xor.rocketwash.model.CarsAttributes;
@@ -38,7 +36,7 @@ public class App extends Application {
         MultiDex.install(this);
         super.onCreate();
 
-        JodaTimeAndroid.init(this);
+        //JodaTimeAndroid.init(this);
     }
 
     @Override

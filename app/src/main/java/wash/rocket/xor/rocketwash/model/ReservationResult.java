@@ -1,13 +1,15 @@
 package wash.rocket.xor.rocketwash.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+@JsonObject
 public class ReservationResult {
 
-    @JsonProperty("status")
+    @JsonField
     private String status;
 
-    @JsonProperty("data")
+    @JsonField
     private Reservation data;
 
     public String getStatus() {

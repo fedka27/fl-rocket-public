@@ -3,12 +3,10 @@ package wash.rocket.xor.rocketwash.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.IOUtils;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 
@@ -17,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import wash.rocket.xor.rocketwash.model.ProfileResult;
+import wash.rocket.xor.rocketwash.util.Constants;
 
 public class VerifyPhoneRequest extends GoogleHttpClientSpiceRequest<ProfileResult> {
 
@@ -26,7 +25,7 @@ public class VerifyPhoneRequest extends GoogleHttpClientSpiceRequest<ProfileResu
 
     public VerifyPhoneRequest(String pin, String session_id) {
         super(ProfileResult.class);
-        this.baseUrl = "http://test.rocketwash.me/v2/user_actions/verify_phone";
+        this.baseUrl = Constants.URL + "user_actions/verify_phone";
         this.pin = pin;
         this.session_id = session_id;
     }
@@ -47,7 +46,7 @@ public class VerifyPhoneRequest extends GoogleHttpClientSpiceRequest<ProfileResu
         //return request.execute().parseAs(getResultType());
 
         HttpRequest request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null).setHeaders(header);
-        request.setParser(new JacksonFactory().createJsonObjectParser());
+        //request.setParser(new JacksonFactory().createJsonObjectParser());
         // return request.execute().parseAs(getResultType());
 
         InputStream content = request.execute().getContent();
@@ -61,13 +60,14 @@ public class VerifyPhoneRequest extends GoogleHttpClientSpiceRequest<ProfileResu
 
         Log.d("VerifyPhoneRequest", "result = " + result);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
 
-        ProfileResult res = mapper.readValue(result, getResultType());
-        res.getData().setString(result);
+        //ProfileResult res = mapper.readValue(result, getResultType());
+        //res.getData().setString(result);
 
+        ProfileResult res = LoganSquare.parse(result, ProfileResult.class);
         return res;
     }
 

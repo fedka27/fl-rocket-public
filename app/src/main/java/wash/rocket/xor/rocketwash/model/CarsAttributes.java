@@ -6,61 +6,41 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonObject
 public class CarsAttributes implements Parcelable {
 
     @JsonField
-    @JsonProperty("id")
     private int id;
 
     @JsonField
-    @JsonProperty("tag")
     private String tag;
 
     @JsonField
-    @JsonProperty("car_make_id")
-    //  @JsonInclude(JsonInclude.Include.NON_NULL)
     private int car_make_id;
 
     @JsonField
-    @JsonProperty("car_model_id")
-    //  @JsonInclude(JsonInclude.Include.NON_NULL)
     private int car_model_id;
 
     @JsonField
-    @JsonProperty("created_at")
     private String created_at;
 
     @JsonField
-    @JsonProperty("updated_at")
     private String updated_at;
 
-    //@JsonInclude(JsonInclude.Include.NON_NULL)
-    //@JsonDeserialize(using = ExIntegerDeserializer.class)
-
-    //@JsonProperty("contractor_id")
     @JsonField
     private int contractor_id;
 
     @JsonField
-    @JsonProperty("year")
-    //   @JsonInclude(JsonInclude.Include.NON_NULL)
     private int year;
 
     @JsonField
-    @JsonProperty("service_location_id")
-    // @JsonInclude(JsonInclude.Include.NON_NULL)
     private int service_location_id;
 
     @JsonField
-    @JsonProperty("deleted_at")
     private String deleted_at;
 
     @JsonField
-    @JsonProperty("organization_id")
-    //   @JsonInclude(JsonInclude.Include.NON_NULL)
     private int organization_id;
 
     private String brandName;
