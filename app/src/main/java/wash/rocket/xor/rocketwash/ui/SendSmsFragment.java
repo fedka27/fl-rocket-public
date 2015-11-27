@@ -1,5 +1,6 @@
 package wash.rocket.xor.rocketwash.ui;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -43,9 +44,7 @@ import wash.rocket.xor.rocketwash.requests.SetPhoneRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.util;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+@SuppressLint("LongLogTag")
 public class SendSmsFragment extends BaseFragment {
 
     public static final String TAG = "SendSmsFragment";
@@ -97,7 +96,7 @@ public class SendSmsFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
+        setEventKeyboard(false);
         if (getArguments() != null) {
             mCarBrandId = getArguments().getInt("mCarBrandId");
             mCarMoldelId = getArguments().getInt("mCarMoldelId");
@@ -355,11 +354,12 @@ public class SendSmsFragment extends BaseFragment {
     private class SaveProfileRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-
+            Log.d("SaveProfileRequestListener", "onRequestFailure");
         }
 
         @Override
         public void onRequestSuccess(ProfileResult profileResult) {
+            Log.d("SaveProfileRequestListener", "onRequestSuccess");
             getSpiceManager().execute(new SetPhoneRequest(pref.getLastUsedPhoneCode() + pref.getLastUsedPhone(), pref.getSessionID()), "phone_set", DurationInMillis.ALWAYS_EXPIRED, new PhoneSetListener());
         }
     }
@@ -368,11 +368,12 @@ public class SendSmsFragment extends BaseFragment {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
 
+            Log.d("CreateCarListener", "onRequestFailure");
         }
 
         @Override
         public void onRequestSuccess(PostCarResult postCarResult) {
-
+            Log.d("CreateCarListener", "onRequestFailure");
         }
     }
 

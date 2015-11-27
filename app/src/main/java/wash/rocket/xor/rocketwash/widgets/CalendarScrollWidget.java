@@ -198,7 +198,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.e(TAG, "onMeasure");
+        //Log.e(TAG, "onMeasure");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         if (!changed)
@@ -267,7 +267,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
         // Always take care of the touch gesture being complete.
         if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
             // Release the drag.
-            Log.d(TAG, "Intercept done!");
+           // Log.d(TAG, "Intercept done!");
             mIsBeingDragged = false;
             mIsBeingDraggedVertical = false;
 
@@ -283,11 +283,11 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
         // are dragging.
         if (action != MotionEvent.ACTION_DOWN) {
             if (mIsBeingDragged) {
-                Log.d(TAG, "Intercept returning true!");
+               // Log.d(TAG, "Intercept returning true!");
                 return true;
             }
             if (mIsBeingDraggedVertical) {
-                Log.d(TAG, "Intercept returning false!");
+              //  Log.d(TAG, "Intercept returning false!");
                 return true;
             }
 
@@ -307,7 +307,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
 				* of the down event.
 				*/
 
-                Log.d("calendar", "ACTION_MOVE");
+               // Log.d("calendar", "ACTION_MOVE");
 
                 final int activePointerId = mActivePointerId;
                 if (activePointerId == INVALID_POINTER) {
@@ -325,10 +325,10 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
                 final float dy = y - mLastMotionY;
                 final float yDiff = Math.abs(dy);
 
-                Log.d(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
+                //Log.d(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
 
                 if (xDiff > mTouchSlop && xDiff > yDiff) {
-                    Log.d(TAG, "Starting drag!");
+                   // Log.d(TAG, "Starting drag!");
                     mIsBeingDragged = true;
                     mIsBeingDraggedVertical = false;
                     setScrollState(SCROLL_STATE_DRAGGING);
@@ -444,9 +444,9 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
                     final float xDiff = Math.abs(x - mLastMotionX);
                     final float y = MotionEventCompat.getY(ev, pointerIndex);
                     final float yDiff = Math.abs(y - mLastMotionY);
-                    Log.d(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
+                    //Log.d(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
                     if (xDiff > mTouchSlop && xDiff > yDiff) {
-                        Log.d(TAG, "Starting drag!");
+                      //  Log.d(TAG, "Starting drag!");
                         mIsBeingDragged = true;
                         mIsBeingDraggedVertical = false;
                         mLastMotionX = x;
@@ -483,7 +483,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
 
                 if (mIsBeingDraggedVertical) {
 
-                    Log.d("calendar", "mIsBeingDraggedVertical");
+                   // Log.d("calendar", "mIsBeingDraggedVertical");
 
                     final int activePointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
                     final float y = MotionEventCompat.getY(ev, activePointerIndex);
@@ -519,7 +519,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
                 break;
             case MotionEvent.ACTION_UP:
 
-                Log.d("calendar", "ACTION_UP");
+               // Log.d("calendar", "ACTION_UP");
 
                 if (mIsBeingDragged) {
                     final VelocityTracker velocityTracker = mVelocityTracker;
@@ -621,8 +621,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "dispatchTouchEvent");
-
+        //Log.d(TAG, "dispatchTouchEvent");
         return super.dispatchTouchEvent(ev);
     }
 
@@ -1275,7 +1274,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public boolean startNestedScroll(int axes) {
 
-        Log.d(TAG, "startNestedScroll");
+       // Log.d(TAG, "startNestedScroll");
 
         return mChildHelper.startNestedScroll(axes);
     }
@@ -1283,7 +1282,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public void stopNestedScroll() {
 
-        Log.d(TAG, "stopNestedScroll");
+     //   Log.d(TAG, "stopNestedScroll");
 
         mChildHelper.stopNestedScroll();
     }
@@ -1291,7 +1290,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public boolean hasNestedScrollingParent() {
 
-        Log.d(TAG, "hasNestedScrollingParent");
+     //   Log.d(TAG, "hasNestedScrollingParent");
 
         return mChildHelper.hasNestedScrollingParent();
     }
@@ -1299,7 +1298,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow) {
 
-        Log.d(TAG, "dispatchNestedScroll");
+    //    Log.d(TAG, "dispatchNestedScroll");
 
         return mChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
                 offsetInWindow);
@@ -1308,7 +1307,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
 
-        Log.d(TAG, "dispatchNestedPreScroll");
+     //   Log.d(TAG, "dispatchNestedPreScroll");
 
         return mChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
     }
@@ -1316,7 +1315,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
 
-        Log.d(TAG, "dispatchNestedFling");
+     //   Log.d(TAG, "dispatchNestedFling");
 
         return mChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
     }
@@ -1324,7 +1323,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
 
-        Log.d(TAG, "dispatchNestedPreFling");
+     //   Log.d(TAG, "dispatchNestedPreFling");
 
         return mChildHelper.dispatchNestedPreFling(velocityX, velocityY);
     }
@@ -1334,7 +1333,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
 
-        Log.d(TAG, "onStartNestedScroll");
+      //  Log.d(TAG, "onStartNestedScroll");
 
         return (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
     }
@@ -1342,7 +1341,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public void onNestedScrollAccepted(View child, View target, int nestedScrollAxes) {
 
-        Log.d(TAG, "onNestedScrollAccepted");
+     //   Log.d(TAG, "onNestedScrollAccepted");
 
         mParentHelper.onNestedScrollAccepted(child, target, nestedScrollAxes);
         startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
@@ -1350,13 +1349,13 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
 
     @Override
     public void onStopNestedScroll(View target) {
-        Log.d(TAG, "onStopNestedScroll");
+      //  Log.d(TAG, "onStopNestedScroll");
         stopNestedScroll();
     }
 
     @Override
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-        Log.d(TAG, "onNestedScroll");
+     //   Log.d(TAG, "onNestedScroll");
 
         //final int myConsumed = moveBy(dyUnconsumed);
         //final int myUnconsumed = dyUnconsumed - myConsumed;
@@ -1366,7 +1365,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
 
-        Log.d(TAG, "onNestedPreScroll");
+        //Log.d(TAG, "onNestedPreScroll");
 
         /*
         if (dy > 0 && mHeaderController.canScrollUp()) {
@@ -1380,7 +1379,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
 
-        Log.d(TAG, "onNestedFling");
+       // Log.d(TAG, "onNestedFling");
 
         if (!consumed) {
             flingWithNestedDispatch((int) velocityY);
@@ -1405,7 +1404,7 @@ public class CalendarScrollWidget extends ViewGroup implements View.OnClickListe
     @Override
     public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
 
-        Log.d(TAG, "onNestedPreFling");
+       // Log.d(TAG, "onNestedPreFling");
 
         return flingWithNestedDispatch((int) velocityY);
     }

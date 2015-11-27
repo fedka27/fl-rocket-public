@@ -602,7 +602,7 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     @Override
     public void onLocationChanged(Location location) {
 
-        Log.d(TAG, "onLocationChanged");
+       // Log.d(TAG, "onLocationChanged");
 
         if (location != null) {
             mLatitude = location.getLatitude();
@@ -612,7 +612,7 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
                 mPositionMarker = mMap.addMarker(new MarkerOptions()
                         .flat(true)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_position))
-                                //.anchor(0.5f, 0.5f)
+                        //.anchor(0.5f, 0.5f)
                         .position(new LatLng(mLatitude, mLongitude)));
 
             }
@@ -679,6 +679,8 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
 
             if (reserveCancelResult.isData()) {
                 showToastOk("Запись отменена");
+                util.removeAlarmScheduleNotify(getActivity(), mIdService);
+
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, new Intent());
                 getFragmentManager().popBackStack();
             } else

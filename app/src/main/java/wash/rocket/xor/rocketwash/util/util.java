@@ -1,16 +1,21 @@
 package wash.rocket.xor.rocketwash.util;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
 import wash.rocket.xor.rocketwash.R;
+import wash.rocket.xor.rocketwash.services.NotifyService;
 
 public class util {
 
@@ -44,7 +49,10 @@ public class util {
     public static Date getDateS1(String str) {
         //2014-11-24T11:24:40.000Z
         //2015-10-09T18:45:00.000Z
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        str = str.replace("T", " ").replace("+00:00", "");
+
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             return sdf.parse(str);
@@ -163,6 +171,12 @@ public class util {
         return ft.format(date);
     }
 
+    public static String dateToZZ1(Date date) {
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        //ft.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return ft.format(date);
+    }
+
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
                 new int[]{R.attr.actionBarSize});
@@ -218,5 +232,41 @@ public class util {
             log(tag, str.substring(3000));
         } else
             Log.i(tag, str);
+    }
+
+    public static void addAlarmScheduleNotify(Context context, String time, int service_id) {
+
+        Date d = getDateS1(time);
+        if (d == null)
+            return;
+
+        if (d.getTime() - System.currentTimeMillis() < (1000 * (3600 / 2)))
+            return;
+
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.setTime(d);
+        cal.add(Calendar.MINUTE, -30);
+        //cal.add(Calendar.MINUTE, 3);
+
+        Intent intent = new Intent(context, NotifyService.class);
+        intent.putExtra(NotifyService.NOTIFY_TIME, time);
+        intent.putExtra(NotifyService.NOTIFY, service_id);
+        PendingIntent pendingIntent = PendingIntent.getService(context.getApplicationContext(), service_id, intent, 0);
+
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmMgr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+    }
+
+    public static void removeAlarmScheduleNotify(Context context, int service_id) {
+        Intent intent = new Intent(context, NotifyService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(context.getApplicationContext(), service_id, intent, 0);
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmMgr.cancel(pendingIntent);
+        pendingIntent.cancel();
+
+        pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), service_id, intent, 0);
+        alarmMgr.cancel(pendingIntent);
+        pendingIntent.cancel();
     }
 }

@@ -57,7 +57,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.adapters.TimeRecyclerViewAdapter;
@@ -357,10 +356,14 @@ public class WashServiceInfoFragment extends BaseFragment {
                 //DO SOMETHING WITH THE SCROLL COORDINATES
                 //Log.d("scroll", "scrollY = " + scrollY + "; heightMap = " + heightMap);
 
+                //XXX
+                /*
                 if (scrollY > heightMap)
                     actionWash.setVisibility(View.VISIBLE);
                 else
-                    actionWash.setVisibility(View.GONE);
+                    actionWash.setVisibility(View.GONE);*/
+
+                actionWash.setVisibility(View.GONE);
             }
         });
 
@@ -638,9 +641,13 @@ public class WashServiceInfoFragment extends BaseFragment {
         txtBal.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_counter), 0));
         getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
 
-        TimeZone utc = TimeZone.getTimeZone("UTC");
-        Calendar c = Calendar.getInstance(utc);
-        String a = util.dateToZZ(c.getTime());
+        //TimeZone utc = TimeZone.getTimeZone("UTC");
+        //Calendar c = Calendar.getInstance(utc);
+        Calendar c = Calendar.getInstance();
+        //String a = util.dateToZZ(c.getTime());
+        long dd = c.getTime().getTime() + 1000 * 60 * 10;
+        Date d = new Date(dd);
+        String a = util.dateToZZ1(d);
 
         c.add(Calendar.HOUR_OF_DAY, 24 * 2);
         c.set(Calendar.HOUR_OF_DAY, 23);
@@ -1017,6 +1024,8 @@ public class WashServiceInfoFragment extends BaseFragment {
                 TimePeriods d;
                 for (int i = 0; i < time_periods.size(); i++) {
                     d = time_periods.get(i);
+                    d.setToday(time_periods.get(0).getDate());
+
                     if (d.isToday()) {
                         today = true;
                         list_today.add(d);
@@ -1308,6 +1317,8 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
     };
 
+    private String reserved_time;
+
     private void reservation(String time) {
 
         Log.d(TAG, "reservation time = " + time);
@@ -1330,6 +1341,8 @@ public class WashServiceInfoFragment extends BaseFragment {
                     return;
                 }
             }
+
+            reserved_time = time;
 
             progressBar.setVisibility(View.VISIBLE);
             int id = radioGroupCars.getCheckedRadioButtonId();
@@ -1364,8 +1377,9 @@ public class WashServiceInfoFragment extends BaseFragment {
 
                 showToastOk(R.string.fragment_info_wash_service_reserved_succes);
                 getActivity().getSupportFragmentManager().popBackStack();
-
                 reservationAction(mService.getId(), mService.getName());
+
+                util.addAlarmScheduleNotify(getActivity(), reserved_time, mService.getId());
 
                 WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService, mLatitude, mLongitude, mTitle, mService, result.getData());
                 f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
@@ -1377,8 +1391,6 @@ public class WashServiceInfoFragment extends BaseFragment {
                         .addToBackStack(null)
                         .commit();
 
-
-
             } else {
                 showToastError(result.getData().getResult());
             }
@@ -1389,7 +1401,6 @@ public class WashServiceInfoFragment extends BaseFragment {
     public void onLocationChanged(Location location) {
 
         //Log.d(TAG, "onLocationChanged");
-
         if (location != null) {
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
@@ -1398,9 +1409,8 @@ public class WashServiceInfoFragment extends BaseFragment {
                 mPositionMarker = mMap.addMarker(new MarkerOptions()
                         .flat(true)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_position))
-                                //.anchor(0.5f, 0.5f)
+                        //.anchor(0.5f, 0.5f)
                         .position(new LatLng(mLatitude, mLongitude)));
-
             }
 
             animateMarker(mPositionMarker, location); // Helper method for smooth

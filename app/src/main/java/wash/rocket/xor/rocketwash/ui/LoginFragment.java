@@ -221,7 +221,17 @@ public class LoginFragment extends BaseFragment {
             waiting = true;
             createTimer(pref.getLastTimeClick());
         }
+
+        initkeyboardEvents();
+
         onKeyBoardHide();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        removeKeyboardEvent();
+
     }
 
     @TargetApi(3)

@@ -85,6 +85,15 @@
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".services.NotifyService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="NotifyService"/>
+            </intent-filter>
+        </service>
+
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
     </application>
 

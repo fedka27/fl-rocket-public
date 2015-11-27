@@ -76,6 +76,8 @@ public class BaseFragment extends Fragment {
 
     private App app;
 
+    private boolean mEventKeyboard = false;
+
     public BaseFragment() {
     }
 
@@ -89,6 +91,42 @@ public class BaseFragment extends Fragment {
         if (getView() == null)
             return;
 
+
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mInflater = inflater;
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getSpiceManager().start(getActivity());
+    }
+
+    @Override
+    public void onStop() {
+
+        if (getSpiceManager().isStarted()) {
+            getSpiceManager().shouldStop();
+        }
+
+        super.onStop();
+    }
+
+
+    public void initkeyboardEvents()
+    {
         InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Service.INPUT_METHOD_SERVICE);
         softKeyboard = new SoftKeyboard((ViewGroup) getView(), im);
         softKeyboard.setSoftKeyboardCallback(new SoftKeyboard.SoftKeyboardChanged() {
@@ -119,35 +157,10 @@ public class BaseFragment extends Fragment {
         });
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mInflater = inflater;
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
+    public void removeKeyboardEvent()
+    {
         if (softKeyboard != null)
             softKeyboard.unRegisterSoftKeyboardCallback();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        getSpiceManager().start(getActivity());
-    }
-
-    @Override
-    public void onStop() {
-
-        if (getSpiceManager().isStarted()) {
-            getSpiceManager().shouldStop();
-        }
-
-        super.onStop();
     }
 
     @Override
@@ -438,7 +451,7 @@ public class BaseFragment extends Fragment {
 
         GoogleAnalytics analytics = GoogleAnalytics.getInstance(getActivity());
         Tracker tracker = analytics.newTracker("UA-54521987-4");
-       // tracker.setScreenName("");
+        // tracker.setScreenName("");
         tracker.send(new HitBuilders.EventBuilder()
                 .setCategory("button")
                 .setAction("call")
@@ -537,10 +550,12 @@ public class BaseFragment extends Fragment {
                     break;
             }
         }
-
     }
 
     public App getApp() {
+        if (getActivity() == null)
+            return null;
+
         return (App) getActivity().getApplicationContext();
     }
 
@@ -594,8 +609,7 @@ public class BaseFragment extends Fragment {
     }
 
 
-    public void reservationAction(int service_id, String name)
-    {
+    public void reservationAction(int service_id, String name) {
         GoogleAnalytics analytics = GoogleAnalytics.getInstance(getActivity());
         Tracker tracker = analytics.newTracker("UA-54521987-4");
         tracker.setScreenName("");
@@ -605,5 +619,9 @@ public class BaseFragment extends Fragment {
                 .setLabel(name)
                 .setValue(service_id)
                 .build());
+    }
+
+    public void setEventKeyboard(boolean value) {
+        mEventKeyboard = value;
     }
 }

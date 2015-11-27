@@ -174,5 +174,6 @@
     <string name="reserved_cost" formatted="false">Стоимость: %s %s</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
+    <string name="order_notify">У вас заказа на время:</string>
 
 </resources>

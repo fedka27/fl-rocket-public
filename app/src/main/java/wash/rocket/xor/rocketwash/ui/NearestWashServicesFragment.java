@@ -317,6 +317,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             public void onRefresh() {
                 if (mLatitude != 0 && mLongitude != 0) {
 
+                    last_time = System.currentTimeMillis();
+
                     mLoaderCount = 0;
                     swipeListView.closeAnimateAll();
                     String session = pref.getSessionID();
@@ -398,7 +400,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                 swipeListView.closeAnimateAll();
 
-                Profile profile = getApp().getProfile();
+                Profile profile = getApp() == null ? null : getApp().getProfile();
 
                 if (profile != null) {
                     txtFIO.setText(profile.getName());
@@ -642,7 +644,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
         if (location != null) {
 
-            Log.d(TAG, "on location change update");
+            //Log.d(TAG, "on location change update");
 
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
@@ -819,6 +821,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 }
 
                 setNearestLoaded(true);
+                last_time = System.currentTimeMillis();
 
                 Log.d("NearestWashServiceRequestListener", "fill data");
 
@@ -881,6 +884,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
             //reserved_Loaded = true;
             setReservedLoaded(true);
+            last_time = System.currentTimeMillis();
 
             Log.d("ReservedRequestListener", "fill data");
         }

@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.adapters.TimeRecyclerViewAdapter;
@@ -295,9 +294,15 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
         getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
 
-        TimeZone utc = TimeZone.getTimeZone("UTC");
-        Calendar c = Calendar.getInstance(utc);
-        String a = util.dateToZZ(c.getTime());
+        //TimeZone utc = TimeZone.getTimeZone("UTC");
+        //Calendar c = Calendar.getInstance(utc);
+        //String a = util.dateToZZ(c.getTime());
+
+        Calendar c = Calendar.getInstance();
+        //String a = util.dateToZZ(c.getTime());
+        long dd = c.getTime().getTime() + 1000 * 60 * 10;
+        Date d = new Date(dd);
+        String a = util.dateToZZ1(d);
 
         c.add(Calendar.HOUR_OF_DAY, 24 * 2);
         c.set(Calendar.HOUR_OF_DAY, 23);
@@ -397,6 +402,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
             if (time_periods.size() > 0) {
                 for (int i = 0; i < time_periods.size(); i++) {
                     TimePeriods d = time_periods.get(i);
+                    d.setToday(time_periods.get(0).getDate());
                     if (d.isToday()) {
                         today = true;
                         list_today.add(d);
@@ -488,6 +494,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private String reserved_time;
 
     private void reservation(String time) {
 
@@ -517,6 +524,8 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 }
             }
 
+            reserved_time = time;
+
             progressBar.setVisibility(View.VISIBLE);
             getSpiceManager().execute(new ReservationRequest(pref.getSessionID(), mService.getId(), pref.getCarModelId(), list, time), "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
 
@@ -544,8 +553,10 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
 
             if (Constants.SUCCESS.equals(result.getStatus())) {
                 showToastOk(R.string.fragment_info_wash_service_reserved_succes);
-                getActivity().getSupportFragmentManager().popBackStack();
 
+                util.addAlarmScheduleNotify(getActivity(), reserved_time, mService.getId());
+
+                getActivity().getSupportFragmentManager().popBackStack();
                 reservationAction(mService.getId(), mService.getName());
 
                 WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService, mLatitude, mLongitude, mTitle, mService, result.getData());

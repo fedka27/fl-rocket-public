@@ -4,6 +4,5 @@ public class Constants
 {
 	public final static String SUCCESS = "success";
 	public final static String PREFERENCE_SHARED = "xor.preferences";
-
-	public final static String URL = "http://test.rocketwash.me/v3/";
+	public final static String URL = "http://beta.rocketwash.me/v3/";
 }

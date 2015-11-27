@@ -56,6 +56,7 @@ public class LoaderFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setEventKeyboard(true);
     }
 
     @Override

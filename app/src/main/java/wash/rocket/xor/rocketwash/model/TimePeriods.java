@@ -2,6 +2,7 @@ package wash.rocket.xor.rocketwash.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -27,6 +28,8 @@ public class TimePeriods implements Parcelable {
 
     private Date date;
 
+    private Date date_td;
+
     public String getTime_from() {
         return time_from;
     }
@@ -50,8 +53,21 @@ public class TimePeriods implements Parcelable {
         return date;
     }
 
+    public String getTimeStr() {
+        if (TextUtils.isEmpty(time_from_no_time_zone))
+            return "";
+
+        return time_from_no_time_zone.substring(time_from_no_time_zone.indexOf("T") + 1).replace(":00+00:00", "");
+    }
+
+    public void setToday(Date date_td) {
+        this.date_td = date_td;
+    }
+
+
     public boolean isToday() {
         Calendar c = Calendar.getInstance();
+        c.setTime(date_td);
         int d = c.get(Calendar.DAY_OF_MONTH);
         int m = c.get(Calendar.MONTH);
         int y = c.get(Calendar.YEAR);
@@ -64,6 +80,7 @@ public class TimePeriods implements Parcelable {
 
     public boolean isTomorrow() {
         Calendar c = Calendar.getInstance();
+        c.setTime(date_td);
         c.roll(Calendar.DAY_OF_MONTH, 1);
         int d = c.get(Calendar.DAY_OF_MONTH);
         int m = c.get(Calendar.MONTH);

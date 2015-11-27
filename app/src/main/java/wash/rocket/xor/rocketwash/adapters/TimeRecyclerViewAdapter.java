@@ -3,6 +3,7 @@ package wash.rocket.xor.rocketwash.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +80,12 @@ public class TimeRecyclerViewAdapter extends RecyclerView.Adapter<TimeRecyclerVi
 
         public void populate(TimePeriods p, int position) {
             button.setTag(position);
-            button.setText(util.dateToHM(p.getDate()));
+
+            Log.d("TimeRecyclerViewAdapter", "util.dateToHM(p.getDate()) = " + util.dateToHM(p.getDate()));
+            Log.d("TimeRecyclerViewAdapter", "p.getTime_from_no_time_zone() = " + p.getTime_from_no_time_zone());
+
+            //button.setText(util.dateToHM(p.getDate()));
+            button.setText(p.getTimeStr());
             button.setSelected(p.getSelected() == 1);
         }
     }

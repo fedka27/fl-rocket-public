@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -45,6 +46,9 @@ public class DialoglistCarModels extends Dialoglist {
         super.onCreate(savedInstanceState);
         carsJsonRequest = new CarsMakesRequest("");
         mIDBrand = getArguments().getInt(CAR_BRAND_ID);
+
+        Log.d("DialoglistCarModels", "mIDBrand = " + mIDBrand);
+
     }
 
     @Override
