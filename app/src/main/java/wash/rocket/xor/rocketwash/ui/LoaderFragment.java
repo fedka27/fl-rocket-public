@@ -73,14 +73,21 @@ public class LoaderFragment extends BaseFragment {
         //getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new CarProfileRequestListener());
     }
 
-
     private List<CarsMakes> list_cars;
 
     public final class ProfileRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            showToastError(R.string.error_loading_data);
-            mCallback.onLoading();
+            showToastError(R.string.error_loading_profile_session_data);
+            //mCallback.onErrorLoading();
+            Log.e(TAG, spiceException.getMessage());
+            pref.setSessionID("");
+            pref.setProfile(null);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                    .replace(R.id.container, new LoginFragment(), LoginFragment.TAG)
+                    .commit();
         }
 
         @Override
@@ -101,9 +108,7 @@ public class LoaderFragment extends BaseFragment {
                         Log.w("onRequestSuccess", "esult.getData().getCars_attributes() =  " + result.getData().getCars_attributes().size());
 
                     mProfileLoaded = true;
-
                     result.getData().var_dump();
-
                     if (mCarsLoaded)
                         initCars(result.getData().getCars_attributes());
 
@@ -150,7 +155,7 @@ public class LoaderFragment extends BaseFragment {
         }
     }
 
-    private void initCars(List<CarsAttributes> c) {
+    synchronized private void initCars(List<CarsAttributes> c) {
         if (c != null) {
             int i = pref.getUseCar();
             if (i > c.size())

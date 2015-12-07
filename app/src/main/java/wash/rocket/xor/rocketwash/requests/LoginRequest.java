@@ -44,7 +44,7 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest<LoginResult> {
                 .buildUpon()
                 //.appendQueryParameter("phone", URLEncoder.encode(phone, "utf-8"))
                 //.appendQueryParameter("pin", URLEncoder.encode(pin, "utf-8"))
-                .appendQueryParameter("phone", phone)
+                .appendQueryParameter("phone", phone.replace("+", ""))
                 .appendQueryParameter("pin", pin)
                 .build().toString();
 

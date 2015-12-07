@@ -31,7 +31,7 @@ public class PinRequest extends GoogleHttpClientSpiceRequest<PinResult> {
     public PinResult loadDataFromNetwork() throws IOException {
         String uri = Uri.parse(baseUrl)
                 .buildUpon()
-                .appendQueryParameter("phone", phone)
+                .appendQueryParameter("phone", phone.replace("+", ""))
                 .build().toString();
         Log.d("loadDataFromNetwork", "uri = " + uri);
         HttpRequest request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null);

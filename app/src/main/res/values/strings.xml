@@ -4,7 +4,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="fragment_login_title">Вход</string>
-    <string name="fragment_login_caption">Для записи на автомойку, получения индивидуальных скидок, балов и бонусов необходимо войти под личным поролем</string>
+    <string name="fragment_login_caption">Для записи на автомойку, получения индивидуальных скидок, балов и бонусов необходимо войти под личным PIN-кодом</string>
     <string name="fragment_login_phone_hint">Номер телефона</string>
     <string name="fragment_login_pin_hint">PIN-код</string>
     <string name="fragment_login_btn_enter">ВОЙТИ</string>
@@ -23,8 +23,8 @@
     <string name="fragment_registration_hint_phone">Телефон</string>
 
     <string name="fragment_send_sms_title">Авторизация</string>
-    <string name="fragment_send_sms_caption">После завершения регистрации вы сможете записаться на мойку, получить скидки и бесплатные мойки.\nДля завершения регистрации получите код доступа на свой телефон</string>
-    <string name="fragment_send_sms_info">Код подтверждения будет выслан по СМС</string>
+    <string name="fragment_send_sms_caption">После завершения регистрации вы сможете записаться на мойку, получить скидки и бесплатные мойки.\nДля завершения регистрации получите PIN-код доступа на свой телефон</string>
+    <string name="fragment_send_sms_info">PIN-код подтверждения будет выслан по СМС</string>
 
     <string name="fragment_without_registration_title">Вход без регистрации</string>
     <string name="fragment_without_registration_caption">Для определения стоимости мойки вашего автомобиля введите, пожалуйста, следующую информацию</string>
@@ -69,9 +69,9 @@
     <string name="error_loading_data">Не удалось загрузить данные, попробуйте еще раз по позже</string>
     <string name="select_car_brand">Выбор марки автомобиля</string>
 
-    <string name="login_wrong_pin">Не верный пинкод</string>
+    <string name="login_wrong_pin">Не верный PIN-код</string>
     <string name="login_not_found">Пользователь не найден</string>
-    <string name="request_pin_success">Запрос на отправку нового ПИН-кода прошел успешно</string>
+    <string name="request_pin_success">Запрос на отправку нового PIN-код прошел успешно</string>
     <string name="request_pin_error">Ошибка, не удалось отправить запрос на сброс PIN-кода</string>
     <string name="fragment_login_phone_empty_error">Не указан телефонный номер</string>
     <string name="request_pin_phone_error">Не удалось отправить новый PIN-code , проверьте номер телефона</string>
@@ -108,9 +108,9 @@
     <string name="report">СООБЩИТЬ</string>
     <string name="fragment_send_sms_emty_phone">Не заполнен телефонный номер</string>
     <string name="button_confirm">ПОДТВЕРДИТЬ</string>
-    <string name="fragment_confirmation_caption">Введите 6-ти значный код, отправленный на номер %1$s</string>
+    <string name="fragment_confirmation_caption">Введите 6-ти значный PIN-код, отправленный на номер %1$s</string>
     <string name="fragment_confirmation_title">Подтверждение</string>
-    <string name="fragment_confirmation_info">Не получили код?\nЧерез 5 минут вы сможете запросить его повторно</string>
+    <string name="fragment_confirmation_info">Не получили PIN-код?\nЧерез 5 минут вы сможете запросить его повторно</string>
     <string name="include_wash_service_info">Информация о мойке</string>
     <string name="include_wash_service_reviews">Отзывы</string>
     <string name="include_wash_service_galery">Галерея</string>
@@ -151,9 +151,10 @@
     <string name="remove">УДАЛИТЬ</string>
     <string name="fragment_nearest_wash_services_remove_to_vaf">Удалить из избранных ?</string>
     <string name="avaiable_rec">МОЖНО ЗАПИСАТЬСЯ</string>
-    <string name="fragment_login_quick_already_registered">Вы уже зарегистрированы в нашем приложении, пожалуйста введите пароль и получите доступ</string>
+    <string name="fragment_login_quick_already_registered">Вы уже зарегистрированы в нашем приложении, пожалуйста введите PIN-код и получите доступ</string>
     <string name="empty_favorites">Вы еще не добавили ни одну мойку в избранные</string>
     <string name="error_loading_profile_data">Не удалось получить данные вашего профиля</string>
+    <string name="error_loading_profile_session_data">Не удалось получить данные вашего профиля, вероятно сессия устарела</string>
     <string name="favorite_add_success">Добавлена успешно</string>
     <string name="favorite_add_fail">Не удалось добавить в избранные</string>
     <string name="error_save_profile_data">Не удалось сохранить измеения профиля</string>
@@ -174,6 +175,6 @@
     <string name="reserved_cost" formatted="false">Стоимость: %s %s</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
-    <string name="order_notify">У вас заказа на время:</string>
+    <string name="order_notify" formatted="false">Вы записаны на автомойку на %s. Ждем вас!</string>
 
 </resources>

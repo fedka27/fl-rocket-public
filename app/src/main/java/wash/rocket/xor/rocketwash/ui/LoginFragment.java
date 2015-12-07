@@ -304,16 +304,28 @@ public class LoginFragment extends BaseFragment {
 
     @Override
     protected void onKeyBoardHide() {
-        txtCaption.setVisibility(View.VISIBLE);
-        btnRegister.setVisibility(View.VISIBLE);
-        btnSkipRegistration.setVisibility(View.VISIBLE);
+        Handler h = new Handler();
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                txtCaption.setVisibility(View.VISIBLE);
+                btnRegister.setVisibility(View.VISIBLE);
+                btnSkipRegistration.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
     protected void onKeyBoardShow() {
-        txtCaption.setVisibility(View.GONE);
-        btnRegister.setVisibility(View.GONE);
-        btnSkipRegistration.setVisibility(View.GONE);
+        Handler h = new Handler();
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                txtCaption.setVisibility(View.GONE);
+                btnRegister.setVisibility(View.GONE);
+                btnSkipRegistration.setVisibility(View.GONE);
+            }
+        });
     }
 
     public final class LoginRequestListener implements RequestListener<LoginResult> {

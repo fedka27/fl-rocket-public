@@ -18,7 +18,6 @@
     <item android:state_window_focused="false" android:state_enabled="true" android:drawable="@drawable/textfieldex_default" />
     <item android:state_window_focused="false" android:state_enabled="false" android:drawable="@drawable/textfield_disabled" />
     <item android:state_enabled="true" android:state_focused="true" android:drawable="@drawable/textfield_activated" />
-    <item android:state_pressed="true" android:drawable="@drawable/textfieldex_activated" />
     <item android:state_enabled="true" android:state_activated="true" android:drawable="@drawable/textfield_focused" />
     <item android:state_enabled="true" android:drawable="@drawable/textfieldex_default" />
     <item android:state_focused="true" android:drawable="@drawable/textfield_focused" />

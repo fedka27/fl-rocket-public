@@ -272,6 +272,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     // call
                     case 1:
                         call(s.getPhone(), s.getId(), s.getName());
+                        //s.
                         break;
                     // rec apply
                     case 2:
@@ -545,7 +546,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         // stopTracking();
         doUnbindLocationService();
     }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -865,6 +865,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     w.setName(cw.getCarwash().getName());
                     w.setAddress(cw.getCarwash().getAddress());
                     w.setrDate(util.getDatenoUTC(cw.getTime_from_no_time_zone()));
+                    w.setPhone(cw.getCarwash().getPhone());
+                    w.setId(cw.getCarwash_id());
                     list.add(1, w);
 
                     w = new WashService();

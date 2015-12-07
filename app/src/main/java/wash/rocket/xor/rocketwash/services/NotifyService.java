@@ -42,8 +42,9 @@ public class NotifyService extends Service {
         if (intent.getIntExtra(NOTIFY, 0) > 0) {
             String time = intent.getStringExtra(NOTIFY_TIME);
             String ftime = util.dateToDMYHM(util.getDateS1(time));
-            showNotify(R.drawable.ic_launcher, getApplicationContext().getString(R.string.app_name),
-                    getApplicationContext().getString(R.string.order_notify) + " " + ftime);
+            showNotify(R.drawable.ic_launcher,
+                    getApplicationContext().getString(R.string.app_name),
+                    String.format(getApplicationContext().getString(R.string.order_notify), ftime));
         }
     }
 

@@ -1,12 +1,17 @@
 package wash.rocket.xor.rocketwash.ui;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -31,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     private static final String FRAGMENT_LOADER_TAG = "login";
     private static final int FRAGMENT_GPS = 1;
     private static final int FRAGMENT_NETWORK = 2;
+    private static final int PERMISSION_REQUEST_FINE_LOCATION = 0;
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
     private Preferences pref;
     private Intent mServiceIntent;
@@ -39,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
+
         setContentView(R.layout.activity_main);
 
         if (findViewById(R.id.container_two) == null) {
@@ -48,42 +56,32 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         pref = new Preferences(this);
 
         if (savedInstanceState == null) {
-            if (!TextUtils.isEmpty(pref.getSessionID()) && pref.getRegistered()) {
-                if (!isOnline()) {
-                    showNetworkFragment();
-                } else if (!enableGPS()) {
-                    if (pref.getShowDialogGps()) {
-                        showGPSFragment();
-                    } else
-                        showLoaderFragment();
-                } else
-                    showLoaderFragment();
-
-            } else {
-                if (!isOnline()) {
-                    showNetworkFragment();
-                } else
-                    showLoginFragment();
-                //getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), FRAGMENT_LOGIN_TAG).commit();
-            }
+            init();
         }
 
         //  restoreTargets();
     }
 
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private void init() {
+        if (!TextUtils.isEmpty(pref.getSessionID()) && pref.getRegistered()) {
+            if (!isOnline()) {
+                showNetworkFragment();
+            } else if (!enableGPS()) {
+                if (pref.getShowDialogGps()) {
+                    showGPSFragment();
+                } else
+                    showLoaderFragment();
+            } else
+                showLoaderFragment();
 
-        int id = item.getItemId();
-
-
-        if (id == R.id.action_settings) {
-            return true;
+        } else {
+            if (!isOnline()) {
+                showNetworkFragment();
+            } else
+                showLoginFragment();
+            //getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), FRAGMENT_LOGIN_TAG).commit();
         }
-
-        return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     @Override
     public void onLogged() {
@@ -96,11 +94,15 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     public void onLoading() {
 
         removePrevFragments();
-
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                 .replace(R.id.container, new NearestWashServicesFragment(), NearestWashServicesFragment.TAG)
-                .commit();
+                .commitAllowingStateLoss();
+    }
+
+    @Override
+    public void onErrorLoading() {
+
     }
 
     @Override
@@ -148,27 +150,39 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     }
 
     public boolean isOnline() {
+        //Log.e("AAA", "isOnline");
 
-        //public static boolean isNetworkAvailable(Context context) {
-        boolean isMobile = false, isWifi = false;
-
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] infoAvailableNetworks = cm.getAllNetworkInfo();
-
-        if (infoAvailableNetworks != null) {
-            for (NetworkInfo network : infoAvailableNetworks) {
-
-                if (network.getType() == ConnectivityManager.TYPE_WIFI) {
-                    if (network.isConnected() && network.isAvailable())
-                        isWifi = true;
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        //Log.e("AAA", "connectivityManager = " + connectivityManager);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //Log.e("AAA", "1");
+            Network[] networks = connectivityManager.getAllNetworks();
+            NetworkInfo networkInfo;
+            for (Network mNetwork : networks) {
+                networkInfo = connectivityManager.getNetworkInfo(mNetwork);
+                Log.d("Network", "NETWORKNAME: " + networkInfo.getTypeName());
+                if (networkInfo.getState().equals(NetworkInfo.State.CONNECTED)) {
+                    return true;
                 }
-                if (network.getType() == ConnectivityManager.TYPE_MOBILE) {
-                    if (network.isConnected() && network.isAvailable())
-                        isMobile = true;
+
+            }
+        } else {
+            if (connectivityManager != null) {
+                //Log.e("AAA", "2");
+                //noinspection deprecation
+                NetworkInfo[] info = connectivityManager.getAllNetworkInfo();
+                if (info != null) {
+                    for (NetworkInfo anInfo : info) {
+                        Log.d("Network", "NETWORKNAME: " + anInfo.getTypeName());
+                        if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
-        return isMobile || isWifi;
+
+        return false;
     }
 
 
@@ -184,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                 .add(R.id.container, f, GpsWarningFragment.TAG)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void showNetworkFragment() {
@@ -192,14 +206,14 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                 .add(R.id.container, new NetworkErrorFragment(), NetworkErrorFragment.TAG)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void showLoaderFragment() {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                 .replace(R.id.container, new LoaderFragment(), LoaderFragment.TAG)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
 
@@ -207,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                 .replace(R.id.container, new LoginFragment(), LoginFragment.TAG)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     protected void doStartLocationService() {
@@ -227,31 +241,31 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     private void removePrevFragments() {
         Fragment f = getSupportFragmentManager().findFragmentByTag(LoginFragment.TAG);
         if (f != null)
-            getSupportFragmentManager().beginTransaction().remove(f).commit();
+            getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
 
         f = getSupportFragmentManager().findFragmentByTag(NearestWashServicesFragment.TAG);
         if (f != null)
-            getSupportFragmentManager().beginTransaction().remove(f).commit();
+            getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
 
         f = getSupportFragmentManager().findFragmentByTag(SendSmsFragment.TAG);
         if (f != null)
-            getSupportFragmentManager().beginTransaction().remove(f).commit();
+            getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
 
         f = getSupportFragmentManager().findFragmentByTag(ConfirmationFragment.TAG);
         if (f != null)
-            getSupportFragmentManager().beginTransaction().remove(f).commit();
+            getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
 
         f = getSupportFragmentManager().findFragmentByTag(WashServiceInfoFragment.TAG);
         if (f != null)
-            getSupportFragmentManager().beginTransaction().remove(f).commit();
+            getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
 
         f = getSupportFragmentManager().findFragmentByTag(WashServiceInfoFragmentCall.TAG);
         if (f != null)
-            getSupportFragmentManager().beginTransaction().remove(f).commit();
+            getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
 
         f = getSupportFragmentManager().findFragmentByTag(WashServiceInfoFragmentQuick.TAG);
         if (f != null)
-            getSupportFragmentManager().beginTransaction().remove(f).commit();
+            getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
     }
 
 
@@ -279,5 +293,27 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
             f.onBackPress();
         super.onBackPressed();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        removePrevFragments();
+        init();
+    }
+
+    private void requestFineLocation() {
+        // Permission has not been granted and must be requested.
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_FINE_LOCATION);
+        }
+    }
+
+    private void requestCoarseLocation() {
+        // Permission has not been granted and must be requested.
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_COARSE_LOCATION);
+        }
+    }
+
 
 }

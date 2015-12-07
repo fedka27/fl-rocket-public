@@ -34,7 +34,7 @@ public class SetPhoneRequest extends GoogleHttpClientSpiceRequest<ProfileResult>
     public ProfileResult loadDataFromNetwork() throws IOException {
         String uri = Uri.parse(baseUrl)
                 .buildUpon()
-                .appendQueryParameter("phone", phone)
+                .appendQueryParameter("phone", phone.replace("+", ""))
                 .build().toString();
         Log.d("loadDataFromNetwork", "uri = " + uri);
 

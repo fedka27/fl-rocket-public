@@ -50,11 +50,8 @@ public class ProfileRequest extends GoogleHttpClientSpiceRequest<ProfileResult> 
 
         ProfileResult res = LoganSquare.parse(result, ProfileResult.class);
         res.getData().setString(result);
-
         Log.w("ProfileRequest", " end parse json ");
-
         return res;
-
     }
 
 }

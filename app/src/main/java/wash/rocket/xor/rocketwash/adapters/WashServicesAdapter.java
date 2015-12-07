@@ -342,7 +342,6 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
     public void remove(int position) {
         list.remove(position);
         notifyItemRemoved(position);
-
         notifyItemRangeChanged(position, list.size());
     }
 

@@ -10,7 +10,6 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -243,10 +242,10 @@ public class util {
         if (d.getTime() - System.currentTimeMillis() < (1000 * (3600 / 2)))
             return;
 
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.setTime(d);
-        cal.add(Calendar.MINUTE, -30);
+        //Calendar cal = Calendar.getInstance();
+        //cal.clear();
+        //cal.setTime(d);
+        //cal.add(Calendar.MINUTE, -30);
         //cal.add(Calendar.MINUTE, 3);
 
         Intent intent = new Intent(context, NotifyService.class);
@@ -255,7 +254,7 @@ public class util {
         PendingIntent pendingIntent = PendingIntent.getService(context.getApplicationContext(), service_id, intent, 0);
 
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        alarmMgr.set(AlarmManager.RTC_WAKEUP, d.getTime() - ((3600 * 1000) / 2), pendingIntent);
     }
 
     public static void removeAlarmScheduleNotify(Context context, int service_id) {

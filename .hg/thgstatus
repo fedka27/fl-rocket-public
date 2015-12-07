@@ -11,6 +11,7 @@ mapp/src/main/java/wash/rocket/xor/rocketwash/services
 rapp/src/main/java/wash/rocket/xor/rocketwash/ui
 mapp/src/main/java/wash/rocket/xor/rocketwash/util
 mapp/src/main/java/wash/rocket/xor/rocketwash/widgets
+mapp/src/main/res/drawable
 mapp/src/main/res/drawable-hdpi
 rapp/src/main/res/layout
 mapp/src/main/res/values

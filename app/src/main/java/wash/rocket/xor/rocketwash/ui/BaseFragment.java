@@ -1,17 +1,21 @@
 package wash.rocket.xor.rocketwash.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -20,6 +24,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -92,7 +97,6 @@ public class BaseFragment extends Fragment {
             return;
 
 
-
     }
 
     @Nullable
@@ -125,8 +129,7 @@ public class BaseFragment extends Fragment {
     }
 
 
-    public void initkeyboardEvents()
-    {
+    public void initkeyboardEvents() {
         InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Service.INPUT_METHOD_SERVICE);
         softKeyboard = new SoftKeyboard((ViewGroup) getView(), im);
         softKeyboard.setSoftKeyboardCallback(new SoftKeyboard.SoftKeyboardChanged() {
@@ -146,7 +149,6 @@ public class BaseFragment extends Fragment {
             @Override
             public void onSoftKeyboardShow() {
                 Log.d(TAG, "onSoftKeyboardShow");
-
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
@@ -157,8 +159,7 @@ public class BaseFragment extends Fragment {
         });
     }
 
-    public void removeKeyboardEvent()
-    {
+    public void removeKeyboardEvent() {
         if (softKeyboard != null)
             softKeyboard.unRegisterSoftKeyboardCallback();
     }
@@ -181,33 +182,35 @@ public class BaseFragment extends Fragment {
     }
 
     public boolean isOnline() {
-
-        //public static boolean isNetworkAvailable(Context context) {
-        boolean isMobile = false, isWifi = false;
-
-        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] infoAvailableNetworks = cm.getAllNetworkInfo();
-
-        if (infoAvailableNetworks != null) {
-            for (NetworkInfo network : infoAvailableNetworks) {
-
-                if (network.getType() == ConnectivityManager.TYPE_WIFI) {
-                    if (network.isConnected() && network.isAvailable())
-                        isWifi = true;
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Network[] networks = connectivityManager.getAllNetworks();
+            NetworkInfo networkInfo;
+            for (Network mNetwork : networks) {
+                networkInfo = connectivityManager.getNetworkInfo(mNetwork);
+                if (networkInfo.getState().equals(NetworkInfo.State.CONNECTED)) {
+                    return true;
                 }
-                if (network.getType() == ConnectivityManager.TYPE_MOBILE) {
-                    if (network.isConnected() && network.isAvailable())
-                        isMobile = true;
+            }
+        } else {
+            if (connectivityManager != null) {
+                //noinspection deprecation
+                NetworkInfo[] info = connectivityManager.getAllNetworkInfo();
+                if (info != null) {
+                    for (NetworkInfo anInfo : info) {
+                        if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
+                            Log.d("Network", "NETWORKNAME: " + anInfo.getTypeName());
+                            return true;
+                        }
+                    }
                 }
             }
         }
-        return isMobile || isWifi;
+        return false;
     }
 
     public void share() {
-
         showDialogShare();
-
     }
 
     static class IncomingHandler extends Handler {
@@ -403,15 +406,15 @@ public class BaseFragment extends Fragment {
         Location location = null;
         final LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         for (final String provider : lm.getProviders(true)) {
-            Location loc = lm.getLastKnownLocation(provider);
-
-            Log.d("getLastLocation", "provider = " + provider);
-            Log.d("getLastLocation", "Location = " + (loc == null ? "null" : loc.toString()));
-
-            if (loc != null) {
-                location = loc;
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Location loc = null;
+                loc = lm.getLastKnownLocation(provider);
+                Log.d("getLastLocation", "provider = " + provider);
+                Log.d("getLastLocation", "Location = " + (loc == null ? "null" : loc.toString()));
+                if (loc != null) {
+                    location = loc;
+                }
             }
-
         }
         return location;
     }
@@ -443,6 +446,8 @@ public class BaseFragment extends Fragment {
     }
 
     protected void call(String phone, int service_id, String name) {
+
+
         phone = phone == null ? "" : phone.replace("(", "").replace(")", "").replace(" ", "").replace("-", "");
         Log.d(TAG, "cal " + phone);
         //Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));

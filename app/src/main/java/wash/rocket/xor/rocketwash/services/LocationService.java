@@ -1,10 +1,12 @@
 package wash.rocket.xor.rocketwash.services;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
@@ -14,6 +16,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -139,8 +142,11 @@ public class LocationService extends Service implements LocationListener, GpsSta
         super.onCreate();
         Log.d(TAG, "onCreate");
 
-        gpsLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        gpsLocationManager.addGpsStatusListener(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "checkSelfPermission");
+            gpsLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            gpsLocationManager.addGpsStatusListener(this);
+        }
 
         doRegisterGpsStatusReceiver();
         buildGoogleApiClient();
@@ -181,9 +187,11 @@ public class LocationService extends Service implements LocationListener, GpsSta
         }
 
         if (gpsLocationManager != null) {
-            gpsLocationManager.removeUpdates(CompatLocationListener);
-            gpsLocationManager.removeGpsStatusListener(this);
-            gpsLocationManager.removeNmeaListener(mNmeaListener);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                gpsLocationManager.removeUpdates(CompatLocationListener);
+                gpsLocationManager.removeGpsStatusListener(this);
+                gpsLocationManager.removeNmeaListener(mNmeaListener);
+            }
         }
 
         mRunning = false;
@@ -199,20 +207,22 @@ public class LocationService extends Service implements LocationListener, GpsSta
         //    mGoogleApiClient.connect();
 
         if (gpsLocationManager != null) {
-            gpsLocationManager.removeUpdates(CompatLocationListener);
-            gpsLocationManager.removeNmeaListener(mNmeaListener);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                gpsLocationManager.removeUpdates(CompatLocationListener);
+                gpsLocationManager.removeNmeaListener(mNmeaListener);
+            }
         }
 
         if (gpsLocationManager != null && gpsLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Log.i(TAG, "GPS_PROVIDER enable");
-
             //gpsLocationManager.removeUpdates(CompatLocationListener);
-            gpsLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_MIN_TIME, GPS_MIN_DISTANCE, CompatLocationListener);
 
-            Log.i(TAG, "set GpsStatus.NmeaListener");
-            gpsLocationManager.removeNmeaListener(mNmeaListener);
-            //gpsLocationManager.addNmeaListener(mNmeaListener);
-            mProviderEnable = true;
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                gpsLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_MIN_TIME, GPS_MIN_DISTANCE, CompatLocationListener);
+                gpsLocationManager.removeNmeaListener(mNmeaListener);
+                Log.i(TAG, "set GpsStatus.NmeaListener");
+                mProviderEnable = true;
+            }
         } else {
             mProviderEnable = false;
         }
@@ -335,9 +345,13 @@ public class LocationService extends Service implements LocationListener, GpsSta
         }
 
         if (gpsLocationManager != null) {
-            gpsLocationManager.removeUpdates(CompatLocationListener);
-            gpsLocationManager.removeGpsStatusListener(this);
-            gpsLocationManager.removeNmeaListener(mNmeaListener);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                gpsLocationManager.removeUpdates(CompatLocationListener);
+                gpsLocationManager.removeGpsStatusListener(this);
+                gpsLocationManager.removeNmeaListener(mNmeaListener);
+            }
+
             gpsLocationManager = null;
         }
 
@@ -353,13 +367,16 @@ public class LocationService extends Service implements LocationListener, GpsSta
         Location location = null;
         final LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         for (final String provider : lm.getProviders(true)) {
-            Location loc = lm.getLastKnownLocation(provider);
-            System.out.println(" getLastLocation : " + provider);
-            if (location != null && loc != null) {
-                if (loc.getAccuracy() > location.getAccuracy())
-                    loc = location;
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Location loc = lm.getLastKnownLocation(provider);
+                Log.d(TAG, " getLastLocation : " + provider);
+                if (location != null && loc != null) {
+                    if (loc.getAccuracy() > location.getAccuracy())
+                        loc = location;
+                }
+                location = loc;
             }
-            location = loc;
         }
         return location;
 
@@ -461,15 +478,15 @@ public class LocationService extends Service implements LocationListener, GpsSta
             mRunnableChange = new Runnable() {
                 @Override
                 public void run() {
-                    final boolean gps_enabled = gpsLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-                    Log.e(TAG, "PROVIDERS_CHANGED_ACTION;  gps_enabled = " + gps_enabled);
-
-                    if (gps_enabled)
-                        initGPS();
-
-                    //onGpsStatusChanged(gps_enabled ? 1 : 0);
-                    sendMessageToClients(MSG_GPS_STATUS_CHANGE, gps_enabled ? 1 : 0, 0, null);
+                    if (gpsLocationManager != null) {
+                        final boolean gps_enabled = gpsLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                        Log.e(TAG, "PROVIDERS_CHANGED_ACTION;  gps_enabled = " + gps_enabled);
+                        if (gps_enabled)
+                            initGPS();
+                        //onGpsStatusChanged(gps_enabled ? 1 : 0);
+                        sendMessageToClients(MSG_GPS_STATUS_CHANGE, gps_enabled ? 1 : 0, 0, null);
+                    }
                 }
             };
             mHandlerChange.postDelayed(mRunnableChange, CHANGE_DELAY);

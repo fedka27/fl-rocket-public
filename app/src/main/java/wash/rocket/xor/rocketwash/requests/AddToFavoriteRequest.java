@@ -56,7 +56,7 @@ public class AddToFavoriteRequest extends GoogleHttpClientSpiceRequest<ProfileRe
             result = out.toString("UTF-8");
         }
 
-        Log.d("SetPhoneRequest", "result = " + result);
+        Log.d("AddToFavoriteRequest", "result = " + result);
 
         //ObjectMapper mapper = new ObjectMapper();
         //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

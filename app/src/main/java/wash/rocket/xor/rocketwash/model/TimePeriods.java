@@ -64,7 +64,6 @@ public class TimePeriods implements Parcelable {
         this.date_td = date_td;
     }
 
-
     public boolean isToday() {
         Calendar c = Calendar.getInstance();
         c.setTime(date_td);
@@ -81,7 +80,8 @@ public class TimePeriods implements Parcelable {
     public boolean isTomorrow() {
         Calendar c = Calendar.getInstance();
         c.setTime(date_td);
-        c.roll(Calendar.DAY_OF_MONTH, 1);
+        //c.roll(Calendar.DAY_OF_MONTH, 1);
+        c.add(Calendar.DAY_OF_MONTH, 1);
         int d = c.get(Calendar.DAY_OF_MONTH);
         int m = c.get(Calendar.MONTH);
         int y = c.get(Calendar.YEAR);

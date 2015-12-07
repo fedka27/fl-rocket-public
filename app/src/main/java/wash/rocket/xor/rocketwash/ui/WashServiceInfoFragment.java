@@ -1024,7 +1024,9 @@ public class WashServiceInfoFragment extends BaseFragment {
                 TimePeriods d;
                 for (int i = 0; i < time_periods.size(); i++) {
                     d = time_periods.get(i);
-                    d.setToday(time_periods.get(0).getDate());
+                    //d.setToday(time_periods.get(0).getDate());
+                    Calendar c = Calendar.getInstance();
+                    d.setToday(c.getTime());
 
                     if (d.isToday()) {
                         today = true;

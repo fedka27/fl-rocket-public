@@ -260,6 +260,7 @@ public class SendSmsFragment extends BaseFragment {
         public void onRequestFailure(SpiceException spiceException) {
             showToastError(R.string.request_pin_phone_error);
             progressBar.setVisibility(View.GONE);
+            Log.w("PinRequestListener", "onRequestFailure");
         }
 
         @Override
@@ -286,13 +287,16 @@ public class SendSmsFragment extends BaseFragment {
         public void onRequestFailure(SpiceException spiceException) {
             showToastError(R.string.request_pin_error);
             progressBar.setVisibility(View.GONE);
+            Log.w("PhoneSetListener", "onRequestFailure");
         }
 
         @Override
         public void onRequestSuccess(final ProfileResult result) {
 
             if (result != null && Constants.SUCCESS.equals(result.getStatus())) {
-                //Log.d("PhoneSetListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
+
+                Log.d("PhoneSetListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
+
                 if (TextUtils.isEmpty(result.getData().getPhone())) {
                     waiting = false;
                     stopCalculateTimer();
@@ -334,6 +338,7 @@ public class SendSmsFragment extends BaseFragment {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
 
+            Log.w("CreateEmptyUserListener", "onRequestFailure");
         }
 
         @Override
@@ -354,7 +359,7 @@ public class SendSmsFragment extends BaseFragment {
     private class SaveProfileRequestListener implements RequestListener<ProfileResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            Log.d("SaveProfileRequestListener", "onRequestFailure");
+            Log.w("SaveProfileRequestListener", "onRequestFailure");
         }
 
         @Override
@@ -368,7 +373,7 @@ public class SendSmsFragment extends BaseFragment {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
 
-            Log.d("CreateCarListener", "onRequestFailure");
+            Log.w("CreateCarListener", "onRequestFailure");
         }
 
         @Override
