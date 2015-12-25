@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -112,7 +113,7 @@ public class LoginFragment extends BaseFragment {
 
         btnReplyPin = (Button) getView().findViewById(R.id.btnReplyPin);
 
-        btnLogin = (Button) getView().findViewById(R.id.btnShare);
+        btnLogin = (Button) getView().findViewById(R.id.btnLogin);
         btnRegister = (Button) getView().findViewById(R.id.btnRegister);
         btnSkipRegistration = (Button) getView().findViewById(R.id.btnSkipRegistration);
 
@@ -308,9 +309,9 @@ public class LoginFragment extends BaseFragment {
         h.post(new Runnable() {
             @Override
             public void run() {
-                txtCaption.setVisibility(View.VISIBLE);
-                btnRegister.setVisibility(View.VISIBLE);
-                btnSkipRegistration.setVisibility(View.VISIBLE);
+                // txtCaption.setVisibility(View.VISIBLE);
+                // btnRegister.setVisibility(View.VISIBLE);
+                // btnSkipRegistration.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -321,9 +322,9 @@ public class LoginFragment extends BaseFragment {
         h.post(new Runnable() {
             @Override
             public void run() {
-                txtCaption.setVisibility(View.GONE);
-                btnRegister.setVisibility(View.GONE);
-                btnSkipRegistration.setVisibility(View.GONE);
+                //  txtCaption.setVisibility(View.GONE);
+                //  btnRegister.setVisibility(View.GONE);
+                //  btnSkipRegistration.setVisibility(View.GONE);
             }
         });
     }
@@ -374,7 +375,6 @@ public class LoginFragment extends BaseFragment {
         }
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -389,11 +389,16 @@ public class LoginFragment extends BaseFragment {
         }
     }
 
-
     private void resetPINtimer() {
         waiting = false;
         stopCalculateTimer();
         pref.setLastTimeClick(-1);
         btnReplyPin.setText(R.string.fragment_login_btn_retry_pin);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.d(TAG, "onConfigurationChanged");
     }
 }

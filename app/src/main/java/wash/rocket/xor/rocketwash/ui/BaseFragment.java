@@ -23,6 +23,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -66,6 +67,7 @@ public class BaseFragment extends Fragment {
     protected static final String TAG = BaseFragment.class.getSimpleName();
     private static final int DIALOG_SHARE = 100;
     private static final String DIALOG_SHARE_TAG = "DIALOG_SHARE";
+    private static final int PERMISSION_REQUEST_CALL_PHONE = 1;
     //private SpiceManager spiceManager = new SpiceManager(RobospiceService.class);
     private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceServiceEx.class);
     protected SoftKeyboard softKeyboard;
@@ -90,13 +92,7 @@ public class BaseFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         pref = new Preferences(getActivity());
-
         overrideFonts(getActivity(), getView());
-
-        if (getView() == null)
-            return;
-
-
     }
 
     @Nullable
@@ -445,9 +441,28 @@ public class BaseFragment extends Fragment {
         return toolbar;
     }
 
+    private String mPhone;
+    private int mService_id;
+    private String mName;
+
     protected void call(String phone, int service_id, String name) {
 
+        mPhone = phone;
+        mService_id = service_id;
+        mName = name;
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (getActivity().checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, PERMISSION_REQUEST_CALL_PHONE);
+            } else if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                internalCall(phone, service_id, name);
+            }
+        } else {
+            internalCall(phone, service_id, name);
+        }
+    }
+
+    private void internalCall(String phone, int service_id, String name) {
         phone = phone == null ? "" : phone.replace("(", "").replace(")", "").replace(" ", "").replace("-", "");
         Log.d(TAG, "cal " + phone);
         //Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
@@ -628,5 +643,22 @@ public class BaseFragment extends Fragment {
 
     public void setEventKeyboard(boolean value) {
         mEventKeyboard = value;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CALL_PHONE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                        internalCall(mPhone, mService_id, mName);
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Доступ к телефонии запрещен", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 }

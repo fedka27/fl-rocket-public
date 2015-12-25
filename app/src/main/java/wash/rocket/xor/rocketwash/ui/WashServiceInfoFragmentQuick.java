@@ -1,13 +1,16 @@
 package wash.rocket.xor.rocketwash.ui;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -77,6 +80,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
     private static final String SERVICE = "service";
 
     private static final int FRAGNEBT_SERVCES = 1;
+    private static final int PERMISSION_REQUEST_WRITE_STORAGE = 2;
 
     private static final int DIALOG_WASH1 = 3;
     private static final int DIALOG_WASH2 = 4;
@@ -309,6 +313,7 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         c.set(Calendar.MINUTE, 59);
         String b = util.dateToZZ(c.getTime());
         getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "times", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
+        checkPermissions();
     }
 
     @Override
@@ -721,4 +726,31 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
             mProgressBar3.setVisibility(View.GONE);
         }
     }
+
+    private void checkPermissions() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_WRITE_STORAGE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+
+        switch (requestCode) {
+            case PERMISSION_REQUEST_WRITE_STORAGE:
+
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //mMap.in
+                } else {
+                    Toast.makeText(getActivity(), "Доступ к внутреннему накопителю запрещен", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+        }
+    }
+
 }

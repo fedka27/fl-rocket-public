@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -11,11 +12,11 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -36,8 +37,12 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     private static final String FRAGMENT_LOADER_TAG = "login";
     private static final int FRAGMENT_GPS = 1;
     private static final int FRAGMENT_NETWORK = 2;
+
     private static final int PERMISSION_REQUEST_FINE_LOCATION = 0;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+
+    private boolean pCheck1 = false;
+    private boolean pCheck2 = false;
 
     private Preferences pref;
     private Intent mServiceIntent;
@@ -58,8 +63,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         if (savedInstanceState == null) {
             init();
         }
-
-        //  restoreTargets();
     }
 
     private void init() {
@@ -87,7 +90,14 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     public void onLogged() {
         pref.setRegistered(true);
         removePrevFragments();
-        showLoaderFragment();
+
+        if (!enableGPS()) {
+            if (pref.getShowDialogGps()) {
+                showGPSFragment();
+            } else
+                showLoaderFragment();
+        } else showLoaderFragment();
+        //showLoaderFragment();
     }
 
     @Override
@@ -164,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
                 if (networkInfo.getState().equals(NetworkInfo.State.CONNECTED)) {
                     return true;
                 }
-
             }
         } else {
             if (connectivityManager != null) {
@@ -187,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
 
 
     public boolean enableGPS() {
+        checkPermissions();
+
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
@@ -297,23 +308,48 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        removePrevFragments();
-        init();
-    }
 
-    private void requestFineLocation() {
-        // Permission has not been granted and must be requested.
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_FINE_LOCATION);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_COARSE_LOCATION:
+                pCheck1 = true;
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    if (pCheck2) {
+                        removePrevFragments();
+                        init();
+                    }
+
+                } else {
+                    Toast.makeText(this, "Доступ к GPS/Glonass запрещен", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case PERMISSION_REQUEST_FINE_LOCATION:
+                pCheck2 = true;
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (pCheck1) {
+                        removePrevFragments();
+                        init();
+                    }
+
+                } else {
+                    Toast.makeText(this, "Доступ к GPS/Glonass запрещен", Toast.LENGTH_SHORT).show();
+                }
+
+
+                break;
         }
     }
 
-    private void requestCoarseLocation() {
-        // Permission has not been granted and must be requested.
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_COARSE_LOCATION);
+    private void checkPermissions() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (!pCheck1 && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+            }
+
+            if (!pCheck2 && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_FINE_LOCATION);
+            }
         }
     }
-
-
 }

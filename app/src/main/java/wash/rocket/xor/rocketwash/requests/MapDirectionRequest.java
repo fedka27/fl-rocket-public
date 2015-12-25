@@ -126,7 +126,6 @@ public class MapDirectionRequest extends GoogleHttpClientSpiceRequest<MapRouteRe
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 

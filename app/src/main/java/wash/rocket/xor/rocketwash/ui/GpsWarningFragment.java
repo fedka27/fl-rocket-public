@@ -80,7 +80,6 @@ public class GpsWarningFragment extends BaseFragment {
         });
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
             //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
             Snackbar.make(getView(), "Нет доступа к GPS , запросить разрешение ?",
                     Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
@@ -90,7 +89,6 @@ public class GpsWarningFragment extends BaseFragment {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
                 }
             }).show();
-
         }
         else
         {
@@ -105,29 +103,7 @@ public class GpsWarningFragment extends BaseFragment {
             }).show();*/
         }
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            /*
-            Snackbar.make(getView(), "Нет доступа к GPS , запросить разрешение ?",
-                    Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Request the permission
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_COARSE);
-                }
-            }).show();*/
-        }
-        else
-        {
-            /*
-            Snackbar.make(getView(), "ACCESS_COARSE_LOCATION ок ?",
-                    Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Request the permission
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_COARSE);
-                }
-            }).show();*/
-        }
+
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
             Snackbar.make(getView(), "ACCESS_NETWORK_STATE ? ",

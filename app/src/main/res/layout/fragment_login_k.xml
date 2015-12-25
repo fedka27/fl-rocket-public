@@ -1,22 +1,23 @@
-<RelativeLayout android:id="@+id/main"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                tools:context="ru.xor.taxicall.Activity_main$PlaceholderFragment">
+<LinearLayout
+    android:id="@+id/main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <requestFocus/>
 
-    <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
-                                       xmlns:android="http://schemas.android.com/apk/res/android"
-                                       xmlns:app="http://schemas.android.com/apk/res-auto"
-                                       android:layout_width="match_parent"
-                                       android:layout_height="wrap_content"
-                                       android:layout_alignParentTop="true"
-                                       android:background="?attr/colorPrimary"
-                                       android:elevation="2dp"
-                                       app:theme="@style/AppTheme">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:elevation="2dp"
+        app:theme="@style/AppTheme">
 
         <TextView
             android:id="@+id/textView2"
@@ -35,12 +36,11 @@
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/layoutButtons"
         android:layout_below="@+id/toolbar"
-        android:fillViewport="true"
-        android:minHeight="80dp">
+        android:layout_weight="1"
+        android:fillViewport="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,7 +49,8 @@
             android:focusableInTouchMode="true"
             android:orientation="vertical"
             android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:paddingRight="20dp"
+            >
 
             <TextView
                 android:id="@+id/txtCaption"
@@ -80,11 +81,11 @@
                     android:focusableInTouchMode="false"
                     android:inputType="text"
                     android:lines="1"
+                    android:longClickable="false"
                     android:maxLines="1"
                     android:text="4654"
                     android:textColor="@color/primary_text_color"
-                    android:textSize="@dimen/text_16sp"
-                    android:longClickable="false"/>
+                    android:textSize="@dimen/text_16sp"/>
 
                 <EditText
                     android:id="@+id/edPhone"
@@ -103,7 +104,7 @@
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp">
 
                 <EditText
@@ -133,53 +134,62 @@
                     android:text="@string/fragment_login_btn_retry_pin"
                     android:textColor="@color/white"
                     android:textSize="@dimen/button_small_text_size"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"/>
             </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/layoutButtons"
+    <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
+        android:fillViewport="false">
 
-        <Button
-            android:id="@+id/btnLogin"
+        <LinearLayout
+            android:id="@+id/layoutButtons"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/button_green_selector"
-            android:text="@string/fragment_login_btn_enter"
-            android:textColor="@color/white"/>
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
 
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/button_blue_selector"
-            android:text="@string/fragment_login_btn_register"
-            android:textColor="@color/white"/>
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_green_selector"
+                android:text="@string/fragment_login_btn_enter"
+                android:textColor="@color/white"
+                android:layout_marginBottom="15dp"/>
 
-        <Button
-            android:id="@+id/btnSkipRegistration"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/button_stroke_selector"
-            android:text="@string/fragment_login_btn_skip"
-            android:textColor="@color/button_blue"/>
-    </LinearLayout>
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/button_blue_selector"
+                android:text="@string/fragment_login_btn_register"
+                android:textColor="@color/white"/>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="@style/CustomProgressBar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerInParent="true"/>
+            <Button
+                android:id="@+id/btnSkipRegistration"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/button_stroke_selector"
+                android:text="@string/fragment_login_btn_skip"
+                android:textColor="@color/button_blue"/>
 
-</RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

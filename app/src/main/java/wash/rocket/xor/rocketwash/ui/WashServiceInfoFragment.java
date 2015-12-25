@@ -1,14 +1,17 @@
 package wash.rocket.xor.rocketwash.ui;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +38,7 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -93,6 +97,8 @@ import wash.rocket.xor.rocketwash.widgets.SlidingTabLayout;
 public class WashServiceInfoFragment extends BaseFragment {
 
     public static final String TAG = "WashServiceInfoFragment";
+
+    private static final int PERMISSION_REQUEST_WRITE_STORAGE = 2;
 
     private static final String POINTS = "points";
     private static final String ID_SERVICE = "id_service";
@@ -656,6 +662,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "times", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
 
         restoreTargets();
+        checkPermissions();
     }
 
     private void setUpMapIfNeeded() {
@@ -1513,5 +1520,31 @@ public class WashServiceInfoFragment extends BaseFragment {
         f = getFragmentManager().findFragmentByTag(ChoiceServicesFragment.TAG);
         if (f != null)
             f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_SERVCES);
+    }
+
+    private void checkPermissions() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_WRITE_STORAGE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+
+        switch (requestCode) {
+            case PERMISSION_REQUEST_WRITE_STORAGE:
+
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //mMap.in
+                } else {
+                    Toast.makeText(getActivity(), "Доступ к внутреннему накопителю запрещен", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+        }
     }
 }
