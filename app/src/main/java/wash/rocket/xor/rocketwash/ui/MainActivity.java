@@ -279,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
             getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
     }
 
-
     private void restoreTargets() {
         Log.d(TAG, "restoreTargets");
         List<Fragment> flist = getSupportFragmentManager().getFragments();
@@ -312,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         switch (requestCode) {
             case PERMISSION_REQUEST_COARSE_LOCATION:
                 pCheck1 = true;
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if ( grantResults.length >=1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     if (pCheck2) {
                         removePrevFragments();
@@ -326,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
 
             case PERMISSION_REQUEST_FINE_LOCATION:
                 pCheck2 = true;
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length >=1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (pCheck1) {
                         removePrevFragments();
                         init();
@@ -335,8 +334,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
                 } else {
                     Toast.makeText(this, "Доступ к GPS/Glonass запрещен", Toast.LENGTH_SHORT).show();
                 }
-
-
                 break;
         }
     }
