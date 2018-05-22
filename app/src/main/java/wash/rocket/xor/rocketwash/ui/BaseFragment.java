@@ -533,7 +533,7 @@ public class BaseFragment extends Fragment {
                 if (!TextUtils.isEmpty(countryiso)) {
                     for (int i = 0; i < countries.size(); i++) {
                         if (countries.get(i).mCountryIso.equals(countryiso)) {
-                            return "+" + country.mDialPrefix;
+                            return "+" + (country == null ? "" : country.mDialPrefix);
                         }
                     }
                 } else {

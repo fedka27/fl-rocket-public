@@ -97,7 +97,7 @@ public class NiceSupportMapFragment extends SupportMapFragment {
         if (drawingView == null)
             return view; // If we didn't get anything then abort
 
-        drawingView.setBackgroundColor(transparent); // Stop black artifact from
+//        drawingView.setBackgroundColor(transparent); // Stop black artifact from
         // being left behind on
         // scroll
 
