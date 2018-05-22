@@ -2,263 +2,409 @@
 <items version="2" >
 
     <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\io.fabric.sdk.android\fabric\1.3.6\jars\classes.jar"
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/com.octo.android.robospice/robospice/1.4.14/fffe1563473feb2f956608554d3e97ad805914a7/robospice-1.4.14.jar"
         jumboMode="false"
-        revision="23.0.2"
-        sha1="fc82596d7f7683c8b3a7e5715a2ed5295c586887">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-af7188a36491f5077585f3295c26903576513b7b.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.github.shell-software\viewmover\1.1.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="3d6dc28c575755c91be7f6a69803e4ebe98c7c7d">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-7c0991e59ec3d0a09bbece6a0c65370f450273c2.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\com.google.code.findbugs\jsr305\1.3.9\40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf\jsr305-1.3.9.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\jsr305-1.3.9-4335633369a798e8e0d8f5e34b3476b03af286c1.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\23.1.1\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="5e412e954a24c5310a459c09870e4e2081aceb03">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-ffc3d6f138ee019eff75910931b887d6e94ea717.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.github.shell-software\uitools\1.1.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="418307d960be5f7c5fe13794b7283f5fd09d0c17">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-3701d00238af12ba4e2e0d7847cb9e86f3e61be7.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.5.1\e2a00ad1d7e540ec395e9296a34da484c8888d4d\jackson-core-2.5.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="e2a00ad1d7e540ec395e9296a34da484c8888d4d">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\jackson-core-2.5.1-215a767b4577d7fdb6549a66c36d3014cd7aad84.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client\1.20.0\93d82db2bca534960253f43424b2ba9d7638b4d2\google-http-client-1.20.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="93d82db2bca534960253f43424b2ba9d7638b4d2">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\google-http-client-1.20.0-180a11e287f6eee2fe33a6eeb30ad9dc29692926.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\com.octo.android.robospice\robospice-google-http-client\1.4.14\ba94c1a2a25bf4ba2d4e2d3ae694ff9fc4acfddb\robospice-google-http-client-1.4.14.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="ba94c1a2a25bf4ba2d4e2d3ae694ff9fc4acfddb">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\robospice-google-http-client-1.4.14-517600851a5939cc559e120b7e685fe9e12593ff.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1-588044fc323b8845955bb7401af4033c01abe424.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client-jackson\1.20.0\843dd7d334a7bcc2b1d12f7b6d61594bab09d489\google-http-client-jackson-1.20.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="843dd7d334a7bcc2b1d12f7b6d61594bab09d489">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\google-http-client-jackson-1.20.0-77d2473ebbc5ced59af9eab37569d3e87c8de862.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\com.octo.android.robospice\robospice-cache\1.4.14\1a13bea0b3ae105c44cb6be7fc76b6d36098faf5\robospice-cache-1.4.14.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="1a13bea0b3ae105c44cb6be7fc76b6d36098faf5">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\robospice-cache-1.4.14-a11818c4f151c322e9f3f4ec0d3d2c0eed56491b.jar" />
-    </item>
-    <item
-        jar="X:\android-sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1-80e6e1360dfa96c4c8639af190dc63830836f26b.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\de.hdodenhof\circleimageview\1.3.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="ac6948cce36f694f3eb3d73a135e298dc4b3527a">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-5e82b703a5c0a27da5925daca19fe7cb75f355e6.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-bf6315e13d17225ff49208e1473eb618f3cd3f81.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.crashlytics.sdk.android\beta\1.1.3\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="b7a78990c10481f43cb4909f535ef4f11e60f1ab">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-a6496043b859153a20ce867684c0537e2a21bec3.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.android.support\design\23.1.1\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="379471b2bd17d9737c050345c08e8c7d16589784">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-9f54505d4eda6c0c3b22553c9f0f7f6b6c8ed868.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.4.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="fef2b3e4b6b1b0e5fe7b69fa137a5fa55a3182ab">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-a96f9586723a62528f9e58fcaf190a360db5ea23.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\org.jbundle.util.osgi.wrapped\org.jbundle.util.osgi.wrapped.org.apache.http.client\4.1.2\98c86e42679fe7ac066f6c242e0d14f0bce0bb7c\org.jbundle.util.osgi.wrapped.org.apache.http.client-4.1.2.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="98c86e42679fe7ac066f6c242e0d14f0bce0bb7c">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\org.jbundle.util.osgi.wrapped.org.apache.http.client-4.1.2-d877234ad22bd2ce29bf5b12a6730e0e64202367.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\com.octo.android.robospice\robospice\1.4.14\fffe1563473feb2f956608554d3e97ad805914a7\robospice-1.4.14.jar"
-        jumboMode="false"
-        revision="23.0.2"
+        optimize="true"
+        revision="25.0.0"
         sha1="fffe1563473feb2f956608554d3e97ad805914a7">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\robospice-1.4.14-2c7832df2cf2f4010e33896d157da2d39b0a995e.jar" />
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/robospice-1.4.14_ec39133990f276213da1eba0a81990246f8bb844.jar" />
     </item>
     <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.4.0\jars\classes.jar"
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/com.octo.android.robospice/robospice-google-http-client/1.4.14/ba94c1a2a25bf4ba2d4e2d3ae694ff9fc4acfddb/robospice-google-http-client-1.4.14.jar"
         jumboMode="false"
-        revision="23.0.2"
+        optimize="true"
+        revision="25.0.0"
+        sha1="ba94c1a2a25bf4ba2d4e2d3ae694ff9fc4acfddb">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/robospice-google-http-client-1.4.14_4f759a9aaa6f3b5d163bc9864a749ba6aa502b32.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/11.0.4/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="41f47bbcd281fdb1e42e220220ab3bfa1da591e0">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-location-11.0.4_db9d7578505936b864bce957d7077b58b7e11474.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
         sha1="04de44f90606c77f3b28cf44861f306290505aac">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-9e1327f3d02b659a0481e9198e26ec97f6815ce7.jar" />
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-maps-8.4.0_924fef7d0eab285e10901d28196a73297c233070.jar" />
     </item>
     <item
-        jar="X:\Projects\game_prj\Rocketwash\app\libs\nineoldandroids-2.4.0.jar"
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/support-v4/25.2.0/jars/classes.jar"
         jumboMode="false"
-        revision="23.0.2"
-        sha1="59f19e43354d32de831379c23ce03bb259a4c2b7">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\nineoldandroids-2.4.0-32fe8dbdee72b3276f219a62ca13c38cf30e1abb.jar" />
+        optimize="true"
+        revision="25.0.0"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-25.2.0_ebd54537e8a6fe344904fddad7773ce62c000384.jar" />
     </item>
     <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.github.shell-software\fab\1.1.2\jars\classes.jar"
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/com.bluelinelabs/logansquare/1.1.0/9c105f79ad6cab7b9c8ea384f34d0c753fd50eea/logansquare-1.1.0.jar"
         jumboMode="false"
-        revision="23.0.2"
-        sha1="48bbecbdd3ed42e9df1b94a945480838e3bb208b">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-6db9270d456bd97a40a4324dd865c89137571b23.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\libs\libphonenumber-7.0.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="5882a8e1326a4eca13417c40122a9fdb220ed26b">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\libphonenumber-7.0.1-8360a133d1018cef67bb2c94a2af1df10da4fa32.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.crashlytics.sdk.android\answers\1.3.2\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="e99413cdc93bd7b001d312a4a33d25ac21042f69">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-e55b05e6c59ba09872e6b8d70c4c9992aa17478e.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.crashlytics.sdk.android\crashlytics-core\2.3.5\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="d18ba1d0eff55680fdf9a35f70a6091e4bc1adcb">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-e98ce6c606e9ef4f6c4419f8960ebc81aae39d16.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-016fc801eccf01c747adba0cc4f6aaae8e0832c6.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.android.support\multidex\1.0.1\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="78ea232052df889856dcb7b7b542707c89bb3bfb">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-2b9fbaf363d5641eb601fb66d8cd3ce19b5622fc.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\org.slf4j\slf4j-api\1.7.9\872ec63b41181e29ad5a3723f1417356e2d2c0f2\slf4j-api-1.7.9.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="872ec63b41181e29ad5a3723f1417356e2d2c0f2">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\slf4j-api-1.7.9-cf8d96a131e4d17432f722ca07aea38fee7c96a7.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.crashlytics.sdk.android\crashlytics\2.5.2\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="0c7f9fb9a729166c69fa585e01be2fe8fab4f45c">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-4785660ae563417133cf582366c60a8cd5a85ca1.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-lang3\3.3.2\90a3822c38ec8c996e84c16a3477ef632cbc87a3\commons-lang3-3.3.2.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="90a3822c38ec8c996e84c16a3477ef632cbc87a3">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\commons-lang3-3.3.2-a728489c8af97490b5391136c3e29dd66fac7239.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-analytics\8.4.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="1c9f35e952b212c843f7bd2c7eec8e82ad95602e">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-3b7b91a2df0505276590f8426a50b3154b1503b1.jar" />
-    </item>
-    <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="8e673cdfadd8f2d98fdb2fda2285c30f6e449782">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-6e744defd4f790ffa75eac2861c99d2b124b74e8.jar" />
-    </item>
-    <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\com.bluelinelabs\logansquare\1.1.0\9c105f79ad6cab7b9c8ea384f34d0c753fd50eea\logansquare-1.1.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
+        optimize="true"
+        revision="25.0.0"
         sha1="9c105f79ad6cab7b9c8ea384f34d0c753fd50eea">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\logansquare-1.1.0-44871ba2a0b9d7692ebd4d26e6a9b68faffeae30.jar" />
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/logansquare-1.1.0_d4a65f39e1a4d824a976d725ba7fae829ced3e9c.jar" />
     </item>
     <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\org.codehaus.jackson\jackson-core-asl\1.9.11\e32303ef8bd18a5c9272780d49b81c95e05ddf43\jackson-core-asl-1.9.11.jar"
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.2.0/jars/classes.jar"
         jumboMode="false"
-        revision="23.0.2"
-        sha1="e32303ef8bd18a5c9272780d49b81c95e05ddf43">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\jackson-core-asl-1.9.11-408b65d2fd10f6e8155ad15343b85e4bb08cdaf5.jar" />
+        optimize="true"
+        revision="25.0.0"
+        sha1="ee394a892dd21c03a528139c1e8d4e0e1264ac84">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-support-media-compat-25.2.0_aa90c2f9eeab7962aad3d1d9480140faaac56984.jar" />
     </item>
     <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\8.4.0\jars\classes.jar"
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.github.shell-software/fab/1.1.2/jars/classes.jar"
         jumboMode="false"
-        revision="23.0.2"
-        sha1="a8412b654dab86d57bf90683367488211c8a81f1">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-b7dbc59bca3afd4bede516ab05445f9fb43c10ce.jar" />
+        optimize="true"
+        revision="25.0.0"
+        sha1="48bbecbdd3ed42e9df1b94a945480838e3bb208b">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.github.shell-software-fab-1.1.2_ec89ba0928bd732119488a801f7e2b9a27fd9015.jar" />
     </item>
     <item
-        jar="X:\Projects\game_prj\Rocketwash\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.1.1\jars\classes.jar"
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-jackson/1.20.0/843dd7d334a7bcc2b1d12f7b6d61594bab09d489/google-http-client-jackson-1.20.0.jar"
         jumboMode="false"
-        revision="23.0.2"
-        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\classes-fc201dbeee1bc1f2352c8b749138f143d1ecd4e9.jar" />
+        optimize="true"
+        revision="25.0.0"
+        sha1="843dd7d334a7bcc2b1d12f7b6d61594bab09d489">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/google-http-client-jackson-1.20.0_27ae8a55b6b75d7f302c451090b7c2f55d4fef45.jar" />
     </item>
     <item
-        jar="X:\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client-android\1.19.0\e3f11020c2c812112803d252d1392872d3f619c8\google-http-client-android-1.19.0.jar"
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/org.jbundle.util.osgi.wrapped/org.jbundle.util.osgi.wrapped.org.apache.http.client/4.1.2/98c86e42679fe7ac066f6c242e0d14f0bce0bb7c/org.jbundle.util.osgi.wrapped.org.apache.http.client-4.1.2.jar"
         jumboMode="false"
-        revision="23.0.2"
+        optimize="true"
+        revision="25.0.0"
+        sha1="98c86e42679fe7ac066f6c242e0d14f0bce0bb7c">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/org.jbundle.util.osgi.wrapped.org.apache.http.client-4.1.2_08f73e12836613e50d3a7ccfcb41fbf5d7e3e749.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="67eb33110dbacb46a48175b08ae0c96761d2c17d">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-support-compat-25.2.0_72fed3c95c5cc84bf81165cd8853f208cfbd696e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.20.0/93d82db2bca534960253f43424b2ba9d7638b4d2/google-http-client-1.20.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="93d82db2bca534960253f43424b2ba9d7638b4d2">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/google-http-client-1.20.0_acd24261e9085144c34cbd5868f62cb2be842fd3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/11.0.4/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="70ffe00aaf049893f59d1dad57bd82992faa38ef">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-base-11.0.4_1b2360892cece2bc5a4ff0fcbce951e5244f321e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/transition/25.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="0c6d948e6cb9ea6f535d175fb61ba2930719c0e9">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-transition-25.0.0_985cc926487bae1bab92f4389a333fb01467b1dc.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.9/872ec63b41181e29ad5a3723f1417356e2d2c0f2/slf4j-api-1.7.9.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="872ec63b41181e29ad5a3723f1417356e2d2c0f2">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/slf4j-api-1.7.9_b21cccbef60a308b14679a97252b8b865d930d6c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/25.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="5e497d60f0cb6ce87c458ac5420a46d0fed49bd0">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-25.0.0_d2ab73875d3e712048e71eab2db3e87f6ab983e6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/libs/nineoldandroids-2.4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="59f19e43354d32de831379c23ce03bb259a4c2b7">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/nineoldandroids-2.4.0_46e908de77303541a4c715585349d4ed0763bf05.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/11.0.4/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="2430e711762a749feb00b3d64858ca4768251b9d">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-tasks-11.0.4_abeab13e856ec03b9ef4b1ef383be433025e2ecd.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.github.shell-software/uitools/1.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="418307d960be5f7c5fe13794b7283f5fd09d0c17">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.github.shell-software-uitools-1.1.0_ada9b8bfa2f3a93f2f2257d4482c1c5456cd4975.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/support-fragment/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="8fe8a8f77d651982ce5e18f6187dc4daf914ac57">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-support-fragment-25.2.0_07bec0127af84d19f90f5db801cfbaef66e635ef.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/de.hdodenhof/circleimageview/1.3.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="ac6948cce36f694f3eb3d73a135e298dc4b3527a">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/de.hdodenhof-circleimageview-1.3.0_b50144afa9cc5ffe413027c78d6099e03d8afd2a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.3.2/90a3822c38ec8c996e84c16a3477ef632cbc87a3/commons-lang3-3.3.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="90a3822c38ec8c996e84c16a3477ef632cbc87a3">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/commons-lang3-3.3.2_6ffc56896491be2b6c57318722027f659a42ce2f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.github.shell-software/viewmover/1.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="3d6dc28c575755c91be7f6a69803e4ebe98c7c7d">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.github.shell-software-viewmover-1.1.0_9250efd59f50edb37871329f16943cd79d820516.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/25.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="8a372c4191f80489770a231f7be4820b204b886a">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-cardview-v7-25.0.0_f4a4ca5b8389cdeb78a09372a20e1c3d7d4c8a61.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/multidex/1.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="78ea232052df889856dcb7b7b542707c89bb3bfb">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-multidex-1.0.1_a43c993b4fbb8ee01ba093dfc01b099b644ff9e1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/io.fabric.sdk.android/fabric/1.3.6/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="fc82596d7f7683c8b3a7e5715a2ed5295c586887">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/io.fabric.sdk.android-fabric-1.3.6_1e1ddd8ae92fdc8a37696cc84c39e095fcc3bf39.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/libs/libphonenumber-7.0.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="5882a8e1326a4eca13417c40122a9fdb220ed26b">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/libphonenumber-7.0.1_55ad1d47f3ed880f56d52d5b5063411783e06f4e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.crashlytics.sdk.android/answers/1.3.2/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e99413cdc93bd7b001d312a4a33d25ac21042f69">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.crashlytics.sdk.android-answers-1.3.2_e481d5c2f6e4132cdea3673131194a5caf43156b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.5.1/e2a00ad1d7e540ec395e9296a34da484c8888d4d/jackson-core-2.5.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e2a00ad1d7e540ec395e9296a34da484c8888d4d">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/jackson-core-2.5.1_df53413834f8f8a3f10213bca8bd233b78d01d71.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e820b7be8c035dd522da4bc822e8a76c8e27921a">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-support-core-utils-25.2.0_b359efe24a2cd62bc0e988a0cbfd980e246696a7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/sdk/sdk/extras/android/m2repository/com/android/support/support-annotations/25.2.0/support-annotations-25.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="4a5a82a027706397fff621b22fd6fa796e91d7c5">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/support-annotations-25.2.0_36ceb367e4387a9d7f46db3a57025358bcafc670.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.crashlytics.sdk.android/crashlytics-core/2.3.5/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="d18ba1d0eff55680fdf9a35f70a6091e4bc1adcb">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.crashlytics.sdk.android-crashlytics-core-2.3.5_450ada41b64e8ab14f8f753646cb1c0b4038c17f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-android/1.19.0/e3f11020c2c812112803d252d1392872d3f619c8/google-http-client-android-1.19.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
         sha1="e3f11020c2c812112803d252d1392872d3f619c8">
-        <dex dex="X:\Projects\game_prj\Rocketwash\app\build\intermediates\pre-dexed\debug\google-http-client-android-1.19.0-9c257cc0487b92537b32fecf4181950a6f9ad16f.jar" />
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/google-http-client-android-1.19.0_c76eb1194d55f88c1713a703c5c76c8f66c1b6f4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-analytics/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="1c9f35e952b212c843f7bd2c7eec8e82ad95602e">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-analytics-8.4.0_d074f3a6490b1ca70b2c545d69810b9da2c1f9e2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/25.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="53a420cd4f49274db6bd43475f8006ba67ef6bbd">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-animated-vector-drawable-25.0.0_0b3ad61e6c28812db18368513ab33896a5c391d2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.crashlytics.sdk.android/crashlytics/2.5.2/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="0c7f9fb9a729166c69fa585e01be2fe8fab4f45c">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.crashlytics.sdk.android-crashlytics-2.5.2_ed60f0f282e2cb58fb0e57f3556de55660b0e5bc.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/design/25.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="26384be22ddc74cfe197ebda9edbc7d1fd8bd537">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-design-25.0.0_b64a6eb3154288f9c7ce8719044fc62451157ddf.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/com.octo.android.robospice/robospice-cache/1.4.14/1a13bea0b3ae105c44cb6be7fc76b6d36098faf5/robospice-cache-1.4.14.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="1a13bea0b3ae105c44cb6be7fc76b6d36098faf5">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/robospice-cache-1.4.14_6a1ab96972ea164cd7a08822b76490eed75a96ce.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/1.3.9/40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf/jsr305-1.3.9.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/jsr305-1.3.9_25d1f20bd0bd2ae29de99e8c3c0a2a14ac33995c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/11.0.4/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="364364bf77b4a71afc5930fc3ae57b3f0eea637c">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-basement-11.0.4_5322ea4e34ce7d6e7242c81e4c308f585d695be4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.crashlytics.sdk.android/beta/1.1.3/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="b7a78990c10481f43cb4909f535ef4f11e60f1ab">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.crashlytics.sdk.android-beta-1.1.3_da2ef206f635112c3d6ec65b4a3a5e783888088b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="fa0446a14ed5dd3725047d6399ffea771a564b30">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-support-core-ui-25.2.0_54376f52d859b9783a2176840653ea0836854e7a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="d29714cc76b38157e3cbd034c66e1ec808eb4c19">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-25.0.0_942a8873869fb55e51ed86a318e5245d355de468.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="8bc45ce1f63d1a391fd38b32a201be5a42f9c95d">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-25.0.0_a32bea66ee0c537cd134d65717e6be5d924d38d9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/fit/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-core-asl/1.9.11/e32303ef8bd18a5c9272780d49b81c95e05ddf43/jackson-core-asl-1.9.11.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e32303ef8bd18a5c9272780d49b81c95e05ddf43">
+        <dex dex="/home/fit/dev/projects/other/rwandroid/app/build/intermediates/pre-dexed/debug/jackson-core-asl-1.9.11_87601daea5c70bcd21bfe34964d1252381e4e76d.jar" />
     </item>
 
 </items>
