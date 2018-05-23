@@ -543,7 +543,12 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
             reserved_time = time;
 
             progressBar.setVisibility(View.VISIBLE);
-            getSpiceManager().execute(new ReservationRequest(pref.getSessionID(), mService.getId(), pref.getCarModelId(), list, time), "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
+            getSpiceManager().execute(new ReservationRequest(pref.getSessionID(),
+                    mService.getId(),
+                    pref.getCarModelId(),
+                    mService.getOrganization_id(),
+                    list,
+                    time), "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
 
         } else if (prof != null) {
             getActivity()

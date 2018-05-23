@@ -27,13 +27,20 @@ public class ReservationRequest extends GoogleHttpClientSpiceRequest<Reservation
     private String session_id;
     private int carwash_id;
     private int car_id;
+    private int organization_id;
     private ArrayList<ChoiceService> list;
     private String url;
     private String time_from;
 
 
-    public ReservationRequest(String session_id, int carwash_id, int car_id, ArrayList<ChoiceService> list, String time_from) {
+    public ReservationRequest(String session_id,
+                              int carwash_id,
+                              int car_id,
+                              int organization_id,
+                              ArrayList<ChoiceService> list,
+                              String time_from) {
         super(ReservationResult.class);
+        this.organization_id = organization_id;
         this.url = Constants.URL + "reservations";
 
         this.session_id = session_id;
@@ -53,6 +60,7 @@ public class ReservationRequest extends GoogleHttpClientSpiceRequest<Reservation
                         //.appendQueryParameter("session_id", "" + session_id)
                 .appendQueryParameter("carwash_id", "" + carwash_id)
                 .appendQueryParameter("car_id", "" + car_id)
+                .appendQueryParameter("organization_id", "" + organization_id)
                         //.appendQueryParameter("time_from", "" + time_from.replace("+", "%2B").replace(":", "%3A"));
                 .appendQueryParameter("time_from", "" + time_from);
 

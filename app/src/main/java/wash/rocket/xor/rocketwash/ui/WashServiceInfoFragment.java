@@ -1362,7 +1362,13 @@ public class WashServiceInfoFragment extends BaseFragment {
             int id = radioGroupCars.getCheckedRadioButtonId();
             View v = radioGroupCars.findViewById(id);
             CarsAttributes c = (CarsAttributes) v.getTag();
-            getSpiceManager().execute(new ReservationRequest(pref.getSessionID(), mService.getId(), c.getId(), list, time), "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
+            getSpiceManager().execute(new ReservationRequest(pref.getSessionID(),
+                            mService.getId(),
+                            c.getId(),
+                            mService.getOrganization_id(),
+                            list,
+                            time),
+                    "reservation", DurationInMillis.ALWAYS_EXPIRED, new ReservationRequestListener());
 
         } else if (prof != null) {
             getActivity()
