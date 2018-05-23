@@ -627,7 +627,11 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                 case DIALOG_FAVORITE:
                     swipeListView.closeAnimateAll();
-                    getSpiceManager().execute(new AddToFavoriteRequest(pref.getSessionID(), list.get(mPosition).getId()), NEAREST_WASH_KEY_CASH, 3000, new AddFavoriteRequestListener());
+                    WashService washService = list.get(mPosition);
+                    getSpiceManager().execute(new AddToFavoriteRequest(pref.getSessionID(),
+                                    washService.getId(),
+                                    washService.getOrganization_id()),
+                            NEAREST_WASH_KEY_CASH, 3000, new AddFavoriteRequestListener());
                     break;
 
                 case DIALOG_HIDE:

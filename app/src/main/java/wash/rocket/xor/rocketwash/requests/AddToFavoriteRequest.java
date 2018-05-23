@@ -22,21 +22,24 @@ import wash.rocket.xor.rocketwash.util.Constants;
 public class AddToFavoriteRequest extends GoogleHttpClientSpiceRequest<ProfileResult> {
 
     private String baseUrl;
-    private int id;
     private String session_id;
+    private int id;
+    private int organization_id;
 
-    public AddToFavoriteRequest(String session_id, int id) {
+    public AddToFavoriteRequest(String session_id, int id, int organization_id) {
         super(ProfileResult.class);
         this.baseUrl = Constants.URL + "favourites";
-        this.id = id;
         this.session_id = session_id;
+        this.id = id;
+        this.organization_id = organization_id;
     }
 
     @Override
     public ProfileResult loadDataFromNetwork() throws IOException {
         String uri = Uri.parse(baseUrl)
                 .buildUpon()
-                .appendQueryParameter("id", "" +id)
+                .appendQueryParameter("id", "" + id)
+                .appendQueryParameter("organization_id", "" + organization_id)
                 .build().toString();
         Log.d("loadDataFromNetwork", "uri = " + uri);
 
@@ -61,10 +64,10 @@ public class AddToFavoriteRequest extends GoogleHttpClientSpiceRequest<ProfileRe
         //ObjectMapper mapper = new ObjectMapper();
         //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         //mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-       // ProfileResult res = mapper.readValue(result, getResultType());
+        // ProfileResult res = mapper.readValue(result, getResultType());
 
         ProfileResult res = LoganSquare.parse(result, ProfileResult.class);
-        
+
         res.getData().setString(result);
 
         return res;
