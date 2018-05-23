@@ -2,23 +2,10 @@
 <resources>
 
     <style name="RocketTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
         <item name="android:listChoiceIndicatorSingle">@drawable/rocket_btn_radio_holo_light</item>
         <item name="android:listChoiceIndicatorMultiple">@drawable/rocket_btn_check_holo_light</item>
-    </style>
-
-    <style name="EditTextRocket" parent="android:Widget.EditText">
-        <item name="android:background">@drawable/rocket_edit_text</item>
-        <item name="android:textColor">@color/primary_text_color</item>
-        <item name="android:height">@dimen/text_edit_height</item>
-        <item name="android:minHeight">@dimen/text_edit_height</item>
     </style>
 
 </resources>

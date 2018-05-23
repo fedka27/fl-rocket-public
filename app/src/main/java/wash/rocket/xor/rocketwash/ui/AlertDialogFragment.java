@@ -41,8 +41,6 @@ public class AlertDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -60,7 +58,7 @@ public class AlertDialogFragment extends DialogFragment {
         if (TextUtils.isEmpty(buttonCancel))
             buttonCancel = getActivity().getString(R.string.cancel);
 
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
                 .setIcon(R.drawable.ic_action_info_outline_blue)
                 .setTitle(title)
                 .setMessage(message)
