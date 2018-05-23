@@ -638,7 +638,10 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 case DIALOG_CANCEL_RESERVED:
                     swipeListView.closeAnimateAll();
                     mSwipeRefreshLayout.setRefreshing(true);
-                    getSpiceManager().execute(new ReserveCancelRequest(pref.getSessionID(), mReserved.getId()), "cancel", DurationInMillis.ALWAYS_EXPIRED, new CancelRequestListener());
+                    getSpiceManager().execute(new ReserveCancelRequest(pref.getSessionID(),
+                                    mReserved.getId(),
+                                    mReserved.getCarwash().getOrganization_id()),
+                            "cancel", DurationInMillis.ALWAYS_EXPIRED, new CancelRequestListener());
                     break;
             }
         }

@@ -360,7 +360,10 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                getSpiceManager().execute(new ReserveCancelRequest(pref.getSessionID(), mReserved.getId()), "cancel", DurationInMillis.ALWAYS_EXPIRED, new CancelRequestListener());
+                getSpiceManager().execute(new ReserveCancelRequest(pref.getSessionID(),
+                                mReserved.getId(),
+                                mReserved.getCarwash().getOrganization_id()),
+                        "cancel", DurationInMillis.ALWAYS_EXPIRED, new CancelRequestListener());
             }
         });
 

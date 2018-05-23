@@ -22,20 +22,24 @@ public class ReserveCancelRequest extends GoogleHttpClientSpiceRequest<ReserveCa
     private String session_id;
     private String url;
     private int id;
+    private int organization_id;
 
-    public ReserveCancelRequest(String session_id, int id) {
+    public ReserveCancelRequest(String session_id, int id, int organization_id) {
         super(ReserveCancelResult.class);
-        this.url = Constants.URL + "reservations";
+        this.url = Constants.URL + "reservations/%d";
         this.session_id = session_id;
         this.id = id;
+        this.organization_id = organization_id;
     }
 
     @Override
     public ReserveCancelResult loadDataFromNetwork() throws IOException {
         // Ln.d("Call web service " + baseUrl);
 
-        Uri.Builder bld = Uri.parse(url).buildUpon();
-        String uri = bld.build().toString() + "/" + id;
+        Uri.Builder bld = Uri.parse(String.format(url, id)).buildUpon();
+        String uri = bld
+                .appendQueryParameter("organization_id", "" + organization_id)
+                .build().toString();
         Log.d("ReservationRequest", " uri = " + uri);
 
         HttpHeaders header = new HttpHeaders();
