@@ -22,16 +22,23 @@ public class AvailableTimesRequest extends GoogleHttpClientSpiceRequest<Availabl
     private String baseUrl;
     private String session_id;
     private int id;
+    private int organization_id;
+    private int services_duration;
     private String time_range_start;
     private String time_range_end;
-    private int services_duration;
 
 
-    public AvailableTimesRequest(String session_id, int id, String time_range_start, String time_range_end, int services_duration) {
+    public AvailableTimesRequest(String session_id,
+                                 int id,
+                                 int organization_id,
+                                 String time_range_start,
+                                 String time_range_end,
+                                 int services_duration) {
         super(AvailableTimesResult.class);
         this.baseUrl = Constants.URL + "service_locations/%d/available_times";
         this.session_id = session_id;
         this.id = id;
+        this.organization_id = organization_id;
         this.time_range_start = time_range_start;
         this.time_range_end = time_range_end;
         this.services_duration = services_duration;
@@ -42,6 +49,7 @@ public class AvailableTimesRequest extends GoogleHttpClientSpiceRequest<Availabl
 
         String uri = Uri.parse(String.format(baseUrl, id))
                 .buildUpon()
+                .appendQueryParameter("organization_id", "" + organization_id)
                 .appendQueryParameter("time_range_start", time_range_start)
                 .appendQueryParameter("time_range_end", time_range_end)
                 .appendQueryParameter("services_duration", "" + services_duration)

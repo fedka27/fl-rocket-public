@@ -227,7 +227,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                 if (s.isActive()) {
 
-                    WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s);
+                    WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s);
                     f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
@@ -257,7 +257,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             }
         });
 
-        AlertDialogFragment
         adapter.setOnSelectedItem(new WashServicesAdapter.IOnSelectedItem() {
             @Override
             public void onSelectedItem(WashService item, int position, int button) {

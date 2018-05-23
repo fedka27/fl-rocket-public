@@ -296,7 +296,11 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         if (id_model == 0)
             id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
 
-        getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
+        getSpiceManager().execute(new ChoiseServiceRequest(mIdService,
+                        id_model,
+                        mService.getOrganization_id(),
+                        pref.getSessionID()),
+                mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
 
         //TimeZone utc = TimeZone.getTimeZone("UTC");
         //Calendar c = Calendar.getInstance(utc);
@@ -312,7 +316,13 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
         c.set(Calendar.HOUR_OF_DAY, 23);
         c.set(Calendar.MINUTE, 59);
         String b = util.dateToZZ(c.getTime());
-        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "times", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
+        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(),
+                        mService.getId(),
+                        mService.getOrganization_id(),
+                        a,
+                        b,
+                        30),
+                "times", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
         checkPermissions();
     }
 

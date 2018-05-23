@@ -147,7 +147,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                 Log.d("lon", "" + s.getLongitude());
 
                 if (s.isActive()) {
-                    WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s);
+                    WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s);
                     f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
@@ -194,7 +194,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                                 .addToBackStack(TAG)
                                 .commit();*/
 
-                        WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s);
+                        WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s);
                         f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()

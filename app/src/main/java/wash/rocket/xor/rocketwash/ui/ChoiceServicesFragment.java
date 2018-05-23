@@ -38,6 +38,7 @@ public class ChoiceServicesFragment extends BaseFragment {
     public static final String TAG = "NearestWashServices";
     private static final String LIST = "LIST";
     private static final String ID_SERVICE = "id_service";
+    private static final String ID_ORGANIZATION = "id_organization";
     private static final String ID_CAR_MODEL = "id_car_model";
 
     private ArrayList<ChoiceService> list;
@@ -51,6 +52,7 @@ public class ChoiceServicesFragment extends BaseFragment {
 
     private int mIdService;
     private int mIdCarModel;
+    private int mIdOrganization;
 
     @Override
     public void onAttach(Activity activity) {
@@ -65,10 +67,14 @@ public class ChoiceServicesFragment extends BaseFragment {
     public ChoiceServicesFragment() {
     }
 
-    public static ChoiceServicesFragment newInstance(int id_service, int id_car_model, ArrayList<ChoiceService> list) {
+    public static ChoiceServicesFragment newInstance(int id_service,
+                                                     int organization_id,
+                                                     int id_car_model,
+                                                     ArrayList<ChoiceService> list) {
         ChoiceServicesFragment fragment = new ChoiceServicesFragment();
         Bundle args = new Bundle();
         args.putInt(ID_SERVICE, id_service);
+        args.putInt(ID_ORGANIZATION, organization_id);
         args.putInt(ID_CAR_MODEL, id_car_model);
         args.putParcelableArrayList(LIST, list);
         fragment.setArguments(args);
@@ -88,6 +94,7 @@ public class ChoiceServicesFragment extends BaseFragment {
         setHasOptionsMenu(true);
         mIdService = getArguments().getInt(ID_SERVICE);
         mIdCarModel = getArguments().getInt(ID_CAR_MODEL);
+        mIdOrganization = getArguments().getInt(ID_ORGANIZATION);
         list_in = getArguments().getParcelableArrayList(LIST);
     }
 
@@ -122,7 +129,7 @@ public class ChoiceServicesFragment extends BaseFragment {
         //String session = "kC2EJtXFUfYAab5WSzuc4bkUJAy38lgC6l84bFSmYyjRFmIjSDptLThreL0Q6mVg5rKQ/C2fDAIOanZ77buL77sEewWZYJOrsRc3Taivtt9NC8+h5o1GOjQhDJodEMjdUd/ePw==";
         String session = pref.getSessionID();
         if (savedInstanceState == null)
-            getSpiceManager().execute(new ChoiseServiceRequest(mIdService, mIdCarModel, session), "wash", DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
+            getSpiceManager().execute(new ChoiseServiceRequest(mIdService, mIdCarModel, mIdOrganization, session), "wash", DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
 
         toolbar = setToolbar(getView());
 

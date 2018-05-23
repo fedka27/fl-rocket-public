@@ -101,11 +101,8 @@ public class WashServiceInfoFragment extends BaseFragment {
     private static final int PERMISSION_REQUEST_WRITE_STORAGE = 2;
 
     private static final String POINTS = "points";
-    private static final String ID_SERVICE = "id_service";
-    private static final String LATITUDE = "lat";
-    private static final String LONGITUDE = "lon";
-    private static final String TITLE = "title";
-    private static final String SERVICE = "service";
+
+    private static final String EXTRA_WASH = "EXTRA_WASH";
 
     private static final int FRAGMENT_SERVCES = 1;
     private static final int FRAGMENT_PROFILE_EDIT = 2;
@@ -137,10 +134,8 @@ public class WashServiceInfoFragment extends BaseFragment {
     private ActionButton fab;
     private Toolbar toolbar;
 
-    private int mIdService;
     private double mLatitude = 0;
     private double mLongitude = 0;
-    private String mTitle;
 
     private TableLayout tableServicesContent;
 
@@ -188,14 +183,11 @@ public class WashServiceInfoFragment extends BaseFragment {
 
     private boolean loading = false;
 
-    public static WashServiceInfoFragment newInstance(int id_service, double lat, double lon, String title, WashService service) {
+
+    public static WashServiceInfoFragment newInstance(WashService service) {
         WashServiceInfoFragment fragment = new WashServiceInfoFragment();
         Bundle args = new Bundle();
-        args.putInt(ID_SERVICE, id_service);
-        args.putDouble(LATITUDE, lat);
-        args.putDouble(LONGITUDE, lon);
-        args.putString(TITLE, title);
-        args.putParcelable(SERVICE, service);
+        args.putParcelable(EXTRA_WASH, service);
         fragment.setArguments(args);
         return fragment;
     }
@@ -230,11 +222,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
 
         mMarkers = new ArrayList<Marker>();
-        mIdService = getArguments().getInt(ID_SERVICE);
-        //mLatitude = getArguments().getDouble(LATITUDE);
-        //mLongitude = getArguments().getDouble(LONGITUDE);
-        mTitle = getArguments().getString(TITLE);
-        mService = getArguments().getParcelable(SERVICE);
+        mService = getArguments().getParcelable(EXTRA_WASH);
 
         Location l = getLastLocation();
         if (l != null) {
@@ -251,6 +239,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         //ghj
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.w(TAG, "onCreateView");
@@ -404,14 +393,14 @@ public class WashServiceInfoFragment extends BaseFragment {
             }
         });
 
-        toolbar = setToolbar(rootView, mTitle);
+        toolbar = setToolbar(rootView, mService.getName());
 
         /*
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setTitle(mTitle);
+            toolbar.setTitle(mService.getName());
         }*/
 
         actionWash = (RelativeLayout) rootView.findViewById(R.id.actionWash);
@@ -487,7 +476,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                 if (id_model == 0)
                     id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
 
-                ChoiceServicesFragment f = ChoiceServicesFragment.newInstance(mIdService, id_model, list);
+                ChoiceServicesFragment f = ChoiceServicesFragment.newInstance(mService.getId(), mService.getOrganization_id(), id_model, list);
                 f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_SERVCES);
 
                 getActivity().getSupportFragmentManager()
@@ -538,7 +527,10 @@ public class WashServiceInfoFragment extends BaseFragment {
                     pref.setCarName(r.getBrandName() + " " + r.getModelName());
 
                     mProgressBar2.setVisibility(View.VISIBLE);
-                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, pref.getCarModelId(), pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
+                    getSpiceManager().execute(new ChoiseServiceRequest(mService.getId(),
+                            pref.getCarModelId(),
+                            mService.getOrganization_id(),
+                            pref.getSessionID()), mService.getId() + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
 
                     radioGroupCars.setEnabled(false);
                 }
@@ -659,12 +651,19 @@ public class WashServiceInfoFragment extends BaseFragment {
         c.set(Calendar.HOUR_OF_DAY, 23);
         c.set(Calendar.MINUTE, 59);
         String b = util.dateToZZ(c.getTime());
-        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(), mService.getId(), a, b, 30), "times", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
+        getSpiceManager().execute(new AvailableTimesRequest(pref.getSessionID(),
+                        mService.getId(),
+                        mService.getOrganization_id(),
+                        a,
+                        b,
+                        30),
+                "times", DurationInMillis.ALWAYS_EXPIRED, new AvailableTimesRequestListener());
 
         restoreTargets();
         checkPermissions();
     }
 
+    @SuppressLint("MissingPermission")
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         // if (mMap == null) {
@@ -848,7 +847,10 @@ public class WashServiceInfoFragment extends BaseFragment {
                         pref.setCarModelId(id_model);
                     }
 
-                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
+                    getSpiceManager().execute(new ChoiseServiceRequest(mService.getId(),
+                            id_model,
+                            mService.getOrganization_id(),
+                            pref.getSessionID()), mService.getId() + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
                 }
             } else {
                 showToastError(R.string.error_loading_data);
@@ -934,7 +936,10 @@ public class WashServiceInfoFragment extends BaseFragment {
                         pref.setCarModelId(id_model);
                     }
 
-                    getSpiceManager().execute(new ChoiseServiceRequest(mIdService, id_model, pref.getSessionID()), mIdService + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
+                    getSpiceManager().execute(new ChoiseServiceRequest(mService.getId(),
+                            id_model,
+                            mService.getOrganization_id(),
+                            pref.getSessionID()), mService.getId() + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
                 }
                 mProgressBar1.setVisibility(View.GONE);
                 overrideFonts(getActivity(), radioGroupCars);
@@ -950,7 +955,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         if (getActivity() == null)
             return;
 
-        toolbar = setToolbar(getView(), mTitle);
+        toolbar = setToolbar(getView(), mService.getName());
 
         if (resultCode == Activity.RESULT_OK) {
 
@@ -1390,7 +1395,7 @@ public class WashServiceInfoFragment extends BaseFragment {
 
                 util.addAlarmScheduleNotify(getActivity(), reserved_time, mService.getId());
 
-                WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService, mLatitude, mLongitude, mTitle, mService, result.getData());
+                WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mService.getId(), mLatitude, mLongitude, mService.getName(), mService, result.getData());
                 f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
                 getActivity()
                         .getSupportFragmentManager()

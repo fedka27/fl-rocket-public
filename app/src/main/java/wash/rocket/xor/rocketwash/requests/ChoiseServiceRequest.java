@@ -24,11 +24,16 @@ public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiceSer
     private int id_service;
     private String id_session;
     private int car_model_id;
+    private int organization_id;
 
-    public ChoiseServiceRequest(int id_service, int car_model_id, String id_session) {
+    public ChoiseServiceRequest(int id_service,
+                                int car_model_id,
+                                int organization_id,
+                                String id_session) {
         super(ChoiceServiceResult.class);
         this.baseUrl = Constants.URL + "services";
         this.id_service = id_service;
+        this.organization_id = organization_id;
         this.car_model_id = car_model_id;
         this.id_session = id_session;
     }
@@ -40,6 +45,7 @@ public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiceSer
                 .buildUpon()
                 .appendQueryParameter("service_location_id", "" + id_service)
                 .appendQueryParameter("car_model_id", "" + car_model_id)
+                .appendQueryParameter("organization_id", "" + organization_id)
                 .build()
                 .toString();
 
