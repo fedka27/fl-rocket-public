@@ -131,7 +131,7 @@
     <string name="share_with">Рекомендовать друзьям</string>
     <string name="share_data">Рекомендую использовать приложение RocketWash для записи на автомойку. Оно экономит мое время. Скачивай по ссылке: http://goo.gl/5j7dVZ</string>
     <string name="fragment_information_title">Информация</string>
-    <string name="url_info">http://rocketwash.me/information/index.php</string>
+    <string name="url_info">http://rocketwash.ru/information/index.php</string>
     <string name="group_name_reserved">ВЫ ЗАПИСАНЫ, ЖДЕМ ВАС</string>
     <string name="group_name_near">БЛИЖАЙЩИЕ</string>
     <string name="empty_data">Нет данных.</string>

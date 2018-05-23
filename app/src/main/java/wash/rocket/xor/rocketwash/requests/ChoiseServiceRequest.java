@@ -40,7 +40,8 @@ public class ChoiseServiceRequest extends GoogleHttpClientSpiceRequest<ChoiceSer
                 .buildUpon()
                 .appendQueryParameter("service_location_id", "" + id_service)
                 .appendQueryParameter("car_model_id", "" + car_model_id)
-                .build().toString();
+                .build()
+                .toString();
 
         Log.d("ChoiceServiceResult", "uri = " + uri);
 

@@ -257,6 +257,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             }
         });
 
+        AlertDialogFragment
         adapter.setOnSelectedItem(new WashServicesAdapter.IOnSelectedItem() {
             @Override
             public void onSelectedItem(WashService item, int position, int button) {
