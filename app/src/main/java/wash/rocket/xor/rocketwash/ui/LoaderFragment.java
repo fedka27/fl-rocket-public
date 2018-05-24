@@ -68,7 +68,7 @@ public class LoaderFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+        getSpiceManager().execute(new CarsMakesRequest(), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
         getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ALWAYS_EXPIRED, new ProfileRequestListener());
         //getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new CarProfileRequestListener());
     }

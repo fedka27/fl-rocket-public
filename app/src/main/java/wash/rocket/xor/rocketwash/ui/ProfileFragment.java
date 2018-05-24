@@ -150,7 +150,7 @@ public class ProfileFragment extends BaseFragment {
         txtPromo = (TextView) getView().findViewById(R.id.txtPromo);
         btnShare = (Button) getView().findViewById(R.id.btnShare);
 
-        getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+        getSpiceManager().execute(new CarsMakesRequest(), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
         restoreTargets();
     }
 
@@ -211,7 +211,7 @@ public class ProfileFragment extends BaseFragment {
             switch (requestCode) {
                 case FRAGMENT_EDIT_PROFILE:
                     progressBar.setVisibility(View.VISIBLE);
-                    getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+                    getSpiceManager().execute(new CarsMakesRequest(), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
                     break;
             }
         }

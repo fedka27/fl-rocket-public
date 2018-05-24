@@ -36,9 +36,9 @@ import wash.rocket.xor.rocketwash.model.PinResult;
 import wash.rocket.xor.rocketwash.model.PostCarResult;
 import wash.rocket.xor.rocketwash.model.Profile;
 import wash.rocket.xor.rocketwash.model.ProfileResult;
+import wash.rocket.xor.rocketwash.requests.CreateCarRequest;
 import wash.rocket.xor.rocketwash.requests.CreateEmptyUserRequest;
 import wash.rocket.xor.rocketwash.requests.PinRequest;
-import wash.rocket.xor.rocketwash.requests.PostCarRequest;
 import wash.rocket.xor.rocketwash.requests.ProfileSaveRequest;
 import wash.rocket.xor.rocketwash.requests.SetPhoneRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
@@ -348,7 +348,7 @@ public class SendSmsFragment extends BaseFragment {
                     Log.d("CreateEmptyUserListener", "getSession_id = " + result.getData().getSession_id());
                     pref.setSessionID(result.getData().getSession_id());
                     getSpiceManager().execute(new ProfileSaveRequest(pref.getSessionID(), mProfile), "save_profile", DurationInMillis.ALWAYS_EXPIRED, new SaveProfileRequestListener());
-                    getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, numCar, result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
+                    getSpiceManager().execute(new CreateCarRequest(mCarBrandId, mCarMoldelId, numCar, result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
                 }
             } else {
 

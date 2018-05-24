@@ -57,11 +57,11 @@ public class ReservationRequest extends GoogleHttpClientSpiceRequest<Reservation
 
         Uri.Builder bld = Uri.parse(url)
                 .buildUpon()
-                        //.appendQueryParameter("session_id", "" + session_id)
+                //.appendQueryParameter("session_id", "" + session_id)
                 .appendQueryParameter("carwash_id", "" + carwash_id)
                 .appendQueryParameter("car_id", "" + car_id)
                 .appendQueryParameter("organization_id", "" + organization_id)
-                        //.appendQueryParameter("time_from", "" + time_from.replace("+", "%2B").replace(":", "%3A"));
+                //.appendQueryParameter("time_from", "" + time_from.replace("+", "%2B").replace(":", "%3A"));
                 .appendQueryParameter("time_from", "" + time_from);
 
         String s = "";

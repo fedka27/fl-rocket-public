@@ -17,7 +17,7 @@ import java.io.InputStream;
 import wash.rocket.xor.rocketwash.model.PostCarResult;
 import wash.rocket.xor.rocketwash.util.Constants;
 
-public class PostCarRequest extends GoogleHttpClientSpiceRequest<PostCarResult> {
+public class CreateCarRequest extends GoogleHttpClientSpiceRequest<PostCarResult> {
 
     private String baseUrl;
     private int id_carBrand;
@@ -25,7 +25,7 @@ public class PostCarRequest extends GoogleHttpClientSpiceRequest<PostCarResult> 
     private String id_session;
     private String tag;
 
-    public PostCarRequest(int id_carBrand, int id_carModel, String tag, String id_session) {
+    public CreateCarRequest(int id_carBrand, int id_carModel, String tag, String id_session) {
         super(PostCarResult.class);
         this.baseUrl = Constants.URL + "cars";
         this.id_carBrand = id_carBrand;
@@ -45,7 +45,7 @@ public class PostCarRequest extends GoogleHttpClientSpiceRequest<PostCarResult> 
         Log.d("loadDataFromNetwork", "uri = " + uri);
         HttpHeaders header = new HttpHeaders();
         header.set("X-Rocketwash-Session-Id", id_session);
-      //  header.set("Accept", "application/json");
+        //  header.set("Accept", "application/json");
         HttpRequest request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null).setHeaders(header);
 
         InputStream content = request.execute().getContent();
@@ -60,8 +60,8 @@ public class PostCarRequest extends GoogleHttpClientSpiceRequest<PostCarResult> 
         Log.d("PostCarResult", "result = " + result);
         return LoganSquare.parse(result, PostCarResult.class);
 
-       // request.setParser(new JacksonFactory().createJsonObjectParser());
-       // return request.execute().parseAs(getResultType());
+        // request.setParser(new JacksonFactory().createJsonObjectParser());
+        // return request.execute().parseAs(getResultType());
     }
 
 }

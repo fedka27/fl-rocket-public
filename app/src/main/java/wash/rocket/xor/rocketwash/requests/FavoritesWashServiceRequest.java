@@ -21,13 +21,11 @@ public class FavoritesWashServiceRequest extends GoogleHttpClientSpiceRequest<Wa
 
     private String baseUrl;
 
-    private int page;
     private String id_session;
 
-    public FavoritesWashServiceRequest(String id_session, int pshr) {
+    public FavoritesWashServiceRequest(String id_session) {
         super(WashServiceResult.class);
         this.baseUrl = Constants.URL + "favourites";
-        this.page = page;
         this.id_session = id_session;
     }
 
@@ -36,7 +34,6 @@ public class FavoritesWashServiceRequest extends GoogleHttpClientSpiceRequest<Wa
 
         String uri = Uri.parse(baseUrl)
                 .buildUpon()
-                .appendQueryParameter("page", "" + page)
                 .build().toString();
 
         Log.d("loadDataFromNetwork", "uri = " + uri);

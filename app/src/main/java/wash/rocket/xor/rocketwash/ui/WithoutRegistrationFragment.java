@@ -27,8 +27,8 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.EmptyUserResult;
 import wash.rocket.xor.rocketwash.model.PostCarResult;
+import wash.rocket.xor.rocketwash.requests.CreateCarRequest;
 import wash.rocket.xor.rocketwash.requests.CreateEmptyUserRequest;
-import wash.rocket.xor.rocketwash.requests.PostCarRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
 
 /**
@@ -205,7 +205,7 @@ public class WithoutRegistrationFragment extends BaseFragment {
             if (result != null && Constants.SUCCESS.equals(result.getStatus())) {
                 Log.d("CreateEmptyUserListener", "getSession_id = " + result.getData().getSession_id());
                 pref.setSessionID(result.getData().getSession_id());
-                getSpiceManager().execute(new PostCarRequest(mCarBrandId, mCarMoldelId, "", result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
+                getSpiceManager().execute(new CreateCarRequest(mCarBrandId, mCarMoldelId, "", result.getData().getSession_id()), "create_car", DurationInMillis.ALWAYS_EXPIRED, new CreateCarListener());
 
             } else {
                 showToastError(R.string.error_creating_account);

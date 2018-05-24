@@ -20,7 +20,7 @@ public class CarsMakesRequest extends GoogleHttpClientSpiceRequest<CarsMakesResu
 
     private String baseUrl;
 
-    public CarsMakesRequest(String param) {
+    public CarsMakesRequest() {
         super(CarsMakesResult.class);
         this.baseUrl = Constants.URL + "car_makes";
     }

@@ -111,7 +111,7 @@ public class ProfileEditFragment extends BaseFragment {
                 list.add(c);
             }
         } else
-            getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+            getSpiceManager().execute(new CarsMakesRequest(), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
     }
 
     @Override

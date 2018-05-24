@@ -53,8 +53,8 @@ public class ReservedRequest extends GoogleHttpClientSpiceRequest<ReservedResult
         Log.d("ReservationRequest", " res = " + result);
 
         //ObjectMapper mapper = new ObjectMapper();
-       // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-       // mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        // mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
 
         ReservedResult res = LoganSquare.parse(result, ReservedResult.class);
         //ReservedResult res = mapper.readValue(result, getResultType());

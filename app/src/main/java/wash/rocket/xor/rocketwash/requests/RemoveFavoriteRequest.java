@@ -32,7 +32,7 @@ public class RemoveFavoriteRequest extends GoogleHttpClientSpiceRequest<RemoveFa
 
     @Override
     public RemoveFavoriteResult loadDataFromNetwork() throws IOException {
-        String uri = Uri.parse(baseUrl +  id)
+        String uri = Uri.parse(baseUrl + id)
                 .buildUpon()
                 //.appendQueryParameter("id", "" +id)
                 .build().toString();

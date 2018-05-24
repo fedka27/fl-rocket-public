@@ -228,7 +228,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
         });
 
         if (savedInstanceState == null)
-            getSpiceManager().execute(new FavoritesWashServiceRequest(pref.getSessionID(), mPage), "wash", DurationInMillis.ALWAYS_EXPIRED, new FavoritesWashServiceRequestListenner());
+            getSpiceManager().execute(new FavoritesWashServiceRequest(pref.getSessionID()), "wash", DurationInMillis.ALWAYS_EXPIRED, new FavoritesWashServiceRequestListenner());
 
         toolbar = setToolbar(getView());
 

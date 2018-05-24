@@ -44,7 +44,7 @@ public class DialoglistCarModels extends Dialoglist {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        carsJsonRequest = new CarsMakesRequest("");
+        carsJsonRequest = new CarsMakesRequest();
         mIDBrand = getArguments().getInt(CAR_BRAND_ID);
 
         Log.d("DialoglistCarModels", "mIDBrand = " + mIDBrand);

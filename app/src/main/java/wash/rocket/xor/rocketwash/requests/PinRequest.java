@@ -35,7 +35,7 @@ public class PinRequest extends GoogleHttpClientSpiceRequest<PinResult> {
                 .build().toString();
         Log.d("loadDataFromNetwork", "uri = " + uri);
         HttpRequest request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null);
-       // request.setParser(new JacksonFactory().createJsonObjectParser());
+        // request.setParser(new JacksonFactory().createJsonObjectParser());
 
         InputStream content = request.execute().getContent();
         String result = "";
@@ -54,7 +54,7 @@ public class PinRequest extends GoogleHttpClientSpiceRequest<PinResult> {
         //return mapper.readValue(result, getResultType());
 
         return LoganSquare.parse(result, PinResult.class);
-       // return request.execute().parseAs(getResultType());
+        // return request.execute().parseAs(getResultType());
     }
 
 }

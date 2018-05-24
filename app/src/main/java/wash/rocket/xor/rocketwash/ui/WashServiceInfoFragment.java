@@ -637,7 +637,7 @@ public class WashServiceInfoFragment extends BaseFragment {
 
         txtDiscount.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_discount), mDiscount));
         txtBal.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_counter), 0));
-        getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+        getSpiceManager().execute(new CarsMakesRequest(), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
 
         //TimeZone utc = TimeZone.getTimeZone("UTC");
         //Calendar c = Calendar.getInstance(utc);
@@ -966,7 +966,7 @@ public class WashServiceInfoFragment extends BaseFragment {
                     break;
                 case FRAGMENT_PROFILE_EDIT:
                     mProgressBar1.setVisibility(View.VISIBLE);
-                    getSpiceManager().execute(new CarsMakesRequest(""), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
+                    getSpiceManager().execute(new CarsMakesRequest(), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
                     break;
 
                 case DIALOG_WASH1:
