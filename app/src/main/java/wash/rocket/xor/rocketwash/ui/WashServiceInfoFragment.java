@@ -1498,7 +1498,7 @@ public class WashServiceInfoFragment extends BaseFragment {
         Fragment f;
         f = getFragmentManager().findFragmentByTag(ChoiceServicesFragment.TAG);
         if (f != null)
-            f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_SERVCES);
+            f.setTargetFragment(this, FRAGMENT_SERVCES);
     }
 
     private void checkPermissions() {
