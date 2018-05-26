@@ -1109,74 +1109,13 @@ public class WashServiceInfoFragment extends BaseFragment {
     }
 
 
-    public final class MapDirectionRouteListener implements RequestListener<MapRouteResult> {
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showToastError(R.string.error_direction);
-
-            txtInfoTitile.setVisibility(View.VISIBLE);
-            txtInfoTitile.setText(R.string.error_find_address);
-            txtInfoDistance.setVisibility(View.GONE);
-            infoBtnPath.setVisibility(View.GONE);
-            infoProgressBar.setVisibility(View.GONE);
-        }
-
-        @Override
-        public void onRequestSuccess(final MapRouteResult result) {
-
-            if (result != null) {
-
-                showToastOk(R.string.success_direction);
-
-                ArrayList<LatLng> points = null;
-                PolylineOptions lineOptions = null;
-                MarkerOptions markerOptions = new MarkerOptions();
-
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-                // Traversing through all the routes
-                for (int i = 0; i < result.getData().size(); i++) {
-                    points = new ArrayList<LatLng>();
-                    lineOptions = new PolylineOptions();
-
-                    // Fetching i-th route
-                    List<HashMap<String, String>> path = result.getData().get(i);
-
-                    // Fetching all the points in i-th route
-                    for (int j = 0; j < path.size(); j++) {
-                        HashMap<String, String> point = path.get(j);
-
-                        double lat = Double.parseDouble(point.get("lat"));
-                        double lng = Double.parseDouble(point.get("lng"));
-                        LatLng position = new LatLng(lat, lng);
-
-                        points.add(position);
-                        builder.include(position);
-                    }
-
-                    // Adding all the points in the route to LineOptions
-                    lineOptions.addAll(points);
-                    lineOptions.width(4);
-                    lineOptions.color(getActivity().getResources().getColor(R.color.red_notify));
-                }
-
-                // Drawing polyline in the Google Map for the i-th route
-                // mMap.addPolyline(null);
-
-                if (mPolyLines != null) {
-                    mPolyLines.remove();
-                }
-
-                if (mMap != null) {
-                    mPolyLines = mMap.addPolyline(lineOptions);
-                    LatLngBounds bounds = builder.build();
-                    int padding = 0; // offset from edges of the map in pixels
-                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-                    mMap.animateCamera(cu);
-                }
-            }
-        }
+    // change to interface
+    @Override
+    public void restoreTargets() {
+        Fragment f;
+        f = getFragmentManager().findFragmentByTag(ChoiceServicesFragment.TAG);
+//        if (f != null)
+//            f.setTargetFragment(this, FRAGMENT_SERVCES);
     }
 
     public final class ChoiceServiceRequestListener implements RequestListener<ChoiceServiceResult> {
@@ -1348,39 +1287,72 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
     }
 
+    public final class MapDirectionRouteListener implements RequestListener<MapRouteResult> {
 
-    public final class ReservationRequestListener implements RequestListener<ReservationResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            showToastError(R.string.fragment_info_wash_service_reserved_fail);
-            progressBar.setVisibility(View.GONE);
+            showToastError(R.string.error_direction);
+
+            txtInfoTitile.setVisibility(View.VISIBLE);
+            txtInfoTitile.setText(R.string.error_find_address);
+            txtInfoDistance.setVisibility(View.GONE);
+            infoBtnPath.setVisibility(View.GONE);
+            infoProgressBar.setVisibility(View.GONE);
         }
 
-
         @Override
-        public void onRequestSuccess(final ReservationResult result) {
-            progressBar.setVisibility(View.GONE);
+        public void onRequestSuccess(final MapRouteResult result) {
 
-            if (Constants.SUCCESS.equals(result.getStatus())) {
+            if (result != null) {
 
-                showToastOk(R.string.fragment_info_wash_service_reserved_succes);
-                getActivity().getSupportFragmentManager().popBackStack();
-                reservationAction(mService.getId(), mService.getName());
+                showToastOk(R.string.success_direction);
 
-                util.addAlarmScheduleNotify(getActivity(), reserved_time, mService.getId());
+                ArrayList<LatLng> points = null;
+                PolylineOptions lineOptions = null;
+                MarkerOptions markerOptions = new MarkerOptions();
 
-                WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mService.getId(), mLatitude, mLongitude, mService.getName(), mService, result.getData());
-                f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
-                getActivity()
-                        .getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .add(R.id.container, f, WashServiceInfoFragmentReserved.TAG)
-                        .addToBackStack(null)
-                        .commit();
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-            } else {
-                showToastError(result.getData().getResult());
+                // Traversing through all the routes
+                for (int i = 0; i < result.getData().size(); i++) {
+                    points = new ArrayList<LatLng>();
+                    lineOptions = new PolylineOptions();
+
+                    // Fetching i-th route
+                    List<HashMap<String, String>> path = result.getData().get(i);
+
+                    // Fetching all the points in i-th route
+                    for (int j = 0; j < path.size(); j++) {
+                        HashMap<String, String> point = path.get(j);
+
+                        double lat = Double.parseDouble(point.get("lat"));
+                        double lng = Double.parseDouble(point.get("lng"));
+                        LatLng position = new LatLng(lat, lng);
+
+                        points.add(position);
+                        builder.include(position);
+                    }
+
+                    // Adding all the points in the route to LineOptions
+                    lineOptions.addAll(points);
+                    lineOptions.width(4);
+                    lineOptions.color(getActivity().getResources().getColor(R.color.red_notify));
+                }
+
+                // Drawing polyline in the Google Map for the i-th route
+                // mMap.addPolyline(null);
+
+                if (mPolyLines != null) {
+                    mPolyLines.remove();
+                }
+
+                if (mMap != null && lineOptions != null) {
+                    mPolyLines = mMap.addPolyline(lineOptions);
+                    LatLngBounds bounds = builder.build();
+                    int padding = 0; // offset from edges of the map in pixels
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                    mMap.animateCamera(cu);
+                }
             }
         }
     }
@@ -1492,13 +1464,46 @@ public class WashServiceInfoFragment extends BaseFragment {
         f.show(getFragmentManager(), tag);
     }
 
-    // change to interface
-    @Override
-    public void restoreTargets() {
-        Fragment f;
-        f = getFragmentManager().findFragmentByTag(ChoiceServicesFragment.TAG);
-        if (f != null)
-            f.setTargetFragment(this, FRAGMENT_SERVCES);
+    public final class ReservationRequestListener implements RequestListener<ReservationResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            showToastError(R.string.fragment_info_wash_service_reserved_fail);
+            progressBar.setVisibility(View.GONE);
+        }
+
+
+        @Override
+        public void onRequestSuccess(final ReservationResult result) {
+            progressBar.setVisibility(View.GONE);
+
+            if (Constants.SUCCESS.equals(result.getStatus())) {
+
+                showToastOk(R.string.fragment_info_wash_service_reserved_succes);
+                getActivity().getSupportFragmentManager().popBackStack();
+                reservationAction(mService.getId(), mService.getName());
+
+                util.addAlarmScheduleNotify(getActivity(), reserved_time, mService.getId());
+
+                WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(
+                        mService.getId(),
+                        mLatitude,
+                        mLongitude,
+                        mService.getName(),
+                        mService,
+                        result.getData());
+                f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
+                getActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                        .add(R.id.container, f, WashServiceInfoFragmentReserved.TAG)
+                        .addToBackStack(null)
+                        .commit();
+
+            } else {
+                showToastError(result.getData().getResult());
+            }
+        }
     }
 
     private void checkPermissions() {

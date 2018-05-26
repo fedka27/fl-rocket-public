@@ -125,7 +125,12 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
     private Reservation mReserved;
     private Marker mPositionMarker;
 
-    public static WashServiceInfoFragmentReserved newInstance(int id_service, double lat, double lon, String title, WashService service, Reservation reserv) {
+    public static WashServiceInfoFragmentReserved newInstance(int id_service,
+                                                              double lat,
+                                                              double lon,
+                                                              String title,
+                                                              WashService service,
+                                                              Reservation reserv) {
         WashServiceInfoFragmentReserved fragment = new WashServiceInfoFragmentReserved();
         Bundle args = new Bundle();
         args.putInt(ID_SERVICE, id_service);

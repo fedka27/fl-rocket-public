@@ -580,7 +580,12 @@ public class WashServiceInfoFragmentQuick extends BaseFragment {
                 getActivity().getSupportFragmentManager().popBackStack();
                 reservationAction(mService.getId(), mService.getName());
 
-                WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService, mLatitude, mLongitude, mTitle, mService, result.getData());
+                WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(mIdService,
+                        mLatitude,
+                        mLongitude,
+                        mTitle,
+                        mService,
+                        result.getData());
                 f.setTargetFragment(getTargetFragment(), getTargetRequestCode());
                 getActivity()
                         .getSupportFragmentManager()
