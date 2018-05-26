@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -191,10 +192,53 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         Log.w(TAG, "onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_wash_service_info_reserved, container, false);
         mInflater = inflater;
-        mMap = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
+        MapFragmentWrapper mapFragmentWrapper = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map));
+
+        mapFragmentWrapper.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                initMap(googleMap);
+            }
+        });
+
+
+        fab = (ActionButton) rootView.findViewById(R.id.fab);
+        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        mContent = (LinearLayout) rootView.findViewById(R.id.content_info);
+
+        ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).setListener(new MapFragmentWrapper.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                mScrollView1.requestDisallowInterceptTouchEvent(true);
+            }
+        });
+
+
+        toolbar = setToolbar(rootView);
+        toolbar.setTitle(mTitle);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mReserved.getCarwash() != null)
+                    call(mReserved.getCarwash().getPhone(), mReserved.getCarwash().getId(), mReserved.getCarwash().getName());
+                else
+                    call(mService.getPhone(), mService.getId(), mService.getName());
+            }
+        });
+
+        initControls(rootView);
+
+        return rootView;
+    }
+
+    private void initMap(GoogleMap googleMap) {
+        mMap = googleMap;
+
 
         if (mMap != null) {
-            mMap.setMyLocationEnabled(true);
+//            mMap.setMyLocationEnabled(true); // TODO Location ?
 
             int mp = (int) getActivity().getResources().getDimension(R.dimen.map_padding);
             mMap.setPadding(mp, mp, mp, mp);
@@ -273,18 +317,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
             mMap.setInfoWindowAdapter(infoBaloon);
         }
 
-        fab = (ActionButton) rootView.findViewById(R.id.fab);
-        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        mContent = (LinearLayout) rootView.findViewById(R.id.content_info);
-
-        ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).setListener(new MapFragmentWrapper.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                mScrollView1.requestDisallowInterceptTouchEvent(true);
-            }
-        });
-
         setUpMapIfNeeded();
 
         mContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -307,19 +339,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
             }
         });
 
-        toolbar = setToolbar(rootView);
-        toolbar.setTitle(mTitle);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mReserved.getCarwash() != null)
-                    call(mReserved.getCarwash().getPhone(), mReserved.getCarwash().getId(), mReserved.getCarwash().getName());
-                else
-                    call(mService.getPhone(), mService.getId(), mService.getName());
-            }
-        });
-
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
@@ -337,9 +356,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
             }
         }, 200);
 
-        initControls(rootView);
-
-        return rootView;
     }
 
     private void initControls(View rootView) {

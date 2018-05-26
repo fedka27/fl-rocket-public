@@ -33,6 +33,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -188,10 +189,40 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
 
         mInflater = inflater;
 
-        mMap = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
+        MapFragmentWrapper mapFragmentWrapper = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map));
+
+        mapFragmentWrapper.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                initMap(googleMap);
+            }
+        });
+
+        mapFragmentWrapper.setListener(new MapFragmentWrapper.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                mScrollView1.requestDisallowInterceptTouchEvent(true);
+            }
+        });
+
+        fab = (ActionButton) rootView.findViewById(R.id.fab);
+        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
+        mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
+
+        setToolbar(rootView, mTitle);
+
+        initControls(rootView);
+
+
+        return rootView;
+    }
+
+    private void initMap(GoogleMap googleMap) {
+        mMap = googleMap;
+
 
         if (mMap != null) {
-            mMap.setMyLocationEnabled(true);
+//            mMap.setMyLocationEnabled(true); // todo location ?
             mMap.setPadding(20, 20, 20, 20);
 
             infoBaloon = new GoogleMap.InfoWindowAdapter() {
@@ -265,16 +296,6 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
 
         //addMarkers(mPoints);
 
-        fab = (ActionButton) rootView.findViewById(R.id.fab);
-        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
-        mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
-        ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).setListener(new MapFragmentWrapper.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                mScrollView1.requestDisallowInterceptTouchEvent(true);
-            }
-        });
-
         setUpMapIfNeeded();
 
         mContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -303,7 +324,6 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
             toolbar.setTitle(mTitle);
         }*/
 
-        setToolbar(rootView, mTitle);
 
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
@@ -317,11 +337,6 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
                 }
             }
         }, 200);
-
-        initControls(rootView);
-
-
-        return rootView;
     }
 
     private void initControls(View rootView) {
@@ -383,7 +398,7 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
         //  mMap = mMapFragment.getMap();
         // Check if we were successful in obtaining the map.
         if (mMap != null) {
-            mMap.setMyLocationEnabled(false);
+//            mMap.setMyLocationEnabled(false); //TODO Location ?
             mMap.getUiSettings().setCompassEnabled(false);
             mMap.getUiSettings().setZoomControlsEnabled(false);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -578,7 +593,7 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
                 mPositionMarker = mMap.addMarker(new MarkerOptions()
                         .flat(true)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_position))
-                                //.anchor(0.5f, 0.5f)
+                        //.anchor(0.5f, 0.5f)
                         .position(new LatLng(mLatitude, mLongitude)));
             }
 

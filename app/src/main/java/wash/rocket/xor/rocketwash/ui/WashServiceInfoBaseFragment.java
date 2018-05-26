@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -152,9 +153,21 @@ public class WashServiceInfoBaseFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_wash_service_info, container, false);
 
         NiceSupportMapFragment mapFragment = (NiceSupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mMap = mapFragment.getMap();
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+
+                initMap(googleMap);
+
+            }
+        });
+        return rootView;
+    }
+
+    private void initMap(GoogleMap map) {
+        mMap = map;
         if (mMap != null) {
-            mMap.setMyLocationEnabled(true);
+//            mMap.setMyLocationEnabled(true); //TODO Location ?
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
             int mp = (int) getActivity().getResources().getDimension(R.dimen.map_padding);
@@ -236,7 +249,6 @@ public class WashServiceInfoBaseFragment extends BaseFragment {
             }
         }, 200);
 
-        return rootView;
     }
 
 

@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -250,10 +251,30 @@ public class WashServiceInfoFragment extends BaseFragment {
         //mMap = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
 
         NiceSupportMapFragment mapFragment = (NiceSupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mMap = mapFragment.getMap();
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                initMap(googleMap);
+            }
+        });
 
+        fab = (ActionButton) rootView.findViewById(R.id.fab);
+        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
+
+        mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
+        toolbar = setToolbar(rootView, mService.getName());
+        actionWash = (RelativeLayout) rootView.findViewById(R.id.actionWash);
+
+
+        initControls(rootView);
+
+        return rootView;
+    }
+
+    private void initMap(GoogleMap googleMap) {
+        mMap = googleMap;
         if (mMap != null) {
-            mMap.setMyLocationEnabled(true);
+//            mMap.setMyLocationEnabled(true); // TODO Location?
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
             int mp = (int) getActivity().getResources().getDimension(R.dimen.map_padding);
@@ -315,8 +336,6 @@ public class WashServiceInfoFragment extends BaseFragment {
                 @Override
                 public View getInfoContents(Marker marker) {
 
-                    //View v = getActivity().getLayoutInflater().inflate(R.layout.info_windows, null);
-                    //return v;
                     return null;
                 }
             };
@@ -324,52 +343,15 @@ public class WashServiceInfoFragment extends BaseFragment {
             mMap.setInfoWindowAdapter(infoBaloon);
         }
 
-        //addMarkers(mPoints);
-
-        fab = (ActionButton) rootView.findViewById(R.id.fab);
-        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
-
-        //mScrollView1.seton
-        // NestedScrollView.OnScrollChangeListener
-
-        /*
-        mScrollView1.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                Log.d("scroll", "scrollY = " + scrollY);
-            }
-        });*/
-
         mScrollView1.setNestedScrollingEnabled(true);
         mScrollView1.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
 
             @Override
             public void onScrollChanged() {
 
-                int scrollX = mScrollView1.getScrollX(); //for horizontalScrollView
-                int scrollY = mScrollView1.getScrollY(); //for verticalScrollView
-                //DO SOMETHING WITH THE SCROLL COORDINATES
-                //Log.d("scroll", "scrollY = " + scrollY + "; heightMap = " + heightMap);
-
-                //XXX
-                /*
-                if (scrollY > heightMap)
-                    actionWash.setVisibility(View.VISIBLE);
-                else
-                    actionWash.setVisibility(View.GONE);*/
-
                 actionWash.setVisibility(View.GONE);
             }
         });
-
-        mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
-        /*
-        ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).setListener(new MapFragmentWrapper.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                mScrollView1.requestDisallowInterceptTouchEvent(true);
-            }
-        });*/
 
         setUpMapIfNeeded();
 
@@ -393,17 +375,6 @@ public class WashServiceInfoFragment extends BaseFragment {
             }
         });
 
-        toolbar = setToolbar(rootView, mService.getName());
-
-        /*
-        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setTitle(mService.getName());
-        }*/
-
-        actionWash = (RelativeLayout) rootView.findViewById(R.id.actionWash);
         actionWash.setVisibility(View.GONE);
 
         actionWash.setOnClickListener(new View.OnClickListener() {
@@ -457,9 +428,6 @@ public class WashServiceInfoFragment extends BaseFragment {
             }
         }, 200);
 
-        initControls(rootView);
-
-        return rootView;
     }
 
     private void initControls(View rootView) {
