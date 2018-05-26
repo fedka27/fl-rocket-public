@@ -1484,6 +1484,7 @@ public class WashServiceInfoFragment extends BaseFragment {
 
                 util.addAlarmScheduleNotify(getActivity(), reserved_time, mService.getId());
 
+                result.getData().setCarwash(mService);
                 WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(
                         mService.getId(),
                         mLatitude,

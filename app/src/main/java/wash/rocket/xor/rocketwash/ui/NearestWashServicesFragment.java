@@ -209,7 +209,12 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                 if (s.getType() == WashServicesAdapter.TYPE_RESERVED) {
 
-                    WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(0, mReserved.getCarwash().getLatitude(), mReserved.getCarwash().getLongitude(), s.getName(), null, mReserved);
+                    WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(0,
+                            mReserved.getCarwash().getLatitude(),
+                            mReserved.getCarwash().getLongitude(),
+                            s.getName(),
+                            mReserved.getCarwash(),
+                            mReserved);
                     f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
 
                     getActivity().getSupportFragmentManager()

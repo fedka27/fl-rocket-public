@@ -345,6 +345,7 @@ public class Reservation implements Parcelable {
         this.time_from_no_time_zone = time_from_no_time_zone;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
