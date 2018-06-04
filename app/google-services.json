@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "924030623876",
+    "firebase_url": "https://rw-app-personal.firebaseio.com",
+    "project_id": "rw-app-personal",
+    "storage_bucket": "rw-app-personal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924030623876:android:e3b3bce25477b095",
+        "android_client_info": {
+          "package_name": "me.rocketsoft.rocketwash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924030623876-11rtbt33ne8r35khd9b6ski4th7cc52q.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "924030623876-11rtbt33ne8r35khd9b6ski4th7cc52q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH1w3YrbrTKPSgtAUYL4ibWX3swN2VeDQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
