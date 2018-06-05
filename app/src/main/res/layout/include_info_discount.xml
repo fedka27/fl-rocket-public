@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_default"
+    tools:background="@color/button_blue">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/discount_stroke"
+        android:divider="@drawable/white_vertical_line"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/my_points_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen4dp"
+            android:paddingTop="@dimen/dimen4dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_14sp"
+            tools:text="@string/fragment_info_wash_service_my_counter" />
+
+        <TextView
+            android:id="@+id/my_discount_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen4dp"
+            android:paddingTop="@dimen/dimen4dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_14sp"
+            tools:text="@string/fragment_info_wash_service_my_discount" />
+
+    </LinearLayout>
+
+</LinearLayout>

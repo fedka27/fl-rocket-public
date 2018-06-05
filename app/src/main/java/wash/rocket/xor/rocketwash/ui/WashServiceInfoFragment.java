@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,14 +28,12 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -43,7 +42,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -91,11 +89,10 @@ import wash.rocket.xor.rocketwash.util.util;
 import wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget;
 import wash.rocket.xor.rocketwash.widgets.MarginDecoration;
 import wash.rocket.xor.rocketwash.widgets.NestedScrollView;
-import wash.rocket.xor.rocketwash.widgets.NiceSupportMapFragment;
 import wash.rocket.xor.rocketwash.widgets.SlidingTabLayout;
 
 @SuppressLint("LongLogTag")
-public class WashServiceInfoFragment extends BaseFragment {
+public class WashServiceInfoFragment extends WashServiceInfoBaseFragment {
 
     public static final String TAG = "WashServiceInfoFragment";
 
@@ -117,14 +114,8 @@ public class WashServiceInfoFragment extends BaseFragment {
     private final int MAX_MARKERS = 50;
 
     private GoogleMap mMap;
-    private Button mDisconnect;
-    private Intent mServiceIntent;
-    private boolean isBoundService;
     private NestedScrollView mScrollView1;
-    private ScrollView mScrollView;
-    private FrameLayout time_content;
 
-    // private LockedScrollView mContent;
     private LinearLayout mContent;
     private RelativeLayout actionWash;
     private LinearLayout mNoTime;
@@ -144,16 +135,12 @@ public class WashServiceInfoFragment extends BaseFragment {
     private ImageView imgAddCars;
     private RadioGroup radioGroupCars;
 
-    private LayoutInflater mInflater;
     private List<CarsMakes> list_cars;
     private SlidingTabLayout mSlidingTabLayout = null;
     private ArrayList<ChoiceService> list;
     private CalendarScrollWidget mCalendar;
-    private WashService mService;
     private Typeface mFont;
     private TextView txtPrice;
-    private TextView txtBal;
-    private TextView txtDiscount;
     private TextView txtDiscountSrv;
     private TextView txtFullPrice;
     private TextView txtStub;
@@ -169,9 +156,6 @@ public class WashServiceInfoFragment extends BaseFragment {
     private Button infoBtnPath;
     private GoogleMap.InfoWindowAdapter infoBaloon;
     private Marker mMarker;
-
-    private int heightMap = 0;
-    private int mDiscount = 0;
 
     private com.software.shell.fab.ActionButton fab1;
     private Polyline mPolyLines;
@@ -206,6 +190,30 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
     }
 
+    private View.OnClickListener mOnServicesChange = new View.OnClickListener() {
+        @SuppressLint("DefaultLocale")
+        @Override
+        public void onClick(View v) {
+            if (v.getTag() != null) {
+                ChoiceService b = list.get((Integer) v.getTag());
+                b.setCheck(((CheckBox) v).isChecked() ? 1 : 0);
+            }
+
+            int price = 0;
+
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).isCheck()) {
+                    price = price + list.get(i).getPrice();
+                }
+            }
+
+            txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+            //todo discount
+            txtDiscountSrv.setText(String.format("%d %s", 10, getActivity().getString(R.string.rubleSymbolJava)));
+            txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.w(TAG, "onCreate");
@@ -231,13 +239,11 @@ public class WashServiceInfoFragment extends BaseFragment {
             mLongitude = l.getLongitude();
         }
 
-        if (mService != null)
+        if (mService != null) {
             mService.var_dump();
-
+        }
         Log.d(TAG, "mLatitude = " + mLatitude);
         Log.d(TAG, "mLongitude = " + mLongitude);
-
-        //ghj
     }
 
     @SuppressLint("MissingPermission")
@@ -245,33 +251,31 @@ public class WashServiceInfoFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.w(TAG, "onCreateView");
 
-        View rootView = inflater.inflate(R.layout.fragment_wash_service_info, container, false);
-
-        mInflater = inflater;
-        //mMap = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).getMap();
-
-        NiceSupportMapFragment mapFragment = (NiceSupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                initMap(googleMap);
-            }
-        });
-
-        fab = (ActionButton) rootView.findViewById(R.id.fab);
-        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
-
-        mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
-        toolbar = setToolbar(rootView, mService.getName());
-        actionWash = (RelativeLayout) rootView.findViewById(R.id.actionWash);
-
-
-        initControls(rootView);
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_wash_service_info, container, false);
     }
 
-    private void initMap(GoogleMap googleMap) {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        fab = (ActionButton) view.findViewById(R.id.fab);
+        mScrollView1 = (NestedScrollView) view.findViewById(R.id.scroll);
+
+        mContent = (LinearLayout) view.findViewById(R.id.content_car);
+        toolbar = setToolbar(view, mService.getName());
+        actionWash = (RelativeLayout) view.findViewById(R.id.actionWash);
+
+        initControls(view);
+    }
+
+    @Override
+    @Nullable
+    protected WashService getWashService() {
+        return getArguments().getParcelable(EXTRA_WASH);
+    }
+
+    @Override
+    protected void initMap(GoogleMap googleMap) {
         mMap = googleMap;
         if (mMap != null) {
 //            mMap.setMyLocationEnabled(true); // TODO Location?
@@ -370,8 +374,6 @@ public class WashServiceInfoFragment extends BaseFragment {
                 } else {
                     mContent.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
-
-                heightMap = fab.getTop() + toolbar.getMeasuredHeight() * 2;
             }
         });
 
@@ -430,181 +432,11 @@ public class WashServiceInfoFragment extends BaseFragment {
 
     }
 
-    private void initControls(View rootView) {
-
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMain);
-        progressBar.setVisibility(View.GONE);
-
-        imgChoiseServices = (ImageView) rootView.findViewById(R.id.imgChoiseServices);
-        imgChoiseServices.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                int id_model = pref.getCarModelId();
-                if (id_model == 0)
-                    id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
-
-                ChoiceServicesFragment f = ChoiceServicesFragment.newInstance(mService.getId(), mService.getOrganization_id(), id_model, list);
-                f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_SERVCES);
-
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .add(R.id.container, f, ChoiceServicesFragment.TAG)
-                        .addToBackStack(TAG).commit();
-            }
-        });
-
-        imgAddCars = (ImageView) rootView.findViewById(R.id.imgAddCars);
-        imgAddCars.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ProfileEditFragment f = ProfileEditFragment.newInstance(getApp().getProfile(), false);
-                f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_PROFILE_EDIT);
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                        .add(R.id.container, f, ProfileEditFragment.TAG)
-                        .addToBackStack(TAG).commit();
-            }
-        });
-
-        radioGroupCars = (RadioGroup) rootView.findViewById(R.id.radioGroupCars);
-        radioGroupCars.removeAllViews();
-
-        radioGroupCars.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                RadioButton radioButton = (RadioButton) radioGroupCars.findViewById(checkedId);
-                int index = radioGroupCars.indexOfChild(radioButton);
-
-                //XXX
-
-                if (radioButton != null && !loading) {
-
-                    fab.setVisibility(View.INVISIBLE);
-
-                    pref.setCarName(radioButton.getText().toString());
-                    pref.setUseCar(index);
-
-                    CarsAttributes r = (CarsAttributes) radioButton.getTag();
-                    pref.setCarModelId(r.getCar_model_id());
-                    pref.setCarNum(r.getTag());
-                    pref.setCarName(r.getBrandName() + " " + r.getModelName());
-
-                    mProgressBar2.setVisibility(View.VISIBLE);
-                    getSpiceManager().execute(new ChoiseServiceRequest(mService.getId(),
-                            pref.getCarModelId(),
-                            mService.getOrganization_id(),
-                            pref.getSessionID()), mService.getId() + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
-
-                    radioGroupCars.setEnabled(false);
-                }
-            }
-        });
-
-        //CalendarScrollWidget.LayoutParams lp = new CalendarScrollWidget.LayoutParams();
-        //mCalendar = new CalendarScrollWidget(getActivity(), null);
-        //mCalendar.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-        //time_content = (FrameLayout) rootView.findViewById(R.id.time_content);
-        //time_content.addView(mCalendar);
-
-        mCalendar = (CalendarScrollWidget) rootView.findViewById(R.id.time_content);
-        mSlidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.sliding_tabs);
-        mSlidingTabLayout.setCustomTabView(R.layout.tab_time, R.id.title);
-        mCalendar.setVisibility(View.GONE);
-
-        Resources res = getResources();
-        mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.green_rocket));
-        mSlidingTabLayout.setDistributeEvenly(true);
-
-        mSlidingTabLayout.setOnTabSelected(new SlidingTabLayout.OnTabSelected() {
-            @Override
-            public void onTabSelected(int item) {
-                mCalendar.selected(item);
-            }
-        });
-
-        mCalendar.setOnPagetChange(new CalendarScrollWidget.IOnPageChanged() {
-            @Override
-            public void onPagetChange(int page) {
-                mSlidingTabLayout.selected(page);
-            }
-        });
-
-        View v = rootView.findViewById(R.id.root_time_info);
-        mNoTime = (LinearLayout) v.findViewById(R.id.notime);
-        mNoTime.setVisibility(View.GONE);
-        mProgressBar3 = (ProgressBar) v.findViewById(R.id.progressBar3);
-
-        v = rootView.findViewById(R.id.content_car);
-        mProgressBar1 = (ProgressBar) v.findViewById(R.id.progressBar);
-        v = rootView.findViewById(R.id.content_choise_services);
-        mProgressBar2 = (ProgressBar) v.findViewById(R.id.progressBar1);
-
-
-        mProgressBar1.setVisibility(View.VISIBLE);
-        mProgressBar2.setVisibility(View.VISIBLE);
-        mProgressBar3.setVisibility(View.VISIBLE);
-
-        tableServicesContent = (TableLayout) rootView.findViewById(R.id.tableServicesContent);
-        tableServicesContent.removeAllViews();
-        mFont = Typeface.createFromAsset(getActivity().getAssets(), "roboto.ttf");
-
-        txtPrice = (TextView) rootView.findViewById(R.id.txtPrice);
-        txtDiscount = (TextView) rootView.findViewById(R.id.txtDiscount);
-        txtDiscountSrv = (TextView) rootView.findViewById(R.id.txtDiscountSrv);
-        txtBal = (TextView) rootView.findViewById(R.id.txtBal);
-        txtFullPrice = (TextView) rootView.findViewById(R.id.txtFullPrice);
-
-        txtPrice.setTypeface(mFont);
-        txtDiscountSrv.setTypeface(mFont);
-        txtFullPrice.setTypeface(mFont);
-
-        txtPrice.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
-        txtDiscountSrv.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
-        txtFullPrice.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
-
-        fab1 = (ActionButton) rootView.findViewById(R.id.fab1);
-        fab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSpiceManager().execute(new MapDirectionRequest(new LatLng(mLatitude, mLongitude), new LatLng(mService.getLatitude(), mService.getLongitude())), "direction", DurationInMillis.ONE_SECOND, new MapDirectionRouteListener());
-            }
-        });
-
-        actionWash = (RelativeLayout) rootView.findViewById(R.id.actionWash);
-        txtStub = (TextView) rootView.findViewById(R.id.txtStub);
-
-        if (mService != null)
-            txtStub.setText(mService.getMobile_stub_text());
-        else
-            txtStub.setText("");
-
-        ViewGroup content_share = (ViewGroup) rootView.findViewById(R.id.content_share);
-        share = (Button) content_share.findViewById(R.id.btnShare);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                share();
-            }
-        });
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Profile prof = getApp().getProfile();
 
-        if (prof != null)
-            mDiscount = prof.getDiscount();
-        else
-            mDiscount = 0;
-
-        txtDiscount.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_discount), mDiscount));
-        txtBal.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_counter), 0));
         getSpiceManager().execute(new CarsMakesRequest(), "carsmakes", DurationInMillis.ONE_HOUR, new CarsRequestListener());
 
         //TimeZone utc = TimeZone.getTimeZone("UTC");
@@ -740,179 +572,202 @@ public class WashServiceInfoFragment extends BaseFragment {
 
     private int res = 0;
 
-    public final class CarsProfileRequestListener implements RequestListener<CarsProfileResult> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showToastError(R.string.error_loading_data);
-            mProgressBar1.setVisibility(View.GONE);
-        }
+    private void initControls(View view) {
 
-        @Override
-        public void onRequestSuccess(final CarsProfileResult result) {
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBarMain);
+        progressBar.setVisibility(View.GONE);
 
-            Log.d("CarsProfileRequestListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
-            res = res + 1000;
-            if (Constants.SUCCESS.equals(result.getStatus())) {
+        imgChoiseServices = (ImageView) view.findViewById(R.id.imgChoiseServices);
+        imgChoiseServices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                radioGroupCars.removeAllViews();
-                if (result.getData() != null) {
+                int id_model = pref.getCarModelId();
+                if (id_model == 0)
+                    id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
 
-                    loading = true;
-                    try {
+                ChoiceServicesFragment f = ChoiceServicesFragment.newInstance(mService.getId(), mService.getOrganization_id(), id_model, list);
+                f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_SERVCES);
 
-                        int selected = pref.getUseCar();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                        .add(R.id.container, f, ChoiceServicesFragment.TAG)
+                        .addToBackStack(TAG).commit();
+            }
+        });
 
-                        if (selected > (result.getData().size() - 1))
-                            selected = 0;
+        imgAddCars = (ImageView) view.findViewById(R.id.imgAddCars);
+        imgAddCars.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                        Log.e("CarsProfileRequestListener", "selected = " + selected);
+                ProfileEditFragment f = ProfileEditFragment.newInstance(getApp().getProfile(), false);
+                f.setTargetFragment(WashServiceInfoFragment.this, FRAGMENT_PROFILE_EDIT);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                        .add(R.id.container, f, ProfileEditFragment.TAG)
+                        .addToBackStack(TAG).commit();
+            }
+        });
 
-                        for (int i = 0; i < result.getData().size(); i++) {
-                            CarsAttributes r = result.getData().get(i);
-                            RadioButton rb = (RadioButton) mInflater.inflate(R.layout.radio_button, null);
-                            String a = "", b = "";
+        radioGroupCars = (RadioGroup) view.findViewById(R.id.radioGroupCars);
+        radioGroupCars.removeAllViews();
 
-                            for (int j = 0; j < list_cars.size(); j++) {
-                                if (list_cars.get(j).getId() == r.getCar_make_id()) {
-                                    a = list_cars.get(j).getName();
-                                    CarMake m;
-                                    for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
-                                        m = list_cars.get(j).getCar_models().get(k);
-                                        if (m.getId() == r.getCar_model_id())
-                                            b = m.getName();
-                                    }
-                                    break;
-                                }
-                            }
+        radioGroupCars.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                            r.setBrandName(a);
-                            r.setModelName(b);
-                            if (TextUtils.isEmpty(r.getTag()))
-                                rb.setText(String.format("%s %s", a, b));
-                            else
-                                rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
-                            rb.setTag(r);
-                            rb.setId(res + i);
-                            radioGroupCars.addView(rb);
-                            rb.setChecked(selected == i);
-                        }
+                RadioButton radioButton = (RadioButton) radioGroupCars.findViewById(checkedId);
+                int index = radioGroupCars.indexOfChild(radioButton);
 
-                    } finally {
+                //XXX
 
-                        radioGroupCars.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                radioGroupCars.invalidate();
-                            }
-                        });
+                if (radioButton != null && !loading) {
 
-                        loading = false;
-                    }
+                    fab.setVisibility(View.INVISIBLE);
 
-                    int id_model = pref.getCarModelId();
-                    if (id_model == 0) {
-                        id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
-                        pref.setCarModelId(id_model);
-                    }
+                    pref.setCarName(radioButton.getText().toString());
+                    pref.setUseCar(index);
 
+                    CarsAttributes r = (CarsAttributes) radioButton.getTag();
+                    pref.setCarModelId(r.getCar_model_id());
+                    pref.setCarNum(r.getTag());
+                    pref.setCarName(r.getBrandName() + " " + r.getModelName());
+
+                    mProgressBar2.setVisibility(View.VISIBLE);
                     getSpiceManager().execute(new ChoiseServiceRequest(mService.getId(),
-                            id_model,
+                            pref.getCarModelId(),
                             mService.getOrganization_id(),
                             pref.getSessionID()), mService.getId() + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
+
+                    radioGroupCars.setEnabled(false);
                 }
-            } else {
-                showToastError(R.string.error_loading_data);
             }
-            mProgressBar1.setVisibility(View.GONE);
-        }
+        });
+
+        //CalendarScrollWidget.LayoutParams lp = new CalendarScrollWidget.LayoutParams();
+        //mCalendar = new CalendarScrollWidget(getActivity(), null);
+        //mCalendar.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        //time_content = (FrameLayout) rootView.findViewById(R.id.time_content);
+        //time_content.addView(mCalendar);
+
+        mCalendar = (CalendarScrollWidget) view.findViewById(R.id.time_content);
+        mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
+        mSlidingTabLayout.setCustomTabView(R.layout.tab_time, R.id.title);
+        mCalendar.setVisibility(View.GONE);
+
+        Resources res = getResources();
+        mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.green_rocket));
+        mSlidingTabLayout.setDistributeEvenly(true);
+
+        mSlidingTabLayout.setOnTabSelected(new SlidingTabLayout.OnTabSelected() {
+            @Override
+            public void onTabSelected(int item) {
+                mCalendar.selected(item);
+            }
+        });
+
+        mCalendar.setOnPagetChange(new CalendarScrollWidget.IOnPageChanged() {
+            @Override
+            public void onPagetChange(int page) {
+                mSlidingTabLayout.selected(page);
+            }
+        });
+
+        View v = view.findViewById(R.id.root_time_info);
+        mNoTime = (LinearLayout) v.findViewById(R.id.notime);
+        mNoTime.setVisibility(View.GONE);
+        mProgressBar3 = (ProgressBar) v.findViewById(R.id.progressBar3);
+
+        v = view.findViewById(R.id.content_car);
+        mProgressBar1 = (ProgressBar) v.findViewById(R.id.progressBar);
+        v = view.findViewById(R.id.content_choise_services);
+        mProgressBar2 = (ProgressBar) v.findViewById(R.id.progressBar1);
+
+
+        mProgressBar1.setVisibility(View.VISIBLE);
+        mProgressBar2.setVisibility(View.VISIBLE);
+        mProgressBar3.setVisibility(View.VISIBLE);
+
+        tableServicesContent = (TableLayout) view.findViewById(R.id.tableServicesContent);
+        tableServicesContent.removeAllViews();
+        mFont = Typeface.createFromAsset(getActivity().getAssets(), "roboto.ttf");
+
+        txtPrice = (TextView) view.findViewById(R.id.txtPrice);
+        txtDiscountSrv = (TextView) view.findViewById(R.id.txtDiscountSrv);
+        txtFullPrice = (TextView) view.findViewById(R.id.txtFullPrice);
+
+        txtPrice.setTypeface(mFont);
+        txtDiscountSrv.setTypeface(mFont);
+        txtFullPrice.setTypeface(mFont);
+
+        txtPrice.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
+        txtDiscountSrv.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
+        txtFullPrice.setText(String.format("%d %s", 0, getActivity().getString(R.string.rubleSymbolJava)));
+
+        fab1 = (ActionButton) view.findViewById(R.id.fab1);
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSpiceManager().execute(new MapDirectionRequest(new LatLng(mLatitude, mLongitude), new LatLng(mService.getLatitude(), mService.getLongitude())), "direction", DurationInMillis.ONE_SECOND, new MapDirectionRouteListener());
+            }
+        });
+
+        actionWash = (RelativeLayout) view.findViewById(R.id.actionWash);
+        txtStub = (TextView) view.findViewById(R.id.txtStub);
+
+        if (mService != null)
+            txtStub.setText(mService.getMobile_stub_text());
+        else
+            txtStub.setText("");
+
+        ViewGroup content_share = (ViewGroup) view.findViewById(R.id.content_share);
+        share = (Button) content_share.findViewById(R.id.btnShare);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share();
+            }
+        });
     }
 
-    public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showToastError(R.string.error_loading_data);
-            mProgressBar1.setVisibility(View.GONE);
-        }
+    //XXX
+    private void fillChoiceServices(ArrayList<ChoiceService> in) {
+        tableServicesContent.removeAllViews();
+        list = in;
 
-        @Override
-        public void onRequestSuccess(final CarsMakesResult result) {
-            if (result != null) {
-                Log.d("CarsRequestListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
-                list_cars = result.getData();
-                //getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "cars_profile", DurationInMillis.ALWAYS_EXPIRED, new CarsProfileRequestListener());
+        Log.d(TAG, "list = " + (list == null ? "null" : "data"));
+        if (list != null) {
+            int price = 0;
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getCheck() == 1) {
+                    TableRow t = (TableRow) getLayoutInflater().inflate(R.layout.service_table_row, null);
+                    TextView sum = (TextView) t.findViewById(R.id.sum);
+                    CheckBox c = (CheckBox) t.findViewById(R.id.checkBox);
 
-                res = res + 1000;
-                //if (Constants.SUCCESS.equals(result.getStatus())) {
+                    c.setChecked(true);
+                    c.setText(list.get(i).getName());
+                    c.setOnClickListener(mOnServicesChange);
+                    c.setTag(i);
 
-                radioGroupCars.removeAllViews();
-                if (result.getData() != null) {
-
-                    loading = true;
-                    try {
-                        int selected = pref.getUseCar();
-
-                        if (selected > (result.getData().size() - 1))
-                            selected = 0;
-
-                        Log.e("CarsProfileRequestListener", "selected = " + selected);
-
-                        for (int i = 0; i < getApp().getProfile().getCars_attributes().size(); i++) {
-                            CarsAttributes r = getApp().getProfile().getCars_attributes().get(i);
-                            RadioButton rb = (RadioButton) mInflater.inflate(R.layout.radio_button, null);
-                            String a = "", b = "";
-
-                            for (int j = 0; j < list_cars.size(); j++) {
-                                if (list_cars.get(j).getId() == r.getCar_make_id()) {
-                                    a = list_cars.get(j).getName();
-                                    CarMake m;
-                                    for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
-                                        m = list_cars.get(j).getCar_models().get(k);
-                                        if (m.getId() == r.getCar_model_id())
-                                            b = m.getName();
-                                    }
-                                    break;
-                                }
-                            }
-
-                            r.setBrandName(a);
-                            r.setModelName(b);
-                            if (TextUtils.isEmpty(r.getTag()))
-                                rb.setText(String.format("%s %s", a, b));
-                            else
-                                rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
-                            rb.setTag(r);
-                            rb.setId(res + i);
-                            radioGroupCars.addView(rb);
-                            rb.setChecked(selected == i);
-                        }
-
-                    } finally {
-
-                        radioGroupCars.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                radioGroupCars.invalidate();
-                            }
-                        });
-
-                        loading = false;
-                    }
-
-                    int id_model = pref.getCarModelId();
-                    if (id_model == 0) {
-                        id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
-                        pref.setCarModelId(id_model);
-                    }
-
-                    getSpiceManager().execute(new ChoiseServiceRequest(mService.getId(),
-                            id_model,
-                            mService.getOrganization_id(),
-                            pref.getSessionID()), mService.getId() + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
+                    sum.setTypeface(mFont);
+                    sum.setText(String.format("%d %s", list.get(i).getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
+                    tableServicesContent.addView(t);
+                    price = price + list.get(i).getPrice();
                 }
-                mProgressBar1.setVisibility(View.GONE);
-                overrideFonts(getActivity(), radioGroupCars);
             }
+
+            int discount = 0;
+
+            txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+            //todo discount
+            txtDiscountSrv.setText(String.format("%d %s", 10, getActivity().getString(R.string.rubleSymbolJava)));
+            txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
         }
+
+        overrideFonts(getActivity(), tableServicesContent);
     }
 
     @Override
@@ -1221,40 +1076,91 @@ public class WashServiceInfoFragment extends BaseFragment {
         }
     }
 
-    //XXX
-    private void fillChoiceServices(ArrayList<ChoiceService> in) {
-        tableServicesContent.removeAllViews();
-        list = in;
-
-        Log.d(TAG, "list = " + (list == null ? "null" : "data"));
-        if (list != null) {
-            int price = 0;
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getCheck() == 1) {
-                    TableRow t = (TableRow) mInflater.inflate(R.layout.service_table_row, null);
-                    TextView sum = (TextView) t.findViewById(R.id.sum);
-                    CheckBox c = (CheckBox) t.findViewById(R.id.checkBox);
-
-                    c.setChecked(true);
-                    c.setText(list.get(i).getName());
-                    c.setOnClickListener(mOnServicesChange);
-                    c.setTag(i);
-
-                    sum.setTypeface(mFont);
-                    sum.setText(String.format("%d %s", list.get(i).getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
-                    tableServicesContent.addView(t);
-                    price = price + list.get(i).getPrice();
-                }
-            }
-
-            int discount = 0;
-
-            txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
-            txtDiscountSrv.setText(String.format("%d %s", mDiscount, getActivity().getString(R.string.rubleSymbolJava)));
-            txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+    public final class CarsProfileRequestListener implements RequestListener<CarsProfileResult> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            showToastError(R.string.error_loading_data);
+            mProgressBar1.setVisibility(View.GONE);
         }
 
-        overrideFonts(getActivity(), tableServicesContent);
+        @Override
+        public void onRequestSuccess(final CarsProfileResult result) {
+
+            Log.d("CarsProfileRequestListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
+            res = res + 1000;
+            if (Constants.SUCCESS.equals(result.getStatus())) {
+
+                radioGroupCars.removeAllViews();
+                if (result.getData() != null) {
+
+                    loading = true;
+                    try {
+
+                        int selected = pref.getUseCar();
+
+                        if (selected > (result.getData().size() - 1))
+                            selected = 0;
+
+                        Log.e("CarsProfileRequestListener", "selected = " + selected);
+
+                        for (int i = 0; i < result.getData().size(); i++) {
+                            CarsAttributes r = result.getData().get(i);
+                            RadioButton rb = (RadioButton) getLayoutInflater().inflate(R.layout.radio_button, null);
+                            String a = "", b = "";
+
+                            for (int j = 0; j < list_cars.size(); j++) {
+                                if (list_cars.get(j).getId() == r.getCar_make_id()) {
+                                    a = list_cars.get(j).getName();
+                                    CarMake m;
+                                    for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
+                                        m = list_cars.get(j).getCar_models().get(k);
+                                        if (m.getId() == r.getCar_model_id())
+                                            b = m.getName();
+                                    }
+                                    break;
+                                }
+                            }
+
+                            r.setBrandName(a);
+                            r.setModelName(b);
+                            if (TextUtils.isEmpty(r.getTag()))
+                                rb.setText(String.format("%s %s", a, b));
+                            else
+                                rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
+                            rb.setTag(r);
+                            rb.setId(res + i);
+                            radioGroupCars.addView(rb);
+                            rb.setChecked(selected == i);
+                        }
+
+                    } finally {
+
+                        radioGroupCars.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                radioGroupCars.invalidate();
+                            }
+                        });
+
+                        loading = false;
+                    }
+
+                    int id_model = pref.getCarModelId();
+                    if (id_model == 0) {
+                        id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
+                        pref.setCarModelId(id_model);
+                    }
+
+                    getSpiceManager().execute(new ChoiseServiceRequest(mService.getId(),
+                            id_model,
+                            mService.getOrganization_id(),
+                            pref.getSessionID()), mService.getId() + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
+                }
+            } else {
+                showToastError(R.string.error_loading_data);
+            }
+            mProgressBar1.setVisibility(View.GONE);
+        }
     }
 
 
@@ -1277,27 +1183,93 @@ public class WashServiceInfoFragment extends BaseFragment {
         return "";
     }
 
-    private View.OnClickListener mOnServicesChange = new View.OnClickListener() {
+    public final class CarsRequestListener implements RequestListener<CarsMakesResult> {
         @Override
-        public void onClick(View v) {
-            if (v.getTag() != null) {
-                ChoiceService b = list.get((Integer) v.getTag());
-                b.setCheck(((CheckBox) v).isChecked() ? 1 : 0);
-            }
-
-            int price = 0;
-
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).isCheck()) {
-                    price = price + list.get(i).getPrice();
-                }
-            }
-
-            txtPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
-            txtDiscountSrv.setText(String.format("%d %s", mDiscount, getActivity().getString(R.string.rubleSymbolJava)));
-            txtFullPrice.setText(String.format("%d %s", price, getActivity().getString(R.string.rubleSymbolJava)));
+        public void onRequestFailure(SpiceException spiceException) {
+            showToastError(R.string.error_loading_data);
+            mProgressBar1.setVisibility(View.GONE);
         }
-    };
+
+        @Override
+        public void onRequestSuccess(final CarsMakesResult result) {
+            if (result != null) {
+                Log.d("CarsRequestListener", "onRequestSuccess = " + (result.getStatus() == null ? "null" : result.getStatus()));
+                list_cars = result.getData();
+                //getSpiceManager().execute(new CarsProfileRequest(pref.getSessionID()), "cars_profile", DurationInMillis.ALWAYS_EXPIRED, new CarsProfileRequestListener());
+
+                res = res + 1000;
+                //if (Constants.SUCCESS.equals(result.getStatus())) {
+
+                radioGroupCars.removeAllViews();
+                if (result.getData() != null) {
+
+                    loading = true;
+                    try {
+                        int selected = pref.getUseCar();
+
+                        if (selected > (result.getData().size() - 1))
+                            selected = 0;
+
+                        Log.e("CarsProfileRequestListener", "selected = " + selected);
+
+                        for (int i = 0; i < getApp().getProfile().getCars_attributes().size(); i++) {
+                            CarsAttributes r = getApp().getProfile().getCars_attributes().get(i);
+                            RadioButton rb = (RadioButton) getLayoutInflater().inflate(R.layout.radio_button, null);
+                            String a = "", b = "";
+
+                            for (int j = 0; j < list_cars.size(); j++) {
+                                if (list_cars.get(j).getId() == r.getCar_make_id()) {
+                                    a = list_cars.get(j).getName();
+                                    CarMake m;
+                                    for (int k = 0; k < list_cars.get(j).getCar_models().size(); k++) {
+                                        m = list_cars.get(j).getCar_models().get(k);
+                                        if (m.getId() == r.getCar_model_id())
+                                            b = m.getName();
+                                    }
+                                    break;
+                                }
+                            }
+
+                            r.setBrandName(a);
+                            r.setModelName(b);
+                            if (TextUtils.isEmpty(r.getTag()))
+                                rb.setText(String.format("%s %s", a, b));
+                            else
+                                rb.setText(String.format("%s %s (%s)", a, b, r.getTag()));
+                            rb.setTag(r);
+                            rb.setId(res + i);
+                            radioGroupCars.addView(rb);
+                            rb.setChecked(selected == i);
+                        }
+
+                    } finally {
+
+                        radioGroupCars.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                radioGroupCars.invalidate();
+                            }
+                        });
+
+                        loading = false;
+                    }
+
+                    int id_model = pref.getCarModelId();
+                    if (id_model == 0) {
+                        id_model = getApp().getProfile().getCars_attributes().get(0).getCar_model_id();
+                        pref.setCarModelId(id_model);
+                    }
+
+                    getSpiceManager().execute(new ChoiseServiceRequest(mService.getId(),
+                            id_model,
+                            mService.getOrganization_id(),
+                            pref.getSessionID()), mService.getId() + "_services_chose_" + pref.getUseCar(), DurationInMillis.ALWAYS_EXPIRED, new ChoiceServiceRequestListener());
+                }
+                mProgressBar1.setVisibility(View.GONE);
+                overrideFonts(getActivity(), radioGroupCars);
+            }
+        }
+    }
 
     private String reserved_time;
 
