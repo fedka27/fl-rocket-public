@@ -111,7 +111,7 @@ dependencies {
     compile('com.google.android.gms:play-services-location:15.0.1') {
         force = true
     }
-//    compile('com.google.firebase:firebase-messaging:17.0.0')
+    compile('com.google.firebase:firebase-messaging:17.0.0')
 
     compile 'com.github.shell-software:fab:1.1.2'
     compile 'com.bluelinelabs:logansquare:1.1.0'
