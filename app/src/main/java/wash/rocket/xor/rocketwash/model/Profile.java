@@ -11,6 +11,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 //@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonObject
 public class Profile implements Parcelable {
@@ -115,6 +117,10 @@ public class Profile implements Parcelable {
 
     @JsonField
     private boolean phone_verified;
+
+    @JsonField
+    @Nullable
+    private UserAttributes tenant_user_attributes;
 
     private String string;
 
@@ -391,6 +397,51 @@ public class Profile implements Parcelable {
         this.phone_verified = phone_verified;
     }
 
+    public Profile(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        phone = in.readString();
+        cars_attributes = new ArrayList<>();
+        in.readList(cars_attributes, CarsAttributes.class.getClassLoader());
+        email = in.readString();
+        created_at = in.readString();
+        updated_at = in.readString();
+        good_user = in.readString();
+        session_id = in.readString();
+        service_location_id = in.readInt();
+        car_type_id = in.readInt();
+        sex = in.readString();
+        date_of_birth = in.readString();
+        category = in.readString();
+        service_location_lane_id = in.readInt();
+        deleted_at = in.readString();
+        discount = in.readInt();
+        address = in.readString();
+        tin = in.readString();
+        kpp = in.readString();
+        account_number = in.readString();
+        bic = in.readString();
+        discount_card_number = in.readString();
+        original_user_id = in.readInt();
+        superuser = in.readInt() == 1;
+        full_name = in.readString();
+        disable_sms = in.readInt() == 1;
+        organization_id = in.readInt();
+        user_category_id = in.readInt();
+        user_category_updated_at = in.readString();
+        job_id = in.readInt();
+        employee_status = in.readString();
+        latest_pin_sms_sent_at = in.readString();
+        phone_verified = in.readInt() == 1;
+        tenant_user_attributes = in.readParcelable(UserAttributes.class.getClassLoader());
+        string = in.readString();
+    }
+
+    @Nullable
+    public UserAttributes getTenant_user_attributes() {
+        return tenant_user_attributes;
+    }
+
     @Override
     public String toString() {
         return "";
@@ -400,6 +451,14 @@ public class Profile implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public void setTenant_user_attributes(@Nullable UserAttributes tenant_user_attributes) {
+        this.tenant_user_attributes = tenant_user_attributes;
+    }
+
+    public Profile() {
+
     }
 
     @Override
@@ -438,50 +497,8 @@ public class Profile implements Parcelable {
         dest.writeString(employee_status);
         dest.writeString(latest_pin_sms_sent_at);
         dest.writeInt(phone_verified ? 1 : 0);
+        dest.writeParcelable(tenant_user_attributes, 0);
         dest.writeString(string);
-    }
-
-    public Profile() {
-
-    }
-
-    public Profile(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        phone = in.readString();
-        cars_attributes = new ArrayList<>();
-        in.readList(cars_attributes, CarsAttributes.class.getClassLoader());
-        email = in.readString();
-        created_at = in.readString();
-        updated_at = in.readString();
-        good_user = in.readString();
-        session_id = in.readString();
-        service_location_id = in.readInt();
-        car_type_id = in.readInt();
-        sex = in.readString();
-        date_of_birth = in.readString();
-        category = in.readString();
-        service_location_lane_id = in.readInt();
-        deleted_at = in.readString();
-        discount = in.readInt();
-        address = in.readString();
-        tin = in.readString();
-        kpp = in.readString();
-        account_number = in.readString();
-        bic = in.readString();
-        discount_card_number = in.readString();
-        original_user_id = in.readInt();
-        superuser = in.readInt() == 1;
-        full_name = in.readString();
-        disable_sms = in.readInt() == 1;
-        organization_id = in.readInt();
-        user_category_id = in.readInt();
-        user_category_updated_at = in.readString();
-        job_id = in.readInt();
-        employee_status = in.readString();
-        latest_pin_sms_sent_at = in.readString();
-        phone_verified = in.readInt() == 1;
-        string = in.readString();
     }
 
     public static final Creator<Profile> CREATOR = new Creator<Profile>() {
