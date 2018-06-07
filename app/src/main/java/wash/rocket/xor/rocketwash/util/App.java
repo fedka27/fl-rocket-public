@@ -2,12 +2,16 @@ package wash.rocket.xor.rocketwash.util;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
+import roboguice.util.temp.Ln;
+import wash.rocket.xor.rocketwash.BuildConfig;
 import wash.rocket.xor.rocketwash.model.CarsAttributes;
 import wash.rocket.xor.rocketwash.model.Profile;
 
@@ -45,6 +49,10 @@ public class App extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         //JodaTimeAndroid.init(this);
+
+        Ln.getConfig().setLoggingLevel(BuildConfig.DEBUG ? Log.DEBUG : Log.WARN);
+
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
     }
 
     @Override

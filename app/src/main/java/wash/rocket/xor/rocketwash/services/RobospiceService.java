@@ -25,6 +25,7 @@ public class RobospiceService extends SpiceService {
         return cacheManager;*/
     }
 
+
     @Override
     public int getThreadCount() {
         return 1;

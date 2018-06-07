@@ -21,8 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.PendingRequestListener;
 import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.lang.ref.WeakReference;
@@ -32,7 +34,9 @@ import java.util.TimerTask;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.LoginResult;
 import wash.rocket.xor.rocketwash.model.PinResult;
+import wash.rocket.xor.rocketwash.model.ProfileResult;
 import wash.rocket.xor.rocketwash.requests.LoginRequest;
+import wash.rocket.xor.rocketwash.requests.MessageTokenRequest;
 import wash.rocket.xor.rocketwash.requests.PinRequest;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.util;
@@ -247,6 +251,12 @@ public class LoginQuickFragment extends BaseFragment {
         caption.setVisibility(View.GONE);
     }
 
+    private void loggedSuccessful() {
+        if (mCallback != null) {
+            mCallback.onLogged();
+        }
+    }
+
     public final class LoginRequestListener implements RequestListener<LoginResult> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -264,8 +274,35 @@ public class LoginQuickFragment extends BaseFragment {
                 if (Constants.SUCCESS.equals(result.getStatus())) {
                     pref.setSessionID(result.getData().getSession_id());
                     pref.setProfile(result.getData().getProfile());
-                    if (mCallback != null)
-                        mCallback.onLogged();
+                    String userToken = pref.getSessionID();
+                    String firebaseToken = FirebaseInstanceId.getInstance().getToken();
+
+                    if (userToken != null && firebaseToken != null) {
+                        Log.d(TAG, "Registering device on the server");
+                        Log.d(TAG, "FirebaseToken: " + firebaseToken);
+                        getSpiceManager().execute(new MessageTokenRequest(userToken, firebaseToken), new PendingRequestListener<ProfileResult>() {
+                            @Override
+                            public void onRequestNotFound() {
+                                Log.e(TAG, "Device registered failed: Not fount request");
+                                loggedSuccessful();
+                            }
+
+                            @Override
+                            public void onRequestFailure(SpiceException spiceException) {
+                                Log.e(TAG, "Device registered failed");
+                                spiceException.printStackTrace();
+                                showToastError(spiceException.getLocalizedMessage());
+                            }
+
+                            @Override
+                            public void onRequestSuccess(ProfileResult profileResult) {
+                                Log.d(TAG, "Device registered successful");
+                                loggedSuccessful();
+                            }
+                        });
+                    } else {
+                        loggedSuccessful();
+                    }
                 } else {
                     final int res = getResources().getIdentifier("login_" + result.getData().getResult(), "string", getActivity().getPackageName());
                     String error = res == 0 ? result.getData().getResult() : getString(res);

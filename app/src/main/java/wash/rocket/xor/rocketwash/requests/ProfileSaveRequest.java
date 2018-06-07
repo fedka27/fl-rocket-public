@@ -30,7 +30,6 @@ public class ProfileSaveRequest extends GoogleHttpClientSpiceRequest<ProfileResu
     public ProfileSaveRequest(String session_id, Profile profile) {
         super(ProfileResult.class);
         this.profileUrl = Constants.URL + "profile";
-        this.carUrl = Constants.URL + "cars";
         this.carUrlID = Constants.URL + "cars/id";
         this.session_id = session_id;
         this.profile = profile;
