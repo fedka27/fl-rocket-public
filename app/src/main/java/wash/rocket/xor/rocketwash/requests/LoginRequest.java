@@ -18,6 +18,7 @@ import wash.rocket.xor.rocketwash.model.LoginResult;
 import wash.rocket.xor.rocketwash.util.Constants;
 
 public class LoginRequest extends GoogleHttpClientSpiceRequest<LoginResult> {
+    private static final String TAG = LoginRequest.class.getSimpleName();
 
     private String baseUrl;
     private String phone;
@@ -34,16 +35,8 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest<LoginResult> {
     public LoginResult loadDataFromNetwork() throws IOException {
         Ln.d("Call web service " + baseUrl);
 
-        //JSONObject obj = new JSONObject();
-        //obj.put("");
-        //HttpRequest request = getHttpRequestFactory().buildGetRequest(new GenericUrl(baseUrl), ByteArrayContent.fromString("application/json", obj.toString()));
-
-        //baseUrl = baseUrl + "phone=" + URLEncoder.encode(phone, "utf-8") + "&pin=" + pin;
-
         String uri = Uri.parse(baseUrl)
                 .buildUpon()
-                //.appendQueryParameter("phone", URLEncoder.encode(phone, "utf-8"))
-                //.appendQueryParameter("pin", URLEncoder.encode(pin, "utf-8"))
                 .appendQueryParameter("phone", phone.replace("+", ""))
                 .appendQueryParameter("pin", pin)
                 .build().toString();
@@ -51,11 +44,6 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest<LoginResult> {
         Log.d("loadDataFromNetwork", "uri = " + uri);
 
         HttpRequest request = getHttpRequestFactory().buildPostRequest(new GenericUrl(uri), null);
-        //buildGetRequest(new GenericUrl(baseUrl));
-        //request.setParser(new JacksonFactory().createJsonObjectParser());
-        //HttpResponse f = request.execute();
-        //Log.d("responce", "" + f.toString());
-        //return f.parseAs(getResultType());
 
         InputStream content = request.execute().getContent();
         String result = "";

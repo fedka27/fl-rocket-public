@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
@@ -50,6 +51,8 @@ public class App extends Application {
         //JodaTimeAndroid.init(this);
 
         Ln.getConfig().setLoggingLevel(BuildConfig.DEBUG ? Log.DEBUG : Log.WARN);
+
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
     }
 
     @Override

@@ -177,4 +177,6 @@
     <string name="tomorrow">Завтра</string>
     <string name="order_notify" formatted="false">Вы записаны на автомойку на %s. Ждем вас!</string>
 
+    <string name="default_notification_channel_id">RocketWashApp</string>
+
 </resources>
