@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 @JsonObject
 public class WashService implements Parcelable {
     @JsonField
@@ -84,6 +86,10 @@ public class WashService implements Parcelable {
 
     @JsonField
     private int favorite_id;
+
+    @JsonField
+    @Nullable
+    private UserAttributes tenant_user_attributes;
 
     private int type;
     private Date rDate;
@@ -282,6 +288,88 @@ public class WashService implements Parcelable {
         this.time_periods = time_periods;
     }
 
+    protected WashService(Parcel in) {
+        this.id = in.readInt();
+        this.organization_id = in.readInt();
+        this.address = in.readString();
+        this.phone = in.readString();
+        this.email = in.readString();
+        this.active = in.readByte() != 0;
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
+        this.name = in.readString();
+        this.time_zone = in.readString();
+        this.plan_id = in.readInt();
+        this.agreement_number = in.readString();
+        this.deleted_at = in.readString();
+        this.top_order = in.readByte() != 0;
+        this.mobile_stub_text = in.readString();
+        this.sms_price = in.readString();
+        this.online_reservation_price = in.readString();
+        this.distance = in.readFloat();
+        this.bearing = in.readInt();
+        this.service_name = in.readString();
+        this.time_periods = in.createTypedArrayList(TimePeriods.CREATOR);
+        this.favorite_id = in.readInt();
+        this.type = in.readInt();
+        long tmpRDate = in.readLong();
+        this.rDate = tmpRDate == -1 ? null : new Date(tmpRDate);
+        this.tenant_user_attributes = in.readParcelable(UserAttributes.class.getClassLoader());
+    }
+
+    public static Creator<WashService> getCREATOR() {
+        return CREATOR;
+    }
+
+    public UserAttributes getTenant_user_attributes() {
+        if (tenant_user_attributes == null) tenant_user_attributes = new UserAttributes();
+        return tenant_user_attributes;
+    }
+
+    public void setTenant_user_attributes(@Nullable UserAttributes tenant_user_attributes) {
+        this.tenant_user_attributes = tenant_user_attributes;
+    }
+
+
+    public WashService() {
+
+    }
+
+    public void var_dump() {
+        Field[] fields = this.getClass().getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            try {
+                System.out.println(fields[i].getName() + " - " + fields[i].get(this));
+            } catch (java.lang.IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public Date getrDate() {
+        return rDate;
+    }
+
+    public void setrDate(Date rDate) {
+        this.rDate = rDate;
+    }
+
+    public int getFavorite_id() {
+        return favorite_id;
+    }
+
+    public void setFavorite_id(int favorite_id) {
+        this.favorite_id = favorite_id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
     public WashService getClone() {
         WashService a = new WashService();
 
@@ -307,6 +395,7 @@ public class WashService implements Parcelable {
         a.distance = distance;
         a.bearing = bearing;
         a.service_name = service_name;
+        a.tenant_user_attributes = tenant_user_attributes;
         if (time_periods != null) {
             a.time_periods = new ArrayList<>();
             for (int i = 0; i < time_periods.size(); i++) {
@@ -319,50 +408,6 @@ public class WashService implements Parcelable {
         }
         a.favorite_id = favorite_id;
         return a;
-    }
-
-
-    public WashService()
-    {
-
-    }
-
-    public void var_dump()
-    {
-        Field[] fields = this.getClass().getDeclaredFields();
-        for (int i = 0; i < fields.length; i++)
-        {
-            try
-            {
-                System.out.println(fields[i].getName() + " - " + fields[i].get(this));
-            }
-            catch (java.lang.IllegalAccessException e)
-            {
-               e.printStackTrace();
-            }
-        }
-    }
-
-
-    public Date getrDate() {
-        return rDate;
-    }
-
-    public void setrDate(Date rDate) {
-        this.rDate = rDate;
-    }
-
-    public int getFavorite_id() {
-        return favorite_id;
-    }
-
-    public void setFavorite_id(int favorite_id) {
-        this.favorite_id = favorite_id;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     @Override
@@ -393,36 +438,7 @@ public class WashService implements Parcelable {
         dest.writeInt(this.favorite_id);
         dest.writeInt(this.type);
         dest.writeLong(rDate != null ? rDate.getTime() : -1);
-    }
-
-    protected WashService(Parcel in) {
-        this.id = in.readInt();
-        this.organization_id = in.readInt();
-        this.address = in.readString();
-        this.phone = in.readString();
-        this.email = in.readString();
-        this.active = in.readByte() != 0;
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.latitude = in.readDouble();
-        this.longitude = in.readDouble();
-        this.name = in.readString();
-        this.time_zone = in.readString();
-        this.plan_id = in.readInt();
-        this.agreement_number = in.readString();
-        this.deleted_at = in.readString();
-        this.top_order = in.readByte() != 0;
-        this.mobile_stub_text = in.readString();
-        this.sms_price = in.readString();
-        this.online_reservation_price = in.readString();
-        this.distance = in.readFloat();
-        this.bearing = in.readInt();
-        this.service_name = in.readString();
-        this.time_periods = in.createTypedArrayList(TimePeriods.CREATOR);
-        this.favorite_id = in.readInt();
-        this.type = in.readInt();
-        long tmpRDate = in.readLong();
-        this.rDate = tmpRDate == -1 ? null : new Date(tmpRDate);
+        dest.writeParcelable(tenant_user_attributes, 0);
     }
 
     public static final Creator<WashService> CREATOR = new Creator<WashService>() {

@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import wash.rocket.xor.rocketwash.R;
+import wash.rocket.xor.rocketwash.model.UserAttributes;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.widgets.NiceSupportMapFragment;
 
@@ -20,6 +21,8 @@ public abstract class WashServiceInfoBaseFragment extends BaseFragment {
     private static final String TAG = WashServiceInfoBaseFragment.class.getSimpleName();
 
     protected WashService mService;
+
+    protected UserAttributes userAttributes;
 
     private TextView txtBal;
     private TextView txtDiscount;
@@ -46,6 +49,8 @@ public abstract class WashServiceInfoBaseFragment extends BaseFragment {
         setHasOptionsMenu(true);
 
         mService = getWashService();
+
+        userAttributes = mService.getTenant_user_attributes();
 
         if (mService != null) {
             mService.var_dump();
@@ -75,8 +80,10 @@ public abstract class WashServiceInfoBaseFragment extends BaseFragment {
     private void initPointsAndDiscounts() {
 
         //todo point and discount
-        txtDiscount.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_discount), 10));
-        txtBal.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_counter), 100));
+        txtDiscount.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_discount),
+                userAttributes.getDiscount()));
+        txtBal.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_counter),
+                userAttributes.getFinancial_center_user_bonuses_balance().getAmount()));
 
     }
 

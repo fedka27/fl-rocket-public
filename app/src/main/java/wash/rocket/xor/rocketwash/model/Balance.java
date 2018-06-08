@@ -7,7 +7,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 @JsonObject
-class Balance implements Parcelable {
+public class Balance implements Parcelable {
     public static final Creator<Balance> CREATOR = new Creator<Balance>() {
         @Override
         public Balance createFromParcel(Parcel in) {

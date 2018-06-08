@@ -7,7 +7,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 @JsonObject
-class UserAttributes implements Parcelable {
+public class UserAttributes implements Parcelable {
 
     public static final Creator<UserAttributes> CREATOR = new Creator<UserAttributes>() {
         @Override

@@ -177,19 +177,6 @@ public class WashServiceInfoFragment extends WashServiceInfoBaseFragment {
         return fragment;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-
-        Log.w(TAG, "onAttach");
-
-        super.onAttach(activity);
-        try {
-            mCallback = (IFragmentCallbacksInterface) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement IFragmentCallbacksInterface");
-        }
-    }
-
     private View.OnClickListener mOnServicesChange = new View.OnClickListener() {
         @SuppressLint("DefaultLocale")
         @Override

@@ -7,6 +7,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -63,7 +65,7 @@ import wash.rocket.xor.rocketwash.requests.MapReverceGeocodingRequest;
 import wash.rocket.xor.rocketwash.widgets.CalendarScrollWidget;
 
 @SuppressLint("LongLogTag")
-public class WashServiceInfoFragmentCall extends BaseFragment {
+public class WashServiceInfoFragmentCall extends WashServiceInfoBaseFragment {
 
     public static final String TAG = "WashServiceInfoFragmentCall";
 
@@ -205,9 +207,6 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
             }
         });
 
-        fab = (ActionButton) rootView.findViewById(R.id.fab);
-        mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
-        mContent = (LinearLayout) rootView.findViewById(R.id.content_car);
 
         setToolbar(rootView, mTitle);
 
@@ -217,7 +216,23 @@ public class WashServiceInfoFragmentCall extends BaseFragment {
         return rootView;
     }
 
-    private void initMap(GoogleMap googleMap) {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        fab = view.findViewById(R.id.fab);
+        mScrollView1 = view.findViewById(R.id.scroll);
+        mContent = view.findViewById(R.id.content_car);
+    }
+
+    @Override
+    @Nullable
+    protected WashService getWashService() {
+        return getArguments().getParcelable(SERVICE);
+    }
+
+    @Override
+    protected void initMap(GoogleMap googleMap) {
         mMap = googleMap;
 
 
