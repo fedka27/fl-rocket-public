@@ -142,8 +142,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initViews(view);
-        initBonusesAndDiscounts();
+//        initViews(view);
+//        initBonusesAndDiscounts();
     }
 
     private void initViews(View view) {
@@ -298,7 +298,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 String session = pref.getSessionID();
                 mPage++;
                 getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session),
-                        "wash", DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener(false));
+                        "wash", DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
             }
         });
 
@@ -316,7 +316,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), RESERVED_WASH_KEY_CASH, 3000, new ReservedRequestListener());
                     getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session),
                             NEAREST_WASH_KEY_CASH, DurationInMillis.ALWAYS_EXPIRED,
-                            new NearestWashServiceRequestListener(false));
+                            new NearestWashServiceRequestListener());
                     list.clear();
                     layoutWarn.setVisibility(View.GONE);
 
@@ -358,7 +358,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                 getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
                 getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance,
-                        mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener(true));
+                        mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
 
                 //spiceManager.execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
                 //spiceManager.execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
@@ -712,7 +712,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
                 getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session),
                         "wash", 3000,
-                        new NearestWashServiceRequestListener(true));
+                        new NearestWashServiceRequestListener());
                 list.clear();
                 layoutWarn.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setRefreshing(true);
@@ -826,11 +826,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     }
 
     public final class NearestWashServiceRequestListener implements RequestListener<WashServiceResult> {
-        private boolean isFirstLoad = false;
-
-        public NearestWashServiceRequestListener(boolean isFirstLoad) {
-            this.isFirstLoad = isFirstLoad;
-        }
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -867,9 +862,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     if (reserved_Loaded) {
                         adapter.notifyDataSetChanged();
                         stopRefresh();
-                        if (list.size() == 1 && isFirstLoad) {
-                            openServiceInfo(list.get(0));
-                        }
                     }
 
                     if (reserved_Loaded && list.size() <= 0)

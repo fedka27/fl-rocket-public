@@ -121,7 +121,9 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <include layout="@layout/include_info_discount" />
+        <include
+            layout="@layout/include_info_discount"
+            android:visibility="gone" />
 
     </android.support.design.widget.AppBarLayout>
 
