@@ -63,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
-                        android:text="@string/fragment_info_wash_service_my_counter"
+                        android:text="@string/my_bonuses_"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_16sp" />
@@ -81,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/fragment_info_wash_service_my_discount"
+                        android:text="@string/my_discount_"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_16sp" />

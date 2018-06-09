@@ -62,7 +62,7 @@ public abstract class WashServiceInfoBaseFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         txtDiscount = (TextView) view.findViewById(R.id.my_discount_text_view);
-        txtBal = (TextView) view.findViewById(R.id.my_points_text_view);
+        txtBal = (TextView) view.findViewById(R.id.my_bonuses_text_view);
 
         initPointsAndDiscounts();
 
@@ -80,9 +80,9 @@ public abstract class WashServiceInfoBaseFragment extends BaseFragment {
     private void initPointsAndDiscounts() {
 
         //todo point and discount
-        txtDiscount.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_discount),
+        txtDiscount.setText(String.format(getActivity().getString(R.string.my_discount_),
                 userAttributes.getDiscount()));
-        txtBal.setText(String.format(getActivity().getString(R.string.fragment_info_wash_service_my_counter),
+        txtBal.setText(String.format(getActivity().getString(R.string.my_bonuses_),
                 userAttributes.getFinancial_center_user_bonuses_balance().getAmount()));
 
     }

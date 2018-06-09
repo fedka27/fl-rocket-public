@@ -100,8 +100,8 @@
     <string name="fragment_edit_profile_name">Личные данные</string>
     <string name="rubleSymbolJava"></string>
     <string name="rubleSymbolJava1">\u20BD</string>
-    <string name="fragment_info_wash_service_my_counter">Мои баллы %d</string>
-    <string name="fragment_info_wash_service_my_discount" formatted="false">Личная скидка %d%%</string>
+    <string name="my_bonuses_">Мои баллы %d</string>
+    <string name="my_discount_" formatted="false">Личная скидка %d%%</string>
     <string name="include_info_wash_service_disabled">Эта мойка еще не доступна для онлайн записи</string>
     <string name="include_info_wash_service_disablet_info">Сообщите нам, если вы хотите использовать онлайн запись для этой автомойки</string>
     <string name="wash_distance">До мойки %1$.1f км</string>

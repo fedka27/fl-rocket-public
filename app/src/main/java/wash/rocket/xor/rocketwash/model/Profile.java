@@ -437,8 +437,8 @@ public class Profile implements Parcelable {
         string = in.readString();
     }
 
-    @Nullable
     public UserAttributes getTenant_user_attributes() {
+        if (tenant_user_attributes == null) tenant_user_attributes = new UserAttributes();
         return tenant_user_attributes;
     }
 

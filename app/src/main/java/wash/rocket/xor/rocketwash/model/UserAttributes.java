@@ -79,10 +79,14 @@ public class UserAttributes implements Parcelable {
     }
 
     public Balance getFinancial_center_user_money_balance() {
+        if (financial_center_user_bonuses_balance == null)
+            financial_center_user_bonuses_balance = new Balance();
         return financial_center_user_money_balance;
     }
 
     public void setFinancial_center_user_money_balance(Balance financial_center_user_money_balance) {
+        if (financial_center_user_money_balance == null)
+            financial_center_user_money_balance = new Balance();
         this.financial_center_user_money_balance = financial_center_user_money_balance;
     }
 

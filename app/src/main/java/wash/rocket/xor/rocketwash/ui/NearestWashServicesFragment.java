@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -46,6 +48,7 @@ import wash.rocket.xor.rocketwash.model.ProfileResult;
 import wash.rocket.xor.rocketwash.model.Reservation;
 import wash.rocket.xor.rocketwash.model.ReserveCancelResult;
 import wash.rocket.xor.rocketwash.model.ReservedResult;
+import wash.rocket.xor.rocketwash.model.UserAttributes;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.model.WashServiceResult;
 import wash.rocket.xor.rocketwash.provider.NavigationMenuContent;
@@ -103,12 +106,15 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     private TextView txtCarNumber;
     private ProgressBar progressBar;
 
+    //Discount and Bonuses
+    private ViewGroup discountContainer;
+    private TextView discountTextView;
+    private TextView bonusesTextView;
+
     private LinearLayout layoutWarn;
 
-    // private SpiceManager spiceManager = new SpiceManager(RobospiceService.class);
     private Reservation mReserved;
     private int mPosition;
-    private int mLoaderCount = 0;
 
     public NearestWashServicesFragment() {
     }
@@ -133,11 +139,36 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initViews(view);
+        initBonusesAndDiscounts();
+    }
+
+    private void initViews(View view) {
+        discountContainer = view.findViewById(R.id.discount_container);
+        discountTextView = view.findViewById(R.id.my_discount_text_view);
+        bonusesTextView = view.findViewById(R.id.my_bonuses_text_view);
+    }
+
+    private void initBonusesAndDiscounts() {
+        Profile profile = getApp().getProfile();
+        if (profile != null) {
+            UserAttributes userAttributes = profile.getTenant_user_attributes();
+
+            discountContainer.setVisibility(View.VISIBLE);
+
+            discountTextView.setText(getString(R.string.my_discount_, userAttributes.getDiscount()));
+            bonusesTextView.setText(getString(R.string.my_bonuses_, userAttributes.getFinancial_center_user_bonuses_balance().getAmount()));
+        } else {
+            discountContainer.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //mLatitude = 56.140901;
-        //mLongitude = 47.244521;
-
         mDistance = 20;
         mPage = 1;
 
@@ -145,11 +176,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             return;
 
         list = new ArrayList<>();
-
-        //if (savedInstanceState == null)
-        //    list = new ArrayList<>();
-        //else
-        //    list = savedInstanceState.getParcelableArrayList(LIST);
 
         adapter = new WashServicesAdapter(list);
         swipeListView = (SwipeListView) getView().findViewById(R.id.recyclerView);
@@ -325,7 +351,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             public void onRefresh() {
                 if (mLatitude != 0 && mLongitude != 0) {
                     last_time = System.currentTimeMillis();
-                    mLoaderCount = 0;
                     swipeListView.closeAnimateAll();
                     String session = pref.getSessionID();
                     mPage = 1;

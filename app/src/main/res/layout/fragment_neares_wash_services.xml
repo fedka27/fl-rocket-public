@@ -1,15 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                tools:context=".MainActivityFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivityFragment">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+        android:layout_below="@+id/app_bar_layout">
 
         <!-- Content -->
         <RelativeLayout
@@ -22,18 +23,18 @@
                 android:layout_height="wrap_content"
                 android:layout_alignWithParentIfMissing="true">
 
-                <wash.rocket.xor.rocketwash.widgets.SwipeListView android:id="@+id/recyclerView"
-                                                                  xmlns:swipe="http://schemas.android.com/apk/res-auto"
-                                                                  android:layout_width="match_parent"
-                                                                  android:layout_height="match_parent"
-                                                                  android:listSelector="#00000000"
-                                                                  swipe:leftDistance="252dp"
-                                                                  swipe:onlyOneOpenedWhenSwipe="true"
-                                                                  swipe:rightDistance="84dp"
-                                                                  swipe:swipeBackView="@+id/back"
-                                                                  swipe:swipeCloseAllItemsWhenMoveList="true"
-                                                                  swipe:swipeFrontView="@+id/front"
-                                                                  swipe:swipeMode="left">
+                <wash.rocket.xor.rocketwash.widgets.SwipeListView xmlns:swipe="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:listSelector="#00000000"
+                    swipe:leftDistance="252dp"
+                    swipe:onlyOneOpenedWhenSwipe="true"
+                    swipe:rightDistance="84dp"
+                    swipe:swipeBackView="@+id/back"
+                    swipe:swipeCloseAllItemsWhenMoveList="true"
+                    swipe:swipeFrontView="@+id/front"
+                    swipe:swipeMode="left">
 
                 </wash.rocket.xor.rocketwash.widgets.SwipeListView>
 
@@ -61,9 +62,9 @@
                         android:layout_alignParentLeft="false"
                         android:layout_alignParentStart="false"
                         android:layout_alignParentTop="false"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginTop="45dp"
-                        android:src="@drawable/back_wash"
-                        android:layout_centerHorizontal="true"/>
+                        android:src="@drawable/back_wash" />
 
                     <ImageView
                         android:id="@+id/imgLogo"
@@ -71,7 +72,7 @@
                         android:layout_height="80dp"
                         android:layout_alignParentTop="false"
                         android:layout_centerHorizontal="true"
-                        android:src="@drawable/location_error1"/>
+                        android:src="@drawable/location_error1" />
                 </RelativeLayout>
 
                 <TextView
@@ -86,7 +87,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/primary_text_color"
                     android:textIsSelectable="false"
-                    android:textSize="@dimen/text_16sp"/>
+                    android:textSize="@dimen/text_16sp" />
             </LinearLayout>
 
         </RelativeLayout>
@@ -97,22 +98,32 @@
             layout="@layout/navigation_drawer"
             android:layout_width="@dimen/navigator_width"
             android:layout_height="match_parent"
-            android:layout_gravity="left"/>
+            android:layout_gravity="left" />
     </android.support.v4.widget.DrawerLayout>
 
 
-    <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
-                                       xmlns:app="http://schemas.android.com/apk/res-auto"
-                                       android:layout_width="match_parent"
-                                       android:layout_height="wrap_content"
-                                       android:layout_alignParentTop="true"
-                                       android:background="?attr/colorPrimary"
-                                       android:elevation="2dp"
-                                       app:theme="@style/AppTheme"
-                                       app:title="@string/fragment_nearest_wash_services">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <include layout="@layout/include_toolbar_message"/>
-    </android.support.v7.widget.Toolbar>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="?attr/colorPrimary"
+            android:elevation="2dp"
+            app:theme="@style/AppTheme"
+            app:title="@string/fragment_nearest_wash_services">
+
+            <include layout="@layout/include_toolbar_message" />
+
+        </android.support.v7.widget.Toolbar>
+
+        <include layout="@layout/include_info_discount" />
+
+    </android.support.design.widget.AppBarLayout>
 
 
 </RelativeLayout>

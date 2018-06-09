@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/discount_container"
     android:orientation="vertical"
     android:padding="@dimen/padding_default"
     tools:background="@color/button_blue">
@@ -16,7 +17,7 @@
         android:showDividers="middle">
 
         <TextView
-            android:id="@+id/my_points_text_view"
+            android:id="@+id/my_bonuses_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -25,7 +26,7 @@
             android:paddingTop="@dimen/dimen4dp"
             android:textColor="@color/white"
             android:textSize="@dimen/text_14sp"
-            tools:text="@string/fragment_info_wash_service_my_counter" />
+            tools:text="@string/my_bonuses_" />
 
         <TextView
             android:id="@+id/my_discount_text_view"
@@ -37,7 +38,7 @@
             android:paddingTop="@dimen/dimen4dp"
             android:textColor="@color/white"
             android:textSize="@dimen/text_14sp"
-            tools:text="@string/fragment_info_wash_service_my_discount" />
+            tools:text="@string/my_discount_" />
 
     </LinearLayout>
 
