@@ -8,6 +8,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +32,6 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -62,7 +62,7 @@ import wash.rocket.xor.rocketwash.requests.ReserveCancelRequest;
 import wash.rocket.xor.rocketwash.util.util;
 
 @SuppressLint("LongLogTag")
-public class WashServiceInfoFragmentReserved extends BaseFragment {
+public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment {
 
     public static final String TAG = "WashServiceInfoFragmentReserved";
 
@@ -143,17 +143,10 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         return fragment;
     }
 
+    @Nullable
     @Override
-    public void onAttach(Activity activity) {
-
-        Log.w(TAG, "onAttach");
-
-        super.onAttach(activity);
-        try {
-            mCallback = (IFragmentCallbacksInterface) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement IFragmentCallbacksInterface");
-        }
+    protected WashService getWashService() {
+        return getArguments().getParcelable(SERVICE);
     }
 
     @Override
@@ -197,27 +190,18 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         Log.w(TAG, "onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_wash_service_info_reserved, container, false);
         mInflater = inflater;
-        MapFragmentWrapper mapFragmentWrapper = ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map));
-
-        mapFragmentWrapper.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                initMap(googleMap);
-            }
-        });
-
 
         fab = (ActionButton) rootView.findViewById(R.id.fab);
         mScrollView1 = (NestedScrollView) rootView.findViewById(R.id.scroll);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         mContent = (LinearLayout) rootView.findViewById(R.id.content_info);
 
-        ((MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map)).setListener(new MapFragmentWrapper.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                mScrollView1.requestDisallowInterceptTouchEvent(true);
-            }
-        });
+//        ((NiceSupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).setL(new MapFragmentWrapper.OnTouchListener() {
+//            @Override
+//            public void onTouch() {
+//                mScrollView1.requestDisallowInterceptTouchEvent(true);
+//            }
+//        });
 
 
         toolbar = setToolbar(rootView);
@@ -238,7 +222,8 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
         return rootView;
     }
 
-    private void initMap(GoogleMap googleMap) {
+    @Override
+    protected void initMap(GoogleMap googleMap) {
         mMap = googleMap;
 
 
@@ -491,15 +476,6 @@ public class WashServiceInfoFragmentReserved extends BaseFragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        MapFragmentWrapper f = (MapFragmentWrapper) getChildFragmentManager().findFragmentById(R.id.map);
-        if (f != null)
-            // getFragmentManager().beginTransaction().remove(f).commit();
-            getChildFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
     }
 
 

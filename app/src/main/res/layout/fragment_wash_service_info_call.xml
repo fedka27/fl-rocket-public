@@ -96,7 +96,7 @@
 
                 <fragment
                     android:id="@+id/map"
-                    android:name="wash.rocket.xor.rocketwash.ui.MapFragmentWrapper"
+                    android:name="wash.rocket.xor.rocketwash.widgets.NiceSupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="300dp" />
 
