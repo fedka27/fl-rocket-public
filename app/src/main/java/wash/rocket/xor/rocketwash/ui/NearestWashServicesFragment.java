@@ -230,51 +230,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
 
                 WashService s = list.get(position);
 
-                if (s.getType() == WashServicesAdapter.TYPE_GROUP)
-                    return;
-
-                if (s.getType() == WashServicesAdapter.TYPE_RESERVED) {
-
-                    WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(0,
-                            mReserved.getCarwash().getLatitude(),
-                            mReserved.getCarwash().getLongitude(),
-                            s.getName(),
-                            mReserved.getCarwash(),
-                            mReserved);
-                    f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
-
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .add(R.id.container, f, WashServiceInfoFragmentReserved.TAG)
-                            .addToBackStack(TAG).commit();
-
-                    mDrawerLayout.closeDrawers();
-                    return;
-                }
-
-                Log.d("lat", "" + s.getLatitude());
-                Log.d("lon", "" + s.getLongitude());
-
-                if (s.isActive()) {
-
-                    WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s);
-                    f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .add(R.id.container, f, WashServiceInfoFragment.TAG)
-                            .addToBackStack(TAG).commit();
-                    mDrawerLayout.closeDrawers();
-
-                } else {
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .add(R.id.container, WashServiceInfoFragmentCall.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragmentCall.TAG)
-                            .addToBackStack(TAG).commit();
-                    mDrawerLayout.closeDrawers();
-                }
+                openServiceInfo(s);
             }
 
             @Override
@@ -341,7 +297,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
             public void onRequestNextPage() {
                 String session = pref.getSessionID();
                 mPage++;
-                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), "wash", DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
+                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session),
+                        "wash", DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener(false));
             }
         });
 
@@ -357,7 +314,9 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     nearest_Loaded = false;
                     reserved_Loaded = false;
                     getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), RESERVED_WASH_KEY_CASH, 3000, new ReservedRequestListener());
-                    getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), NEAREST_WASH_KEY_CASH, DurationInMillis.ALWAYS_EXPIRED, new NearestWashServiceRequestListener());
+                    getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session),
+                            NEAREST_WASH_KEY_CASH, DurationInMillis.ALWAYS_EXPIRED,
+                            new NearestWashServiceRequestListener(false));
                     list.clear();
                     layoutWarn.setVisibility(View.GONE);
 
@@ -398,7 +357,8 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 Log.w(TAG, "first_load");
 
                 getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
-                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
+                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance,
+                        mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener(true));
 
                 //spiceManager.execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
                 //spiceManager.execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new NearestWashServiceRequestListener());
@@ -415,6 +375,54 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         }
 
         restoreTargets();
+    }
+
+    private void openServiceInfo(WashService s) {
+        if (s.getType() == WashServicesAdapter.TYPE_GROUP)
+            return;
+
+        if (s.getType() == WashServicesAdapter.TYPE_RESERVED) {
+
+            WashServiceInfoFragmentReserved f = WashServiceInfoFragmentReserved.newInstance(0,
+                    mReserved.getCarwash().getLatitude(),
+                    mReserved.getCarwash().getLongitude(),
+                    s.getName(),
+                    mReserved.getCarwash(),
+                    mReserved);
+            f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
+
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                    .add(R.id.container, f, WashServiceInfoFragmentReserved.TAG)
+                    .addToBackStack(TAG).commit();
+
+            mDrawerLayout.closeDrawers();
+            return;
+        }
+
+        Log.d("lat", "" + s.getLatitude());
+        Log.d("lon", "" + s.getLongitude());
+
+        if (s.isActive()) {
+
+            WashServiceInfoFragment f = WashServiceInfoFragment.newInstance(s);
+            f.setTargetFragment(NearestWashServicesFragment.this, FRAGMENT_RESERVED);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                    .add(R.id.container, f, WashServiceInfoFragment.TAG)
+                    .addToBackStack(TAG).commit();
+            mDrawerLayout.closeDrawers();
+
+        } else {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                    .add(R.id.container, WashServiceInfoFragmentCall.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragmentCall.TAG)
+                    .addToBackStack(TAG).commit();
+            mDrawerLayout.closeDrawers();
+        }
     }
 
     private void initNavigationMenu() {
@@ -702,7 +710,9 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                 reserved_Loaded = false;
 
                 getSpiceManager().execute(new ReservedRequest(pref.getSessionID()), NEAREST_WASH_KEY_CASH, 3000, new ReservedRequestListener());
-                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session), "wash", 3000, new NearestWashServiceRequestListener());
+                getSpiceManager().execute(new NearestWashServiceRequest(mLatitude, mLongitude, mDistance, mPage, session),
+                        "wash", 3000,
+                        new NearestWashServiceRequestListener(true));
                 list.clear();
                 layoutWarn.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setRefreshing(true);
@@ -816,6 +826,12 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
     }
 
     public final class NearestWashServiceRequestListener implements RequestListener<WashServiceResult> {
+        private boolean isFirstLoad = false;
+
+        public NearestWashServiceRequestListener(boolean isFirstLoad) {
+            this.isFirstLoad = isFirstLoad;
+        }
+
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             showError();
@@ -851,6 +867,9 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                     if (reserved_Loaded) {
                         adapter.notifyDataSetChanged();
                         stopRefresh();
+                        if (list.size() == 1 && isFirstLoad) {
+                            openServiceInfo(list.get(0));
+                        }
                     }
 
                     if (reserved_Loaded && list.size() <= 0)
