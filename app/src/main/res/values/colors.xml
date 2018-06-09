@@ -56,6 +56,9 @@
     <color name="toast_background">#3d3d3d</color>
     <color name="toast_yellow_croner">#ffeb3b</color>
 
+    <color name="rating_active">#dfb300</color>
+    <color name="rating_inactive">#9f9f9f</color>
+
 
 
 </resources>

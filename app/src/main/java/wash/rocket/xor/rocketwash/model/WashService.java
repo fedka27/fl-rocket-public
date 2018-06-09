@@ -46,6 +46,9 @@ public class WashService implements Parcelable {
     private double longitude;
 
     @JsonField
+    private float rating_service_location;
+
+    @JsonField
     private String name;
 
     @JsonField
@@ -299,6 +302,7 @@ public class WashService implements Parcelable {
         this.updated_at = in.readString();
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
+        this.rating_service_location = in.readFloat();
         this.name = in.readString();
         this.time_zone = in.readString();
         this.plan_id = in.readInt();
@@ -317,6 +321,14 @@ public class WashService implements Parcelable {
         long tmpRDate = in.readLong();
         this.rDate = tmpRDate == -1 ? null : new Date(tmpRDate);
         this.tenant_user_attributes = in.readParcelable(UserAttributes.class.getClassLoader());
+    }
+
+    public float getRating_service_location() {
+        return rating_service_location;
+    }
+
+    public void setRating_service_location(float rating_service_location) {
+        this.rating_service_location = rating_service_location;
     }
 
     public static Creator<WashService> getCREATOR() {
@@ -383,6 +395,7 @@ public class WashService implements Parcelable {
         a.updated_at = updated_at;
         a.latitude = latitude;
         a.longitude = longitude;
+        a.rating_service_location = rating_service_location;
         a.name = name;
         a.time_zone = time_zone;
         a.plan_id = plan_id;
@@ -422,6 +435,7 @@ public class WashService implements Parcelable {
         dest.writeString(this.updated_at);
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
+        dest.writeFloat(this.rating_service_location);
         dest.writeString(this.name);
         dest.writeString(this.time_zone);
         dest.writeInt(this.plan_id);

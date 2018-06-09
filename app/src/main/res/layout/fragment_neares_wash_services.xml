@@ -92,7 +92,6 @@
 
         </RelativeLayout>
 
-
         <!-- Side Drawer -->
         <include
             layout="@layout/navigation_drawer"

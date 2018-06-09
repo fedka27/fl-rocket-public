@@ -108,6 +108,9 @@
                 android:textSize="@dimen/text_14sp"/>
 
         </LinearLayout>
+
+        <include layout="@layout/layout_rating_wash_service" />
+
     </LinearLayout>
 
     <TextView
