@@ -1,6 +1,7 @@
 package wash.rocket.xor.rocketwash.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,14 +12,19 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import ru.tinkoff.acquiring.sdk.Money;
+import ru.tinkoff.acquiring.sdk.PayFormActivity;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.UserAttributes;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.widgets.NiceSupportMapFragment;
 
+import static android.app.Activity.RESULT_OK;
+
 public abstract class WashServiceInfoBaseFragment extends BaseFragment {
 
     private static final String TAG = WashServiceInfoBaseFragment.class.getSimpleName();
+    private static final int REQUEST_PAY = 245;
 
     protected WashService mService;
 
@@ -177,4 +183,26 @@ public abstract class WashServiceInfoBaseFragment extends BaseFragment {
 //        }, 200);
 //    }
 
+    final protected void buy(double amount,
+                             String title,
+                             String description) {
+        PayFormActivity.init("1509384921522DEMO ", "eo8bv0zyqde8c6cn ", "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5yse9ka3ZQE0feuGtemYv3IqOlLck8zHUM7lTr0za6lXTszRSXfUO7jMb+L5C7e2QNFs+7sIX2OQJ6a+HG8kr+jwJ4tS3cVsWtd9NXpsU40PE4MeNr5RqiNXjcDxA+L4OsEm/BlyFOEOh2epGyYUd5/iO3OiQFRNicomT2saQYAeqIwuELPs1XpLk9HLx5qPbm8fRrQhjeUD5TLO8b+4yCnObe8vy/BMUwBfq+ieWADIjwWCMp2KTpMGLz48qnaD9kdrYJ0iyHqzb2mkDhdIzkim24A3lWoYitJCBrrB2xM05sm9+OdCI1f7nPNJbl5URHobSwR94IRGT7CJcUjvwIDAQAB")
+                .prepare("id", Money.ofRubles(amount), title, description, null, null, false, true)
+                //todo customer key
+                .setCustomerKey(pref.getProfile().getFull_name())
+                .startActivityForResult(getActivity(), REQUEST_PAY);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PAY) {
+            if (resultCode == RESULT_OK) {
+                Log.e(TAG, "Pay success");
+            } else {
+                Log.e(TAG, "Pay success");
+            }
+        }
+
+    }
 }

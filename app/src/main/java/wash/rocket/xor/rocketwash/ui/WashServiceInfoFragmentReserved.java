@@ -2,6 +2,7 @@ package wash.rocket.xor.rocketwash.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -11,6 +12,7 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -398,6 +400,19 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
             txtTime.setText(String.format(getActivity().getString(R.string.reserved_on), util.dateToDMYHM(util.getDatenoUTC(mReserved.getTime_from_no_time_zone()))));
             txtDuration.setText(String.format(getActivity().getString(R.string.duration), util.minutesToText(mReserved.getFull_duration())));
             txtSumm.setText(String.format(getActivity().getString(R.string.reserved_cost), mReserved.getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
+        }
+
+        if (!mReserved.is_purchased()) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Оплата")
+                    .setMessage("Оплатить сейчас?\n" + mReserved.getPrice())
+                    .setPositiveButton(R.string.buy_now, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            buy(Double.parseDouble(mReserved.getPrice()), mReserved.getName(), mReserved.getComments());
+                        }
+                    })
+                    .show();
         }
     }
 

@@ -46,6 +46,8 @@ public class Reservation implements Parcelable {
     @JsonField
     boolean mobile;
     @JsonField
+    boolean is_purchased;
+    @JsonField
     int full_duration;
     @JsonField
     int ordinal;
@@ -217,6 +219,45 @@ public class Reservation implements Parcelable {
         return mobile;
     }
 
+    protected Reservation(Parcel in) {
+        this.id = in.readInt();
+        this.user_id = in.readInt();
+        this.service_location_lane_id = in.readInt();
+        this.time_start = in.readString();
+        this.rating = in.readString();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.status = in.readString();
+        this.thank_message = in.readString();
+        this.thank_the_client = in.readString();
+        this.comments = in.readString();
+        this.name = in.readString();
+        this.time_end = in.readString();
+        this.paid = in.readString();
+        this.car_id = in.readInt();
+        this.mobile = in.readByte() != 0;
+        this.is_purchased = in.readByte() != 0;
+        this.full_duration = in.readInt();
+        this.ordinal = in.readInt();
+        this.admin_status = in.readString();
+        this.full_discount = in.readString();
+        this.notes = in.readString();
+        this.paid_at = in.readString();
+        this.price = in.readString();
+        this.discounted_price = in.readString();
+        this.rounded_price = in.readString();
+        this.result = in.readString();
+        this.carwash_id = in.readInt();
+        this.time_from = in.readString();
+        this.carwash = in.readParcelable(WashService.class.getClassLoader());
+        this.time_from_no_time_zone = in.readString();
+        this.time_to_no_time_zone = in.readString();
+    }
+
+    public boolean is_purchased() {
+        return is_purchased;
+    }
+
     public void setMobile(boolean mobile) {
         this.mobile = mobile;
     }
@@ -351,6 +392,10 @@ public class Reservation implements Parcelable {
         return 0;
     }
 
+    public void setPurchased(boolean is_purchased) {
+        this.is_purchased = is_purchased;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
@@ -369,6 +414,7 @@ public class Reservation implements Parcelable {
         dest.writeString(this.paid);
         dest.writeInt(this.car_id);
         dest.writeByte(mobile ? (byte) 1 : (byte) 0);
+        dest.writeByte(is_purchased ? (byte) 1 : (byte) 0);
         dest.writeInt(this.full_duration);
         dest.writeInt(this.ordinal);
         dest.writeString(this.admin_status);
@@ -384,40 +430,6 @@ public class Reservation implements Parcelable {
         dest.writeParcelable(this.carwash, 0);
         dest.writeString(this.time_from_no_time_zone);
         dest.writeString(this.time_to_no_time_zone);
-    }
-
-    protected Reservation(Parcel in) {
-        this.id = in.readInt();
-        this.user_id = in.readInt();
-        this.service_location_lane_id = in.readInt();
-        this.time_start = in.readString();
-        this.rating = in.readString();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.status = in.readString();
-        this.thank_message = in.readString();
-        this.thank_the_client = in.readString();
-        this.comments = in.readString();
-        this.name = in.readString();
-        this.time_end = in.readString();
-        this.paid = in.readString();
-        this.car_id = in.readInt();
-        this.mobile = in.readByte() != 0;
-        this.full_duration = in.readInt();
-        this.ordinal = in.readInt();
-        this.admin_status = in.readString();
-        this.full_discount = in.readString();
-        this.notes = in.readString();
-        this.paid_at = in.readString();
-        this.price = in.readString();
-        this.discounted_price = in.readString();
-        this.rounded_price = in.readString();
-        this.result = in.readString();
-        this.carwash_id = in.readInt();
-        this.time_from = in.readString();
-        this.carwash = in.readParcelable(WashService.class.getClassLoader());
-        this.time_from_no_time_zone = in.readString();
-        this.time_to_no_time_zone = in.readString();
     }
 
     public static final Creator<Reservation> CREATOR = new Creator<Reservation>() {

@@ -1,15 +1,18 @@
 package wash.rocket.xor.rocketwash.ui;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 
 import wash.rocket.xor.rocketwash.R;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class AlertDialogFragment extends DialogFragment {
 
@@ -24,7 +27,11 @@ public class AlertDialogFragment extends DialogFragment {
         return frag;
     }
 
-    public static AlertDialogFragment newInstance(int title, String message, String buttonOk, String buttonCancel, int id, Fragment target) {
+    public static AlertDialogFragment newInstance(int title, String message,
+                                                  String buttonOk,
+                                                  String buttonCancel,
+                                                  int id,
+                                                  Fragment target) {
         AlertDialogFragment frag = new AlertDialogFragment();
         Bundle args = new Bundle();
         args.putInt("title", title);
@@ -51,6 +58,7 @@ public class AlertDialogFragment extends DialogFragment {
 
         String buttonOk = getArguments().getString("buttonOk");
         String buttonCancel = getArguments().getString("buttonCancel");
+        @Nullable String buttonNeutral = getArguments().getString("buttonNeutral");
 
         if (TextUtils.isEmpty(buttonOk))
             buttonOk = getActivity().getString(R.string.yeas);
@@ -58,14 +66,14 @@ public class AlertDialogFragment extends DialogFragment {
         if (TextUtils.isEmpty(buttonCancel))
             buttonCancel = getActivity().getString(R.string.cancel);
 
-        return new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
                 .setIcon(R.drawable.ic_action_info_outline_blue)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(buttonOk,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null);
+                                getTargetFragment().onActivityResult(getTargetRequestCode(), RESULT_OK, null);
                                 dismiss();
                             }
                         }
@@ -73,11 +81,12 @@ public class AlertDialogFragment extends DialogFragment {
                 .setNegativeButton(buttonCancel,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
+                                getTargetFragment().onActivityResult(getTargetRequestCode(), RESULT_CANCELED, null);
                                 dismiss();
                             }
                         }
-                )
-                .create();
+                );
+
+        return builder.create();
     }
 }
