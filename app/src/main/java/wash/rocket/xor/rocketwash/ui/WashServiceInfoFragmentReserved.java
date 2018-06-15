@@ -395,21 +395,30 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        final String price = mReserved.getPrice();
+        String time = String.format(getActivity().getString(R.string.reserved_on), util.dateToDMYHM(util.getDatenoUTC(mReserved.getTime_from_no_time_zone())));
+        String duration = String.format(getActivity().getString(R.string.duration), util.minutesToText(mReserved.getFull_duration()));
+        String cost = String.format(getActivity().getString(R.string.reserved_cost), price, getActivity().getString(R.string.rubleSymbolJava));
 
         if (mReserved != null) {
-            txtTime.setText(String.format(getActivity().getString(R.string.reserved_on), util.dateToDMYHM(util.getDatenoUTC(mReserved.getTime_from_no_time_zone()))));
-            txtDuration.setText(String.format(getActivity().getString(R.string.duration), util.minutesToText(mReserved.getFull_duration())));
-            txtSumm.setText(String.format(getActivity().getString(R.string.reserved_cost), mReserved.getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
+            txtTime.setText(time);
+            txtDuration.setText(duration);
+            txtSumm.setText(cost);
         }
 
         if (!mReserved.is_purchased()) {
+
+            final String title = mService.getName();
+            final String desc = String.format("%s\n%s\n%s", time, duration, cost);
+
             new AlertDialog.Builder(getContext())
-                    .setTitle("Оплата")
-                    .setMessage("Оплатить сейчас?\n" + mReserved.getPrice())
+                    .setTitle(title)
+                    .setMessage(desc)
+                    .setCancelable(true)
                     .setPositiveButton(R.string.buy_now, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            buy(Double.parseDouble(mReserved.getPrice()), mReserved.getName(), mReserved.getComments());
+                            buy(mReserved.getId(), Double.parseDouble(price), title, desc);
                         }
                     })
                     .show();
@@ -617,7 +626,7 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
     @Override
     public void onLocationChanged(Location location) {
 
-       // Log.d(TAG, "onLocationChanged");
+        // Log.d(TAG, "onLocationChanged");
 
         if (location != null) {
             mLatitude = location.getLatitude();

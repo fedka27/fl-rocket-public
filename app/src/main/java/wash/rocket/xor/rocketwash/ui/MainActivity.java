@@ -349,4 +349,12 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
             }
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            f.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 }

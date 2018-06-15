@@ -179,5 +179,8 @@
 
     <string name="default_notification_channel_id">RocketWashApp</string>
     <string name="buy_now">Оплатить сразу</string>
+    <string name="payment_successful">Платеж прошёл успешно</string>
+    <string name="payment_canceled">Платеж отменён</string>
+    <string name="payment_error">Ошибка, попробуйте позднее</string>
 
 </resources>

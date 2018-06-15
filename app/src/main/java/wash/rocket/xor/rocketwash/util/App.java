@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
 import roboguice.util.temp.Ln;
+import ru.tinkoff.acquiring.sdk.Journal;
 import wash.rocket.xor.rocketwash.BuildConfig;
 import wash.rocket.xor.rocketwash.model.CarsAttributes;
 import wash.rocket.xor.rocketwash.model.Profile;
@@ -45,19 +46,20 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
-        //MultiDex.install(this);
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        //JodaTimeAndroid.init(this);
 
         Ln.getConfig().setLoggingLevel(BuildConfig.DEBUG ? Log.DEBUG : Log.WARN);
 
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+
+
+        Journal.setDebug(BuildConfig.DEBUG);
+        Journal.setDeveloperMode(BuildConfig.DEBUG);
     }
 
     @Override
     protected void attachBaseContext(Context base) {
-        //MultiDex.install(this);
         super.attachBaseContext(base);
     }
 }
