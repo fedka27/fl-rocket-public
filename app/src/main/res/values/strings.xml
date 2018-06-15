@@ -182,5 +182,6 @@
     <string name="payment_successful">Платеж прошёл успешно</string>
     <string name="payment_canceled">Платеж отменён</string>
     <string name="payment_error">Ошибка: %s</string>
+    <string name="notification_dialog_close">Закрыть</string>
 
 </resources>

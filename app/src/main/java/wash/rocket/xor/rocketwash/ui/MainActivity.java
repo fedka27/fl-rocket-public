@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,12 +25,22 @@ import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 import wash.rocket.xor.rocketwash.R;
+import wash.rocket.xor.rocketwash.model.NotificationData;
 import wash.rocket.xor.rocketwash.services.LocationService;
 import wash.rocket.xor.rocketwash.util.Preferences;
 
 public class MainActivity extends AppCompatActivity implements IFragmentCallbacksInterface {
 
+    /**
+     * TAG of class
+     */
     private static final String TAG = "MainActivity";
+    /**
+     * EXTRA_NOTIFICATION may be null
+     * use for the alert message
+     */
+    public static final String EXTRA_NOTIFICATION = TAG + "_NOTIFICATION";
+
     private static final String FRAGMENT_LOGIN_TAG = "login";
     private static final String FRAGMENT_MAIN = "main";
     private static final String FRAGMENT_NETWORK_TAG = "network";
@@ -61,11 +72,23 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         pref = new Preferences(this);
 
         if (savedInstanceState == null) {
-            init();
+            initSavedInstance();
+        }
+
+        if (getIntent().hasExtra(EXTRA_NOTIFICATION)) {
+            showAlertMessage((NotificationData) getIntent().getSerializableExtra(EXTRA_NOTIFICATION));
         }
     }
 
-    private void init() {
+    private void showAlertMessage(NotificationData notificationData) {
+        new AlertDialog.Builder(this)
+                .setTitle(notificationData.getTitle())
+                .setMessage(notificationData.getMessage())
+                .setPositiveButton(R.string.notification_dialog_close, null)
+                .show();
+    }
+
+    private void initSavedInstance() {
         if (!TextUtils.isEmpty(pref.getSessionID()) && pref.getRegistered()) {
             if (!isOnline()) {
                 showNetworkFragment();
@@ -311,11 +334,11 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
         switch (requestCode) {
             case PERMISSION_REQUEST_COARSE_LOCATION:
                 pCheck1 = true;
-                if ( grantResults.length >=1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length >= 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     if (pCheck2) {
                         removePrevFragments();
-                        init();
+                        initSavedInstance();
                     }
 
                 } else {
@@ -325,10 +348,10 @@ public class MainActivity extends AppCompatActivity implements IFragmentCallback
 
             case PERMISSION_REQUEST_FINE_LOCATION:
                 pCheck2 = true;
-                if (grantResults.length >=1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length >= 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (pCheck1) {
                         removePrevFragments();
-                        init();
+                        initSavedInstance();
                     }
 
                 } else {
