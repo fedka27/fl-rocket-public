@@ -184,4 +184,7 @@
     <string name="payment_error">Ошибка: %s</string>
     <string name="notification_dialog_close">Закрыть</string>
 
+    <string name="activity_history_title">История заказов</string>
+    <string name="activity_history_error_loading">Ошибка загрузки истории заказов</string>
+
 </resources>

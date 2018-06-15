@@ -143,10 +143,10 @@ public class NavigationMenuContent extends ContentProvider {
 
         for (int i = 0; i < menu_list.length; i++) {
 
-            if (profile != null && !profile.isPhone_verified()) {
+            if (profile != null) {
                 Log.d("provider", "profile.isPhone_verified() = " + profile.isPhone_verified());
                 //if (i != 2 && i != 3)
-                if (i != 2 && i != 3 && i != 4 && i != 5 && i != 7) // XXX
+                if (i != 2 && i != 4 && i != 5 && i != 7) // XXX
                     menuResCursor.addRow(new Object[]{i, "" + menu_list[i], icons.getResourceId(i, -1)});
             } else if (i != 3 && i != 4 && i != 5 && i != 7) //XXX
                 menuResCursor.addRow(new Object[]{i, "" + menu_list[i], icons.getResourceId(i, -1)});
