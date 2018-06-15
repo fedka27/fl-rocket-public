@@ -3,12 +3,11 @@ package wash.rocket.xor.rocketwash.services.firebase;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
-
-import wash.rocket.xor.rocketwash.ui.MainActivity;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
@@ -24,22 +23,22 @@ public class NotificationManager {
     }
 
     public void showNotification(int id,
+                                 @DrawableRes int smallIcon,
                                  @DrawableRes int icon,
                                  String title,
-                                 String message) {
+                                 String message,
+                                 Intent intentRun) {
         countNotification++;
-
-        Intent intent = new Intent(context, MainActivity.class);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
 
-        taskStackBuilder.addParentStack(MainActivity.class);
-        taskStackBuilder.addNextIntent(intent);
+        taskStackBuilder.addNextIntent(intentRun);
 
         PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        builder.setSmallIcon(icon)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setSmallIcon(smallIcon)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), icon))
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(false)

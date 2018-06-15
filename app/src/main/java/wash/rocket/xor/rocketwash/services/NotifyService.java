@@ -60,7 +60,8 @@ public class NotifyService extends Service {
         Resources res = context.getResources();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
-        builder.setContentIntent(contentIntent).setSmallIcon(icon)
+        builder.setContentIntent(contentIntent)
+                .setSmallIcon(icon)
                 .setLargeIcon(BitmapFactory.decodeResource(res, icon))
                 .setTicker(message).setWhen(System.currentTimeMillis()).setAutoCancel(true)
                 .setContentTitle(title)
