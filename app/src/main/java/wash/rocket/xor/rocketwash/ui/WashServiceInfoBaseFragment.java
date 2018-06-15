@@ -99,10 +99,10 @@ public abstract class WashServiceInfoBaseFragment extends BaseFragment {
 
     abstract protected void initMap(GoogleMap map);
 
-    final protected void buy(int orderId,
-                             double amount,
-                             String title,
-                             String description) {
+    final protected void payReservation(int orderId,
+                                        double amount,
+                                        String title,
+                                        String description) {
         PayFormActivity.init
                 (
                         "1509384921522DEMO",

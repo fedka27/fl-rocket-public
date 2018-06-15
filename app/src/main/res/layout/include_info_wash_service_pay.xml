@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/divider_profile_20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="@dimen/divider_profile_20dp">
+
+    <TextView
+        android:id="@+id/textPaymentSuccess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:text="@string/payment_successful"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_16sp" />
+
+    <Button
+        android:id="@+id/btnPay"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/button_green_selector"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/buy_now"
+        android:textColor="@color/white" />
+</LinearLayout>
+
+

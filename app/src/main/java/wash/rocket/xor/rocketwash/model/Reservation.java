@@ -46,8 +46,6 @@ public class Reservation implements Parcelable {
     @JsonField
     boolean mobile;
     @JsonField
-    boolean is_purchased;
-    @JsonField
     int full_duration;
     @JsonField
     int ordinal;
@@ -61,6 +59,8 @@ public class Reservation implements Parcelable {
     String paid_at;
     @JsonField
     String price;
+    @JsonField
+    boolean fully_paid;
     @JsonField
     String discounted_price;
     @JsonField
@@ -236,7 +236,6 @@ public class Reservation implements Parcelable {
         this.paid = in.readString();
         this.car_id = in.readInt();
         this.mobile = in.readByte() != 0;
-        this.is_purchased = in.readByte() != 0;
         this.full_duration = in.readInt();
         this.ordinal = in.readInt();
         this.admin_status = in.readString();
@@ -244,6 +243,7 @@ public class Reservation implements Parcelable {
         this.notes = in.readString();
         this.paid_at = in.readString();
         this.price = in.readString();
+        this.fully_paid = in.readByte() != 0;
         this.discounted_price = in.readString();
         this.rounded_price = in.readString();
         this.result = in.readString();
@@ -254,8 +254,12 @@ public class Reservation implements Parcelable {
         this.time_to_no_time_zone = in.readString();
     }
 
-    public boolean is_purchased() {
-        return is_purchased;
+    public boolean isFully_paid() {
+        return fully_paid;
+    }
+
+    public void setFully_paid(boolean fully_paid) {
+        this.fully_paid = fully_paid;
     }
 
     public void setMobile(boolean mobile) {
@@ -392,10 +396,6 @@ public class Reservation implements Parcelable {
         return 0;
     }
 
-    public void setPurchased(boolean is_purchased) {
-        this.is_purchased = is_purchased;
-    }
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
@@ -414,7 +414,6 @@ public class Reservation implements Parcelable {
         dest.writeString(this.paid);
         dest.writeInt(this.car_id);
         dest.writeByte(mobile ? (byte) 1 : (byte) 0);
-        dest.writeByte(is_purchased ? (byte) 1 : (byte) 0);
         dest.writeInt(this.full_duration);
         dest.writeInt(this.ordinal);
         dest.writeString(this.admin_status);
@@ -422,6 +421,7 @@ public class Reservation implements Parcelable {
         dest.writeString(this.notes);
         dest.writeString(this.paid_at);
         dest.writeString(this.price);
+        dest.writeByte((byte) (this.fully_paid ? 1 : 0));
         dest.writeString(this.discounted_price);
         dest.writeString(this.rounded_price);
         dest.writeString(this.result);

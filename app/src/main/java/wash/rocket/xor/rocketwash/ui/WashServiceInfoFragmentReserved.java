@@ -104,9 +104,8 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
     private WashService mService;
     private Typeface mFont;
 
-    private TextView txtTime;
-    private TextView txtSumm;
-    private TextView txtDuration;
+    private TextView txtMessage;
+    private TextView textPaymentSuccess;
 
     private TextView txtInfoTitile;
     private TextView txtInfoDistance;
@@ -118,6 +117,7 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
     private GoogleMap.InfoWindowAdapter infoBaloon;
     private Marker mMarker;
 
+    private Button payButton;
     private Button share;
     private Button btnCancel;
 
@@ -161,28 +161,14 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        if (savedInstanceState != null) {
-            Log.d(TAG, "savedInstanceState != null");
-            mPoints = savedInstanceState.getParcelableArrayList(POINTS);
+        mPoints = new ArrayList<Point>();
 
-            mIdService = savedInstanceState.getInt("mIdService");
-            mLatitude = savedInstanceState.getDouble("mLatitude");
-            mLongitude = savedInstanceState.getDouble("mLongitude");
-            mTitle = savedInstanceState.getString("mTitle");
-            mService = savedInstanceState.getParcelable("mService");
-            mReserved = savedInstanceState.getParcelable("mReserved");
-
-        } else {
-            Log.d(TAG, "savedInstanceState == null");
-            mPoints = new ArrayList<Point>();
-
-            mIdService = getArguments().getInt(ID_SERVICE);
-            mLatitude = getArguments().getDouble(LATITUDE);
-            mLongitude = getArguments().getDouble(LONGITUDE);
-            mTitle = getArguments().getString(TITLE);
-            mService = getArguments().getParcelable(SERVICE);
-            mReserved = getArguments().getParcelable(RESERVED);
-        }
+        mIdService = getArguments().getInt(ID_SERVICE);
+        mLatitude = getArguments().getDouble(LATITUDE);
+        mLongitude = getArguments().getDouble(LONGITUDE);
+        mTitle = getArguments().getString(TITLE);
+        mService = getArguments().getParcelable(SERVICE);
+        mReserved = getArguments().getParcelable(RESERVED);
         mMarkers = new ArrayList<Marker>();
     }
 
@@ -220,7 +206,7 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
         });
 
         initControls(rootView);
-
+        initInfoReserved();
         return rootView;
     }
 
@@ -352,10 +338,10 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
 
     private void initControls(View rootView) {
 
-        txtTime = (TextView) mContent.findViewById(R.id.txtTime);
-        txtDuration = (TextView) mContent.findViewById(R.id.txtDuration);
-        txtSumm = (TextView) mContent.findViewById(R.id.txtSumm);
-        share = (Button) mContent.findViewById(R.id.btnShare);
+        txtMessage = mContent.findViewById(R.id.txtMessage);
+        textPaymentSuccess = rootView.findViewById(R.id.textPaymentSuccess);
+        payButton = rootView.findViewById(R.id.btnPay);
+        share = mContent.findViewById(R.id.btnShare);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -390,47 +376,54 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
         });
 
         mFont = Typeface.createFromAsset(getActivity().getAssets(), "roboto_light.ttf");
+
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPayDialog();
+            }
+        });
+        initPaymentWidgets();
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        final String price = mReserved.getPrice();
+    private void initPaymentWidgets() {
+        textPaymentSuccess.setVisibility(mReserved.isFully_paid() ? View.VISIBLE : View.GONE);
+        payButton.setVisibility(mReserved.isFully_paid() ? View.GONE : View.VISIBLE);
+    }
+
+    private void initInfoReserved() {
         String time = String.format(getActivity().getString(R.string.reserved_on), util.dateToDMYHM(util.getDatenoUTC(mReserved.getTime_from_no_time_zone())));
         String duration = String.format(getActivity().getString(R.string.duration), util.minutesToText(mReserved.getFull_duration()));
-        String cost = String.format(getActivity().getString(R.string.reserved_cost), price, getActivity().getString(R.string.rubleSymbolJava));
+        String cost = String.format(getActivity().getString(R.string.reserved_cost), mReserved.getPrice(), getActivity().getString(R.string.rubleSymbolJava));
+
+        final String desc = String.format("%s\n%s\n%s", time, duration, cost);
 
         if (mReserved != null) {
-            txtTime.setText(time);
-            txtDuration.setText(duration);
-            txtSumm.setText(cost);
+            txtMessage.setText(desc);
         }
+    }
 
-        if (!mReserved.is_purchased()) {
+    private void showPayDialog() {
+        final String title = mService.getName();
+        final String desc = txtMessage.getText().toString();
 
-            final String title = mService.getName();
-            final String desc = String.format("%s\n%s\n%s", time, duration, cost);
-
-            new AlertDialog.Builder(getContext())
-                    .setTitle(title)
-                    .setMessage(desc)
-                    .setCancelable(true)
-                    .setPositiveButton(R.string.buy_now, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            buy(mReserved.getId(), Double.parseDouble(price), title, desc);
-                        }
-                    })
-                    .show();
-        }
+        new AlertDialog.Builder(getContext())
+                .setTitle(title)
+                .setMessage(desc)
+                .setCancelable(true)
+                .setPositiveButton(R.string.buy_now, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        payReservation(mReserved.getId(),
+                                Double.parseDouble(mReserved.getPrice()),
+                                title,
+                                desc);
+                    }
+                })
+                .show();
     }
 
     private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        // if (mMap == null) {
-        // Try to obtain the map from the SupportMapFragment.
-        // mMap = mMapFragment.getMap();
-        // Check if we were successful in obtaining the map.
         if (mMap != null) {
             mMap.setMyLocationEnabled(false);
             mMap.getUiSettings().setCompassEnabled(false);
@@ -440,13 +433,6 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
             if (update != null) {
                 mMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(update, 11.0f)));
             }
-            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    // mIsNeedLocationUpdate = false;
-                    // moveToLocation(latLng, false);
-                }
-            });
         }
     }
 
@@ -476,19 +462,6 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
         super.onSaveInstanceState(outState);
     }
 
-    private void collapseMap() {
-
-        if (mMap != null && mContent != null) {
-            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, 11f), 1000, null);
-        }
-    }
-
-    private void expandMap() {
-        if (mMap != null) {
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(14f), 1000, null);
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -508,8 +481,8 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
         Log.d(TAG, "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
 
-        //XXX check rest toolbar
-        ((AppCompatActivity) getActivity()).invalidateOptionsMenu();
+
+        getActivity().invalidateOptionsMenu();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
