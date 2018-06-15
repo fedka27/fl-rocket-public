@@ -37,6 +37,7 @@ public class HistoryActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        spiceManager.start(this);
 
         profile = preferences.getProfile();
 
@@ -62,7 +63,6 @@ public class HistoryActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        spiceManager.start(this);
         if (historyAdapter.isEmpty()) {
             loadHistory();
         }

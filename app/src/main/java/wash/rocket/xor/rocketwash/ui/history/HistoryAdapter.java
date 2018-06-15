@@ -57,6 +57,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         public HistoryViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_wash_service_reserved, parent, false));
+
+            this.name = (TextView) itemView.findViewById(R.id.name);
+            this.time = (TextView) itemView.findViewById(R.id.time);
+            this.address = (TextView) itemView.findViewById(R.id.address);
+            this.distance = (TextView) itemView.findViewById(R.id.distance);
+            this.date = (TextView) itemView.findViewById(R.id.date);
+            this.imgBusy = (ImageView) itemView.findViewById(R.id.imgBusy);
         }
 
         public void bind(Reservation reservation) {
