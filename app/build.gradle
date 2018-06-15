@@ -23,9 +23,9 @@ repositories {
 android {
     signingConfigs {
         config {
-            keyAlias 'rocket'
-            keyPassword 'rocketwash'
-            storeFile file('./test-keystore.jks')
+            keyAlias 'rocketwash'
+            keyPassword 'agamir'
+            storeFile file('../key/rocketwash.keystore')
             storePassword 'agamir'
         }
     }
