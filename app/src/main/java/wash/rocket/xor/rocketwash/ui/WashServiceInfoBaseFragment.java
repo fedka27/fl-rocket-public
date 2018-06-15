@@ -121,7 +121,6 @@ public abstract class WashServiceInfoBaseFragment extends BaseFragment {
                 .setCustomerKey(pref.getProfile().getFull_name())
                 .useFirstAttachedCard(true)
                 .setChargeMode(false)
-                .setTheme(R.style.AcquiringTheme)
                 .setDesignConfiguration(PayCellType.SECURE_LOGOS, PayCellType.PAY_BUTTON, PayCellType.PAYMENT_CARD_REQUISITES)
                 .startActivityForResult(getActivity(), REQUEST_PAY);
     }
@@ -144,7 +143,7 @@ public abstract class WashServiceInfoBaseFragment extends BaseFragment {
                 @Override
                 public void onError(Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), R.string.payment_error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.payment_error, e.getLocalizedMessage()), Toast.LENGTH_SHORT).show();
                 }
             });
         }

@@ -55,7 +55,6 @@ public class App extends Application {
 
 
         Journal.setDebug(BuildConfig.DEBUG);
-        Journal.setDeveloperMode(BuildConfig.DEBUG);
     }
 
     @Override
