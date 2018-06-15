@@ -179,4 +179,7 @@
 
     <string name="default_notification_channel_id">RocketWashApp</string>
 
+    <string name="activity_history_title">История заказов</string>
+    <string name="activity_history_error_loading">Ошибка загрузки истории заказов</string>
+
 </resources>

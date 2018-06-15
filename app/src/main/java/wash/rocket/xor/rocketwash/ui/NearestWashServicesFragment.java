@@ -56,6 +56,7 @@ import wash.rocket.xor.rocketwash.requests.AddToFavoriteRequest;
 import wash.rocket.xor.rocketwash.requests.NearestWashServiceRequest;
 import wash.rocket.xor.rocketwash.requests.ReserveCancelRequest;
 import wash.rocket.xor.rocketwash.requests.ReservedRequest;
+import wash.rocket.xor.rocketwash.ui.history.HistoryActivity;
 import wash.rocket.xor.rocketwash.util.Constants;
 import wash.rocket.xor.rocketwash.util.util;
 import wash.rocket.xor.rocketwash.widgets.BaseSwipeListViewListener;
@@ -468,7 +469,7 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerViewNav);
+        RecyclerView recyclerView = getView().findViewById(R.id.recyclerViewNav);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
 
@@ -498,7 +499,6 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                                 .commit();
                         mDrawerLayout.closeDrawers();
                         break;
-
                     case 2:
 
                         FavoritesWashServicesFragment f = new FavoritesWashServicesFragment();
@@ -511,6 +511,11 @@ public class NearestWashServicesFragment extends BaseFragment implements LoaderM
                                 .commit();
                         mDrawerLayout.closeDrawers();
                         break;
+
+                    case 3: {
+                        HistoryActivity.start(getContext());
+                        break;
+                    }
 
                     case 8:
                         getActivity().getSupportFragmentManager()
