@@ -576,4 +576,8 @@ public class Profile implements Parcelable {
             }
         }
     }
+
+    public String getCustomerKey() {
+        return "Customer-Key" + getId();
+    }
 }

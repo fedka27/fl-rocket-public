@@ -450,7 +450,7 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
                         null,
                         false,
                         true)
-                .setCustomerKey(pref.getProfile().getPhone())
+                .setCustomerKey(pref.getProfile().getCustomerKey())
                 .useFirstAttachedCard(true)
                 .setChargeMode(false)
                 .setDesignConfiguration(PayCellType.SECURE_LOGOS, PayCellType.PAY_BUTTON, PayCellType.PAYMENT_CARD_REQUISITES)
