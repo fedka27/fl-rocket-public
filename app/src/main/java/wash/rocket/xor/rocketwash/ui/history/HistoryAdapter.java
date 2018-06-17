@@ -71,6 +71,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
             this.name.setText(s.getName());
             this.address.setText(s.getAddress());
+            this.distance.setText(String.format("%.1f км", s.getDistance()));
 
             if (s.getrDate() != null) {
                 time.setText(util.dateToHM(s.getrDate()));

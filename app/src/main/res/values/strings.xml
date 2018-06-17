@@ -187,5 +187,6 @@
 
     <string name="activity_history_title">История заказов</string>
     <string name="activity_history_error_loading">Ошибка загрузки истории заказов</string>
+    <string name="activity_history_empty">Список заказов пуст</string>
 
 </resources>
