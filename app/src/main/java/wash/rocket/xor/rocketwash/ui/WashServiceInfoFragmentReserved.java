@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -51,15 +52,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ru.tinkoff.acquiring.sdk.Money;
+import ru.tinkoff.acquiring.sdk.OnPaymentListener;
+import ru.tinkoff.acquiring.sdk.PayFormActivity;
+import ru.tinkoff.acquiring.sdk.inflate.pay.PayCellType;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.MapRouteResult;
 import wash.rocket.xor.rocketwash.model.Point;
 import wash.rocket.xor.rocketwash.model.Reservation;
+import wash.rocket.xor.rocketwash.model.ReservationPaymentResult;
 import wash.rocket.xor.rocketwash.model.ReserveCancelResult;
 import wash.rocket.xor.rocketwash.model.ReverseGeocoding;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.requests.MapDirectionRequest;
 import wash.rocket.xor.rocketwash.requests.MapReverceGeocodingRequest;
+import wash.rocket.xor.rocketwash.requests.ReservationPaymentRequest;
 import wash.rocket.xor.rocketwash.requests.ReserveCancelRequest;
 import wash.rocket.xor.rocketwash.util.util;
 
@@ -67,6 +74,7 @@ import wash.rocket.xor.rocketwash.util.util;
 public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment {
 
     public static final String TAG = "WashServiceInfoFragmentReserved";
+    private static final int REQUEST_PAY = 245;
 
     private static final String POINTS = "points";
     private static final String ID_SERVICE = "id_service";
@@ -423,6 +431,32 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
                 .show();
     }
 
+    private void payReservation(int orderId,
+                                double amount,
+                                String title,
+                                String description) {
+        PayFormActivity.init
+                (
+                        "1509384921522DEMO",
+                        "eo8bv0zyqde8c6cn",
+                        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5yse9ka3ZQE0feuGtemYv3IqOlLck8zHUM7lTr0za6lXTszRSXfUO7jMb+L5C7e2QNFs+7sIX2OQJ6a+HG8kr+jwJ4tS3cVsWtd9NXpsU40PE4MeNr5RqiNXjcDxA+L4OsEm/BlyFOEOh2epGyYUd5/iO3OiQFRNicomT2saQYAeqIwuELPs1XpLk9HLx5qPbm8fRrQhjeUD5TLO8b+4yCnObe8vy/BMUwBfq+ieWADIjwWCMp2KTpMGLz48qnaD9kdrYJ0iyHqzb2mkDhdIzkim24A3lWoYitJCBrrB2xM05sm9+OdCI1f7nPNJbl5URHobSwR94IRGT7CJcUjvwIDAQAB"
+                )
+                .prepare(
+                        String.valueOf(orderId),
+                        Money.ofRubles(amount),
+                        title,
+                        description,
+                        null,
+                        null,
+                        false,
+                        true)
+                .setCustomerKey(pref.getProfile().getPhone())
+                .useFirstAttachedCard(true)
+                .setChargeMode(false)
+                .setDesignConfiguration(PayCellType.SECURE_LOGOS, PayCellType.PAY_BUTTON, PayCellType.PAYMENT_CARD_REQUISITES)
+                .startActivityForResult(getActivity(), REQUEST_PAY);
+    }
+
     private void setUpMapIfNeeded() {
         if (mMap != null) {
             mMap.setMyLocationEnabled(false);
@@ -480,10 +514,51 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
-
-
         getActivity().invalidateOptionsMenu();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        if (REQUEST_PAY == requestCode) {
+            PayFormActivity.dispatchResult(resultCode, data, new OnPaymentListener() {
+                @Override
+                public void onSuccess(long l) {
+                    Toast.makeText(getContext(), R.string.payment_successful, Toast.LENGTH_SHORT).show();
+                    mReserved.setFully_paid(true);
+                    initPaymentWidgets();
+                    sendTransactionIdToServer(l);
+                }
+
+                @Override
+                public void onCancelled() {
+                    Toast.makeText(getContext(), R.string.payment_canceled, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), getString(R.string.payment_error, e.getLocalizedMessage()), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void sendTransactionIdToServer(long transaction_id) {
+        getSpiceManager().execute(new ReservationPaymentRequest(pref.getSessionID(),
+                        mReserved.getId(),
+                        mReserved.getOrganization_id(),
+                        transaction_id),
+                null,
+                DurationInMillis.ALWAYS_EXPIRED,
+                new RequestListener<ReservationPaymentResult>() {
+                    @Override
+                    public void onRequestFailure(SpiceException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onRequestSuccess(ReservationPaymentResult reservationResult) {
+                        Log.d(TAG, "success:" + reservationResult);
+                    }
+                });
     }
 
     public final class MapReverceGeocodingListener implements RequestListener<ReverseGeocoding> {

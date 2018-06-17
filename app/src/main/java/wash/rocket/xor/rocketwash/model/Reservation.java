@@ -71,6 +71,8 @@ public class Reservation implements Parcelable {
     @JsonField
     int carwash_id;
     @JsonField
+    int organization_id;
+    @JsonField
     String time_from;
     @JsonField
     WashService carwash;
@@ -248,6 +250,7 @@ public class Reservation implements Parcelable {
         this.rounded_price = in.readString();
         this.result = in.readString();
         this.carwash_id = in.readInt();
+        this.organization_id = in.readInt();
         this.time_from = in.readString();
         this.carwash = in.readParcelable(WashService.class.getClassLoader());
         this.time_from_no_time_zone = in.readString();
@@ -362,6 +365,14 @@ public class Reservation implements Parcelable {
         this.carwash_id = carwash_id;
     }
 
+    public int getOrganization_id() {
+        return organization_id;
+    }
+
+    public void setOrganization_id(int organization_id) {
+        this.organization_id = organization_id;
+    }
+
     public String getTime_from() {
         return time_from;
     }
@@ -426,6 +437,7 @@ public class Reservation implements Parcelable {
         dest.writeString(this.rounded_price);
         dest.writeString(this.result);
         dest.writeInt(this.carwash_id);
+        dest.writeInt(this.organization_id);
         dest.writeString(this.time_from);
         dest.writeParcelable(this.carwash, 0);
         dest.writeString(this.time_from_no_time_zone);
