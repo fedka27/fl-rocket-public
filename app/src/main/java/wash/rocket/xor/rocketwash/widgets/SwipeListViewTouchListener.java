@@ -697,6 +697,8 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
             }
         }
 
+        if (view == null) return;
+
         animate(view)
                 .translationX(moveTo)
                 .setDuration(animationTime)
