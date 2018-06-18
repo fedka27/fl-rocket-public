@@ -186,7 +186,7 @@ public class WashServicesAdapter extends RecyclerView.Adapter<WashServicesAdapte
 
         public void populate(WashService s, int position) {
             if (ratingBar != null) {
-                ratingBar.setRating(s.getRating_service_location());
+                ratingBar.setRating(s.getUnified_rating());
             }
             switch (type) {
                 case TYPE_VIEW_CALL:
