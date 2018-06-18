@@ -18,7 +18,6 @@ import wash.rocket.xor.rocketwash.model.CarMake;
 import wash.rocket.xor.rocketwash.model.CarsAttributes;
 import wash.rocket.xor.rocketwash.model.CarsMakes;
 import wash.rocket.xor.rocketwash.model.CarsMakesResult;
-import wash.rocket.xor.rocketwash.model.CarsProfileResult;
 import wash.rocket.xor.rocketwash.model.ProfileResult;
 import wash.rocket.xor.rocketwash.requests.CarsMakesRequest;
 import wash.rocket.xor.rocketwash.requests.ProfileRequest;
@@ -139,19 +138,6 @@ public class LoaderFragment extends BaseFragment {
                 if (mProfileLoaded)
                     initCars(getApp().getProfile().getCars_attributes());
             }
-        }
-    }
-
-    private class CarProfileRequestListener implements RequestListener<wash.rocket.xor.rocketwash.model.CarsProfileResult> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-
-        }
-
-        @Override
-        public void onRequestSuccess(CarsProfileResult carsProfileResult) {
-            pcars = carsProfileResult.getData();
-            getSpiceManager().execute(new ProfileRequest(pref.getSessionID()), "profile", DurationInMillis.ONE_SECOND, new ProfileRequestListener());
         }
     }
 

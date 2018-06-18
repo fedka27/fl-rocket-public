@@ -178,6 +178,15 @@
     <string name="order_notify" formatted="false">Вы записаны на автомойку на %s. Ждем вас!</string>
 
     <string name="default_notification_channel_id">RocketWashApp</string>
+    <string name="buy_now">Оплатить</string>
+    <string name="payment_successful">Платеж прошёл успешно</string>
+    <string name="reserved_payment_successful_message">Оплата произведена</string>
+    <string name="payment_canceled">Платеж отменён</string>
+    <string name="payment_error">Ошибка: %s</string>
     <string name="notification_dialog_close">Закрыть</string>
+
+    <string name="activity_history_title">История заказов</string>
+    <string name="activity_history_error_loading">Ошибка загрузки истории заказов</string>
+    <string name="activity_history_empty">Список заказов пуст</string>
 
 </resources>

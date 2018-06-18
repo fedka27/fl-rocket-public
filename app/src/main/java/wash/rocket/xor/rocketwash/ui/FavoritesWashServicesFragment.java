@@ -190,7 +190,7 @@ public class FavoritesWashServicesFragment extends BaseFragment {
                         /*
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                                .add(R.id.container, WashServiceInfoFragmentQuick.newInstance(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragmentQuick.TAG)
+                                .add(R.id.container, WashServiceInfoFragmentQuick.startActivityForResult(s.getId(), s.getLatitude(), s.getLongitude(), s.getName(), s), WashServiceInfoFragmentQuick.TAG)
                                 .addToBackStack(TAG)
                                 .commit();*/
 

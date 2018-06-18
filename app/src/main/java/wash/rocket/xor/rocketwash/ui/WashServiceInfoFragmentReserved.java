@@ -2,6 +2,7 @@ package wash.rocket.xor.rocketwash.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -11,6 +12,7 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -28,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,15 +52,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ru.tinkoff.acquiring.sdk.Money;
+import ru.tinkoff.acquiring.sdk.OnPaymentListener;
+import ru.tinkoff.acquiring.sdk.PayFormActivity;
+import ru.tinkoff.acquiring.sdk.inflate.pay.PayCellType;
 import wash.rocket.xor.rocketwash.R;
 import wash.rocket.xor.rocketwash.model.MapRouteResult;
 import wash.rocket.xor.rocketwash.model.Point;
 import wash.rocket.xor.rocketwash.model.Reservation;
+import wash.rocket.xor.rocketwash.model.ReservationPaymentResult;
 import wash.rocket.xor.rocketwash.model.ReserveCancelResult;
 import wash.rocket.xor.rocketwash.model.ReverseGeocoding;
 import wash.rocket.xor.rocketwash.model.WashService;
 import wash.rocket.xor.rocketwash.requests.MapDirectionRequest;
 import wash.rocket.xor.rocketwash.requests.MapReverceGeocodingRequest;
+import wash.rocket.xor.rocketwash.requests.ReservationPaymentRequest;
 import wash.rocket.xor.rocketwash.requests.ReserveCancelRequest;
 import wash.rocket.xor.rocketwash.util.util;
 
@@ -65,6 +74,7 @@ import wash.rocket.xor.rocketwash.util.util;
 public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment {
 
     public static final String TAG = "WashServiceInfoFragmentReserved";
+    private static final int REQUEST_PAY = 245;
 
     private static final String POINTS = "points";
     private static final String ID_SERVICE = "id_service";
@@ -102,9 +112,8 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
     private WashService mService;
     private Typeface mFont;
 
-    private TextView txtTime;
-    private TextView txtSumm;
-    private TextView txtDuration;
+    private TextView txtMessage;
+    private TextView textPaymentSuccess;
 
     private TextView txtInfoTitile;
     private TextView txtInfoDistance;
@@ -116,6 +125,7 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
     private GoogleMap.InfoWindowAdapter infoBaloon;
     private Marker mMarker;
 
+    private Button payButton;
     private Button share;
     private Button btnCancel;
 
@@ -159,28 +169,14 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        if (savedInstanceState != null) {
-            Log.d(TAG, "savedInstanceState != null");
-            mPoints = savedInstanceState.getParcelableArrayList(POINTS);
+        mPoints = new ArrayList<Point>();
 
-            mIdService = savedInstanceState.getInt("mIdService");
-            mLatitude = savedInstanceState.getDouble("mLatitude");
-            mLongitude = savedInstanceState.getDouble("mLongitude");
-            mTitle = savedInstanceState.getString("mTitle");
-            mService = savedInstanceState.getParcelable("mService");
-            mReserved = savedInstanceState.getParcelable("mReserved");
-
-        } else {
-            Log.d(TAG, "savedInstanceState == null");
-            mPoints = new ArrayList<Point>();
-
-            mIdService = getArguments().getInt(ID_SERVICE);
-            mLatitude = getArguments().getDouble(LATITUDE);
-            mLongitude = getArguments().getDouble(LONGITUDE);
-            mTitle = getArguments().getString(TITLE);
-            mService = getArguments().getParcelable(SERVICE);
-            mReserved = getArguments().getParcelable(RESERVED);
-        }
+        mIdService = getArguments().getInt(ID_SERVICE);
+        mLatitude = getArguments().getDouble(LATITUDE);
+        mLongitude = getArguments().getDouble(LONGITUDE);
+        mTitle = getArguments().getString(TITLE);
+        mService = getArguments().getParcelable(SERVICE);
+        mReserved = getArguments().getParcelable(RESERVED);
         mMarkers = new ArrayList<Marker>();
     }
 
@@ -218,7 +214,7 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
         });
 
         initControls(rootView);
-
+        initInfoReserved();
         return rootView;
     }
 
@@ -350,10 +346,10 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
 
     private void initControls(View rootView) {
 
-        txtTime = (TextView) mContent.findViewById(R.id.txtTime);
-        txtDuration = (TextView) mContent.findViewById(R.id.txtDuration);
-        txtSumm = (TextView) mContent.findViewById(R.id.txtSumm);
-        share = (Button) mContent.findViewById(R.id.btnShare);
+        txtMessage = mContent.findViewById(R.id.txtMessage);
+        textPaymentSuccess = rootView.findViewById(R.id.textPaymentSuccess);
+        payButton = rootView.findViewById(R.id.btnPay);
+        share = mContent.findViewById(R.id.btnShare);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -388,25 +384,80 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
         });
 
         mFont = Typeface.createFromAsset(getActivity().getAssets(), "roboto_light.ttf");
+
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPayDialog();
+            }
+        });
+        initPaymentWidgets();
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    private void initPaymentWidgets() {
+        textPaymentSuccess.setVisibility(mReserved.isFully_paid() ? View.VISIBLE : View.GONE);
+        payButton.setVisibility(mReserved.isFully_paid() ? View.GONE : View.VISIBLE);
+    }
+
+    private void initInfoReserved() {
+        String time = String.format(getActivity().getString(R.string.reserved_on), util.dateToDMYHM(util.getDatenoUTC(mReserved.getTime_from_no_time_zone())));
+        String duration = String.format(getActivity().getString(R.string.duration), util.minutesToText(mReserved.getFull_duration()));
+        String cost = String.format(getActivity().getString(R.string.reserved_cost), mReserved.getPrice(), getActivity().getString(R.string.rubleSymbolJava));
+
+        final String desc = String.format("%s\n%s\n%s", time, duration, cost);
 
         if (mReserved != null) {
-            txtTime.setText(String.format(getActivity().getString(R.string.reserved_on), util.dateToDMYHM(util.getDatenoUTC(mReserved.getTime_from_no_time_zone()))));
-            txtDuration.setText(String.format(getActivity().getString(R.string.duration), util.minutesToText(mReserved.getFull_duration())));
-            txtSumm.setText(String.format(getActivity().getString(R.string.reserved_cost), mReserved.getPrice(), getActivity().getString(R.string.rubleSymbolJava)));
+            txtMessage.setText(desc);
         }
     }
 
+    private void showPayDialog() {
+        final String title = mService.getName();
+        final String desc = txtMessage.getText().toString();
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(title)
+                .setMessage(desc)
+                .setCancelable(true)
+                .setPositiveButton(R.string.buy_now, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        payReservation(mReserved.getId(),
+                                Double.parseDouble(mReserved.getPrice()),
+                                title,
+                                desc);
+                    }
+                })
+                .show();
+    }
+
+    private void payReservation(int orderId,
+                                double amount,
+                                String title,
+                                String description) {
+        PayFormActivity.init
+                (
+                        "1509384921522DEMO",
+                        "eo8bv0zyqde8c6cn",
+                        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5yse9ka3ZQE0feuGtemYv3IqOlLck8zHUM7lTr0za6lXTszRSXfUO7jMb+L5C7e2QNFs+7sIX2OQJ6a+HG8kr+jwJ4tS3cVsWtd9NXpsU40PE4MeNr5RqiNXjcDxA+L4OsEm/BlyFOEOh2epGyYUd5/iO3OiQFRNicomT2saQYAeqIwuELPs1XpLk9HLx5qPbm8fRrQhjeUD5TLO8b+4yCnObe8vy/BMUwBfq+ieWADIjwWCMp2KTpMGLz48qnaD9kdrYJ0iyHqzb2mkDhdIzkim24A3lWoYitJCBrrB2xM05sm9+OdCI1f7nPNJbl5URHobSwR94IRGT7CJcUjvwIDAQAB"
+                )
+                .prepare(
+                        String.valueOf(orderId),
+                        Money.ofRubles(amount),
+                        title,
+                        description,
+                        null,
+                        null,
+                        false,
+                        true)
+                .setCustomerKey(pref.getProfile().getCustomerKey())
+                .useFirstAttachedCard(true)
+                .setChargeMode(false)
+                .setDesignConfiguration(PayCellType.SECURE_LOGOS, PayCellType.PAY_BUTTON, PayCellType.PAYMENT_CARD_REQUISITES)
+                .startActivityForResult(getActivity(), REQUEST_PAY);
+    }
+
     private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        // if (mMap == null) {
-        // Try to obtain the map from the SupportMapFragment.
-        // mMap = mMapFragment.getMap();
-        // Check if we were successful in obtaining the map.
         if (mMap != null) {
             mMap.setMyLocationEnabled(false);
             mMap.getUiSettings().setCompassEnabled(false);
@@ -416,13 +467,6 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
             if (update != null) {
                 mMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(update, 11.0f)));
             }
-            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    // mIsNeedLocationUpdate = false;
-                    // moveToLocation(latLng, false);
-                }
-            });
         }
     }
 
@@ -452,19 +496,6 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
         super.onSaveInstanceState(outState);
     }
 
-    private void collapseMap() {
-
-        if (mMap != null && mContent != null) {
-            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, 11f), 1000, null);
-        }
-    }
-
-    private void expandMap() {
-        if (mMap != null) {
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(14f), 1000, null);
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -483,10 +514,51 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
-
-        //XXX check rest toolbar
-        ((AppCompatActivity) getActivity()).invalidateOptionsMenu();
+        getActivity().invalidateOptionsMenu();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        if (REQUEST_PAY == requestCode) {
+            PayFormActivity.dispatchResult(resultCode, data, new OnPaymentListener() {
+                @Override
+                public void onSuccess(long l) {
+                    Toast.makeText(getContext(), R.string.payment_successful, Toast.LENGTH_SHORT).show();
+                    mReserved.setFully_paid(true);
+                    initPaymentWidgets();
+                    sendTransactionIdToServer(l);
+                }
+
+                @Override
+                public void onCancelled() {
+                    Toast.makeText(getContext(), R.string.payment_canceled, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), getString(R.string.payment_error, e.getLocalizedMessage()), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void sendTransactionIdToServer(long transaction_id) {
+        getSpiceManager().execute(new ReservationPaymentRequest(pref.getSessionID(),
+                        mReserved.getId(),
+                        mReserved.getOrganization_id(),
+                        transaction_id),
+                null,
+                DurationInMillis.ALWAYS_EXPIRED,
+                new RequestListener<ReservationPaymentResult>() {
+                    @Override
+                    public void onRequestFailure(SpiceException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onRequestSuccess(ReservationPaymentResult reservationResult) {
+                        Log.d(TAG, "success:" + reservationResult);
+                    }
+                });
     }
 
     public final class MapReverceGeocodingListener implements RequestListener<ReverseGeocoding> {
@@ -602,7 +674,7 @@ public class WashServiceInfoFragmentReserved extends WashServiceInfoBaseFragment
     @Override
     public void onLocationChanged(Location location) {
 
-       // Log.d(TAG, "onLocationChanged");
+        // Log.d(TAG, "onLocationChanged");
 
         if (location != null) {
             mLatitude = location.getLatitude();
