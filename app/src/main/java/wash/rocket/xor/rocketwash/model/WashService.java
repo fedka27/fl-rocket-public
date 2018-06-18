@@ -46,7 +46,7 @@ public class WashService implements Parcelable {
     private double longitude;
 
     @JsonField
-    private float rating_service_location;
+    private float unified_rating;
 
     @JsonField
     private String name;
@@ -302,7 +302,7 @@ public class WashService implements Parcelable {
         this.updated_at = in.readString();
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
-        this.rating_service_location = in.readFloat();
+        this.unified_rating = in.readFloat();
         this.name = in.readString();
         this.time_zone = in.readString();
         this.plan_id = in.readInt();
@@ -323,12 +323,12 @@ public class WashService implements Parcelable {
         this.tenant_user_attributes = in.readParcelable(UserAttributes.class.getClassLoader());
     }
 
-    public float getRating_service_location() {
-        return rating_service_location;
+    public float getUnified_rating() {
+        return unified_rating;
     }
 
-    public void setRating_service_location(float rating_service_location) {
-        this.rating_service_location = rating_service_location;
+    public void setUnified_rating(float unified_rating) {
+        this.unified_rating = unified_rating;
     }
 
     public static Creator<WashService> getCREATOR() {
@@ -395,7 +395,7 @@ public class WashService implements Parcelable {
         a.updated_at = updated_at;
         a.latitude = latitude;
         a.longitude = longitude;
-        a.rating_service_location = rating_service_location;
+        a.unified_rating = unified_rating;
         a.name = name;
         a.time_zone = time_zone;
         a.plan_id = plan_id;
@@ -435,7 +435,7 @@ public class WashService implements Parcelable {
         dest.writeString(this.updated_at);
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
-        dest.writeFloat(this.rating_service_location);
+        dest.writeFloat(this.unified_rating);
         dest.writeString(this.name);
         dest.writeString(this.time_zone);
         dest.writeInt(this.plan_id);
